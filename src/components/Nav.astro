@@ -1,0 +1,166 @@
+---
+// Nav.astro – thanh điều hướng ở đầu mọi trang.
+// Desktop: logo bên trái, Work / About / Resume bên phải.
+// Mobile: các link gom vào menu, mở/đóng bằng nút "Menu".
+
+// Muốn đổi/thêm link: sửa danh sách này.
+const links = [
+  { label: 'Work', href: '/#work' },
+  { label: 'About', href: '/about' },
+];
+
+// THAY: file resume thật của bạn đặt tại public/resume.pdf
+const resumeHref = '/resume.pdf';
+---
+
+<header class="nav">
+  <div class="container nav__inner">
+    <a class="nav__logo" href="/">vunguyen.me</a>
+
+    <button
+      class="nav__toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="nav-menu"
+    >
+      <span class="nav__toggle-label">Menu</span>
+    </button>
+
+    <nav id="nav-menu" class="nav__menu" aria-label="Điều hướng chính">
+      <ul class="nav__list">
+        {links.map((link) => (
+          <li><a class="nav__link" href={link.href}>{link.label}</a></li>
+        ))}
+        <li>
+          <a class="button button--ghost nav__resume" href={resumeHref} target="_blank" rel="noopener">
+            Resume
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: var(--nav-height);
+  }
+
+  .nav__logo {
+    font-weight: 700;
+    font-size: var(--text-lg);
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+
+  .nav__toggle {
+    font: inherit;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-text);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  /* Mobile: menu xổ xuống dưới thanh nav, ẩn mặc định */
+  .nav__menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-2) var(--space-3) var(--space-3);
+  }
+
+  .nav__menu.is-open {
+    display: block;
+  }
+
+  .nav__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .nav__link {
+    display: block;
+    padding: 0.5rem 0;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .nav__link:hover {
+    color: var(--color-accent);
+  }
+
+  .nav__resume {
+    text-align: center;
+  }
+
+  /* Desktop: ẩn nút Menu, link nằm ngang bên phải */
+  @media (min-width: 48rem) {
+    .nav__toggle {
+      display: none;
+    }
+
+    .nav__menu {
+      display: block;
+      position: static;
+      border: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    .nav__list {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .nav__link {
+      padding: 0;
+    }
+  }
+</style>
+
+<script>
+  // Mở/đóng menu trên mobile.
+  const toggle = document.querySelector<HTMLButtonElement>('.nav__toggle');
+  const menu = document.getElementById('nav-menu');
+
+  function setOpen(open: boolean) {
+    menu?.classList.toggle('is-open', open);
+    toggle?.setAttribute('aria-expanded', String(open));
+  }
+
+  toggle?.addEventListener('click', () => {
+    setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+
+  // Bấm vào một link trong menu thì đóng menu lại
+  menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+
+  // Bấm phím Esc cũng đóng menu
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setOpen(false);
+  });
+</script>

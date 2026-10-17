@@ -1,0 +1,101 @@
+---
+// Footer.astro – chân trang: email, mạng xã hội, nút "Lên đầu trang".
+
+// THAY: email thật của bạn
+const email = 'hello@vunguyen.me';
+
+// THAY: link mạng xã hội thật. Xóa dòng nào bạn không dùng, thêm dòng mới nếu cần.
+const socials = [
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/your-handle' },
+  { label: 'Behance', href: 'https://www.behance.net/your-handle' },
+  { label: 'Dribbble', href: 'https://dribbble.com/your-handle' },
+];
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div>
+      <p class="eyebrow">Liên hệ</p>
+      <a class="footer__email" href={`mailto:${email}`}>{email}</a>
+      <ul class="footer__socials">
+        {socials.map((s) => (
+          <li><a href={s.href} target="_blank" rel="noopener">{s.label}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="footer__meta">
+      <a class="button button--ghost" href="#top">↑ Lên đầu trang</a>
+      <p class="footer__copy">© {year} vunguyen.me</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--color-border);
+    padding-block: var(--space-5);
+  }
+
+  .footer__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .footer__email {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    word-break: break-all;
+  }
+
+  .footer__email:hover {
+    color: var(--color-accent);
+  }
+
+  .footer__socials {
+    list-style: none;
+    margin: var(--space-2) 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .footer__socials a {
+    color: var(--color-text-muted);
+  }
+
+  .footer__socials a:hover {
+    color: var(--color-accent);
+  }
+
+  .footer__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .footer__copy {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 48rem) {
+    .footer__inner {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .footer__meta {
+      align-items: flex-end;
+    }
+  }
+</style>
