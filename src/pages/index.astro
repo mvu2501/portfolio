@@ -1,7 +1,22 @@
 ---
-// Trang chủ tạm thời, sẽ thay ở Bước 5.
+// Trang chủ TẠM THỜI – chỉ để kiểm tra màu, font, nút. Sẽ thay hoàn toàn ở Bước 5.
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
-<html lang="vi">
-  <head><meta charset="utf-8" /><title>vunguyen.me</title></head>
-  <body><h1>vunguyen.me – đang xây dựng</h1></body>
-</html>
+
+<BaseLayout>
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Kiểm tra giao diện</p>
+      <h1 style="font-size: var(--text-hero); max-width: 18ch;">
+        Senior Product Designer · 10+ năm làm sản phẩm fintech và tài sản số
+      </h1>
+      <p style="color: var(--color-text-muted); max-width: var(--reading-width);">
+        Đây là trang thử nghiệm: nền kem, chữ Hanken Grotesk, khoảng trắng rộng.
+      </p>
+      <p style="display: flex; gap: var(--space-1); flex-wrap: wrap;">
+        <a class="button" href="#">Xem Work</a>
+        <a class="button button--ghost" href="#">Nút phụ</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>

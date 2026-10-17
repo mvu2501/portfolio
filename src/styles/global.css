@@ -1,0 +1,157 @@
+/*
+  global.css – "bảng màu và quy tắc chung" cho cả website.
+  Muốn đổi màu/khoảng cách toàn site: chỉ sửa các biến trong khối :root bên dưới.
+*/
+
+:root {
+  /* Màu sắc */
+  --color-bg: #f7f3ec;          /* nền kem ấm */
+  --color-surface: #fffdf8;     /* nền thẻ, sáng hơn nền chính một chút */
+  --color-text: #1f1b16;        /* chữ chính */
+  --color-text-muted: #6b6258;  /* chữ phụ, mô tả */
+  --color-border: #e3dccf;      /* đường viền mảnh */
+  --color-accent: #b5532f;      /* màu nhấn (link, mục đang đọc) */
+  --color-accent-soft: #f1ddd2; /* nền nhấn nhạt (tag) */
+
+  /* Font */
+  --font-sans: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Cỡ chữ (tự co giãn theo màn hình) */
+  --text-sm: 0.875rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.25rem;
+  --text-xl: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  --text-hero: clamp(2rem, 1.2rem + 3.6vw, 3.5rem);
+
+  /* Khoảng cách */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2.5rem;
+  --space-5: 4rem;
+  --space-6: 7rem;
+
+  /* Bố cục */
+  --content-width: 72rem;  /* chiều rộng tối đa của nội dung */
+  --reading-width: 42rem;  /* chiều rộng tối ưu cho đoạn văn dài */
+  --radius: 0.75rem;
+  --nav-height: 4rem;
+}
+
+/* ---------- Reset nhẹ ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* chừa chỗ cho thanh nav khi nhảy tới mục (#overview, #problem...) */
+  scroll-padding-top: calc(var(--nav-height) + var(--space-3));
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+svg {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--space-2);
+}
+
+p {
+  margin: 0 0 var(--space-2);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* ---------- Lớp tiện ích dùng chung ---------- */
+.container {
+  width: 100%;
+  max-width: var(--content-width);
+  margin-inline: auto;
+  padding-inline: var(--space-3);
+}
+
+.section {
+  padding-block: var(--space-5);
+}
+
+.eyebrow {
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2);
+}
+
+/* Nút bấm */
+.button {
+  display: inline-block;
+  padding: 0.7rem 1.25rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-text);
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.button:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.button--ghost {
+  background: transparent;
+  color: var(--color-text);
+}
+
+.button--ghost:hover {
+  background: var(--color-text);
+  border-color: var(--color-text);
+  color: var(--color-bg);
+}
+
+@media (min-width: 48rem) {
+  .container {
+    padding-inline: var(--space-4);
+  }
+
+  .section {
+    padding-block: var(--space-6);
+  }
+}
+
+/* Tôn trọng người dùng tắt hiệu ứng chuyển động */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

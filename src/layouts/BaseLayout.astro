@@ -1,0 +1,40 @@
+---
+// BaseLayout.astro – "khung chung" bọc quanh mọi trang.
+// Nó lo phần <head> (tiêu đề, font, CSS) rồi đặt nội dung từng trang vào <slot />.
+// Bước 3 sẽ thêm thanh Nav và Footer vào đây.
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'vunguyen.me',
+  // THAY: mô tả ngắn hiện trên Google khi ai đó tìm tên bạn
+  description = 'Senior Product Designer · 10+ năm làm sản phẩm fintech và tài sản số',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+
+    <!-- Font Hanken Grotesk từ Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>
