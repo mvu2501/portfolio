@@ -5,7 +5,7 @@
 // của mỗi phiên, và gỡ lớp đó khi hoạt ảnh kết thúc.
 
 // THAY: dòng chữ hiện trên màn hình loading
-const text = 'things designed by Vu.';
+const text = 'Things designed by Vu.';
 
 // Tách thành từ → ký tự để mỗi ký tự hiện ra lần lượt (giữ từ không bị ngắt giữa chừng).
 let index = 0;
@@ -36,6 +36,13 @@ const words = text.split(' ').map((word) => ({
     --loader-stagger: 0.04s;    /* độ trễ giữa hai ký tự */
     --loader-leave: 2s;         /* thời điểm chữ bắt đầu bay lên */
     --loader-leave-duration: 0.8s;
+    --loader-font-size: 20px;   /* cỡ chữ trên mobile (tỉ lệ 28/46 so với 32px desktop) */
+  }
+
+  @media (min-width: 48rem) {
+    :root {
+      --loader-font-size: 32px; /* cỡ chữ trên desktop */
+    }
   }
 
   .loader {
@@ -63,7 +70,7 @@ const words = text.split(' ').map((word) => ({
     margin: 0;
     max-width: 20ch;
     text-align: center;
-    font-size: var(--text-display);
+    font-size: var(--loader-font-size);
     line-height: 1.22;
     letter-spacing: var(--tracking-display);
     animation: loader-text-out var(--loader-leave-duration) cubic-bezier(0.6, 0, 0.9, 0.4)
