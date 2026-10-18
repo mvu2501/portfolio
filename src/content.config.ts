@@ -10,7 +10,9 @@ import { z } from 'astro/zod';
 const projectSchema = z.object({
   title: z.string(),                  // tên dự án
   role: z.string(),                   // vai trò, ví dụ "Lead Product Designer"
-  scope: z.string(),                  // phạm vi, ví dụ "0 → 1, Mobile app"
+  scope: z.string().optional(),       // (không còn hiển thị trên trang) phạm vi, ví dụ "0 → 1, Mobile app"
+  year: z.coerce.string().optional(), // năm, ví dụ 2026, hiện ở khối thông tin của case study
+  platform: z.string().optional(),    // nền tảng, ví dụ Mobile, hiện ở khối thông tin của case study
   tags: z.array(z.string()).default([]), // tag kỹ năng
   description: z.string(),            // một dòng mô tả hiện trên thẻ
   order: z.number().default(100),     // số nhỏ đứng trước (case study đầu tiên = 1)

@@ -3,7 +3,8 @@
 # Khi có case study thứ hai thật: xóa file này, hoặc thêm dòng  draft: true  để ẩn nó.
 title: Demo Case Study, Replace With Your Next Project
 role: Product Designer                 # THAY
-scope: Web app                         # THAY
+year: 2026                             # THAY
+platform: Web                          # THAY
 tags: [Demo, Placeholder]              # THAY
 description: A placeholder project used to preview the next and previous navigation.   # THAY
 order: 2

@@ -1,7 +1,8 @@
 ---
 title: Designing Spot Trading for a Digital-Asset Wealth App
 role: Sole Product Designer
-scope: Mobile app (iOS & Android), Spot trading feature
+year: 2026
+platform: Mobile
 tags: [Fintech, Crypto, Trading UX, Mobile]
 description: I designed the Spot trading feature for a crypto trading platform, with five order types on one small phone screen.
 order: 1

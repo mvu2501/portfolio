@@ -20,7 +20,13 @@ export async function getStaticPaths() {
 
 const { entry, prev, next } = Astro.props;
 const { Content } = await render(entry);
-const { title, role, scope, tags, description } = entry.data;
+const { title, role, year, platform, tags, description, cover, coverAlt } = entry.data;
+// Khối thông tin dưới tiêu đề: chỉ hiện mục nào có dữ liệu
+const info = [
+  { label: 'Role', value: role },
+  { label: 'Year', value: year },
+  { label: 'Platform', value: platform },
+].filter((item) => item.value);
 ---
 
 <BaseLayout title={`${title} · vunguyen.me`} description={description}>
@@ -29,12 +35,22 @@ const { title, role, scope, tags, description } = entry.data;
       <a class="case-header__back" href="/#work">← Work</a>
       <h1 class="case-header__title">{title}</h1>
       <p class="case-header__desc">{description}</p>
-      <p class="case-header__meta">{role} · {scope}</p>
       {tags.length > 0 && (
         <ul class="case-header__tags">
           {tags.map((tag) => <li>{tag}</li>)}
         </ul>
       )}
+
+      <dl class="case-info">
+        {info.map((item) => (
+          <div class="case-info__item">
+            <dt>{item.label}</dt>
+            <dd>{item.value}</dd>
+          </div>
+        ))}
+      </dl>
+
+      {cover && <img class="case-cover" src={cover} alt={coverAlt} decoding="async" fetchpriority="high" />}
     </div>
   </header>
 
@@ -155,9 +171,39 @@ const { title, role, scope, tags, description } = entry.data;
     max-width: var(--reading-width);
   }
 
-  .case-header__meta {
+  /* Khối thông tin: Role / Year / Platform */
+  .case-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-5);
+    margin: var(--space-4) 0 0;
+  }
+
+  .case-info__item {
+    margin: 0;
+  }
+
+  .case-info dt {
+    margin-bottom: var(--spacing-xs);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
     color: var(--color-text-muted);
-    font-size: var(--text-sm);
+  }
+
+  .case-info dd {
+    margin: 0;
+  }
+
+  /* Ảnh cover dưới khối thông tin: rộng bằng khung nội dung, giữ nguyên tỉ lệ ảnh (không cắt) */
+  .case-cover {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: var(--space-4);
+    border-radius: 14px;
+    background: var(--color-cover);
   }
 
   .case-header__tags {
