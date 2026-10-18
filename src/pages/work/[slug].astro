@@ -196,10 +196,11 @@ const info = [
     margin: 0;
   }
 
-  /* Ảnh cover dưới khối thông tin: rộng bằng khung nội dung, giữ nguyên tỉ lệ ảnh (không cắt) */
+  /* Ảnh cover dưới khối thông tin: rộng tối đa bằng cột chữ của bài (42rem), giữ nguyên tỉ lệ ảnh (không cắt) */
   .case-cover {
     display: block;
     width: 100%;
+    max-width: var(--reading-width);
     height: auto;
     margin-top: var(--space-4);
     border-radius: 14px;
