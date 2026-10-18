@@ -1,0 +1,242 @@
+---
+// Template case study: tạo một trang /work/<tên-file> cho mỗi file .md trong content/work/.
+// Ví dụ content/work/aura.md → /work/aura
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CaseToc from '../../components/CaseToc.astro';
+
+export async function getStaticPaths() {
+  const works = await getCollection('work', ({ data }) => !data.draft);
+  return works.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, role, scope, tags, description } = entry.data;
+---
+
+<BaseLayout title={`${title} · vunguyen.me`} description={description}>
+  <header class="case-header section">
+    <div class="container">
+      <a class="case-header__back" href="/#work">← Work</a>
+      <h1 class="case-header__title">{title}</h1>
+      <p class="case-header__desc">{description}</p>
+      <p class="case-header__meta">{role} · {scope}</p>
+      {tags.length > 0 && (
+        <ul class="case-header__tags">
+          {tags.map((tag) => <li>{tag}</li>)}
+        </ul>
+      )}
+    </div>
+  </header>
+
+  <!-- Thanh mục lục ngang cho mobile (ẩn trên desktop) -->
+  <CaseToc variant="bar" />
+
+  <div class="container case-layout">
+    <!-- Sidebar mục lục cho desktop (ẩn trên mobile) -->
+    <aside class="case-layout__side">
+      <CaseToc variant="sidebar" />
+    </aside>
+
+    <article class="case-body">
+      <Content />
+    </article>
+  </div>
+</BaseLayout>
+
+<script>
+  // Đánh dấu mục đang đọc trong mục lục khi cuộn trang.
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]'));
+  const headings = links
+    .map((a) => document.getElementById(a.dataset.tocLink ?? ''))
+    .filter((el): el is HTMLElement => el !== null);
+  // Lấy theo thứ tự xuất hiện, bỏ trùng (sidebar và thanh ngang cùng trỏ vào một id)
+  const ids = Array.from(new Set(headings.map((h) => h.id)));
+
+  function update() {
+    // Mục đang đọc = tiêu đề cuối cùng đã cuộn qua đường mốc cách đỉnh trang ~35% màn hình
+    const line = window.innerHeight * 0.35;
+    let activeId = ids[0];
+    for (const id of ids) {
+      if (document.getElementById(id)!.getBoundingClientRect().top <= line) activeId = id;
+    }
+    // Cuộn chạm đáy trang thì chọn mục cuối
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+      activeId = ids[ids.length - 1];
+    }
+    for (const a of links) {
+      const on = a.dataset.tocLink === activeId;
+      if (on) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+      // Thanh ngang trên mobile: cuộn để mục đang đọc luôn nằm trong tầm nhìn
+      if (on && a.closest('.toc--bar') && a.offsetParent !== null) {
+        const bar = a.closest<HTMLElement>('.toc--bar')!;
+        bar.scrollTo({ left: a.offsetLeft - 16, behavior: 'smooth' });
+      }
+    }
+  }
+
+  let ticking = false;
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        update();
+        ticking = false;
+      });
+    },
+    { passive: true }
+  );
+  window.addEventListener('resize', update);
+  update();
+</script>
+
+<style>
+  .case-header {
+    padding-bottom: var(--space-4);
+  }
+
+  .case-header__back {
+    display: inline-block;
+    margin-bottom: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .case-header__back:hover {
+    color: var(--color-accent);
+  }
+
+  .case-header__title {
+    font-size: var(--text-hero);
+    margin-bottom: var(--space-2);
+  }
+
+  .case-header__desc {
+    font-size: var(--text-lg);
+    max-width: var(--reading-width);
+  }
+
+  .case-header__meta {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .case-header__tags {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .case-header__tags li {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+    font-weight: 500;
+  }
+
+  .case-layout {
+    display: block;
+    padding-block: var(--space-4) var(--space-5);
+  }
+
+  .case-body {
+    max-width: var(--reading-width);
+  }
+
+  /* Nội dung Markdown được tạo ra lúc build nên cần :global để style tác động tới nó */
+  .case-body :global(h2) {
+    font-size: var(--text-xl);
+    margin-top: var(--space-5);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .case-body :global(h2:first-child) {
+    margin-top: 0;
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .case-body :global(h3) {
+    font-size: var(--text-lg);
+  }
+
+  .case-body :global(img) {
+    border-radius: var(--radius);
+    margin-block: var(--space-3);
+  }
+
+  /* Ghi chú hướng dẫn (dòng bắt đầu bằng ">") */
+  .case-body :global(blockquote) {
+    margin: 0 0 var(--space-3);
+    padding: var(--space-1) var(--space-2);
+    border-left: 3px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .case-body :global(blockquote p) {
+    margin: 0;
+  }
+
+  /* Khối Outcome: 4 khung (do src/plugins/rehype-outcome.mjs tạo ra) */
+  .case-body :global(.outcome-grid) {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  .case-body :global(.outcome-card) {
+    padding: var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+  }
+
+  .case-body :global(.outcome-card h3) {
+    margin-top: 0;
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+  }
+
+  .case-body :global(.outcome-card blockquote) {
+    border-left: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  @media (min-width: 40rem) {
+    .case-body :global(.outcome-grid) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Desktop: sidebar bên trái + nội dung bên phải */
+  @media (min-width: 64rem) {
+    .case-layout {
+      display: grid;
+      grid-template-columns: 14rem minmax(0, 1fr);
+      gap: var(--space-5);
+      align-items: start;
+    }
+
+    /* Cột sidebar dính: phải đặt sticky ở chính cột (cao bằng cả bài), không phải ở mục lục bên trong */
+    .case-layout__side {
+      position: sticky;
+      top: calc(var(--nav-height) + var(--space-4));
+    }
+  }
+</style>

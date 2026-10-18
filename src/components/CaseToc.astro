@@ -1,0 +1,122 @@
+---
+// CaseToc.astro – mục lục 6 mục của case study.
+// variant="sidebar": cột dính bên trái (desktop).
+// variant="bar": thanh ngang cuộn được phía trên (mobile).
+// Các link có data-toc-link để script trong trang đánh dấu mục đang đọc.
+interface Props {
+  variant: 'sidebar' | 'bar';
+}
+const { variant } = Astro.props;
+
+// 6 mục cố định. "id" phải trùng id của tiêu đề ## trong file .md
+// (Astro tự tạo id từ tiêu đề: "Design Decisions" → design-decisions).
+const sections = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'problem', label: 'Problem' },
+  { id: 'research', label: 'Research' },
+  { id: 'design-decisions', label: 'Design Decisions' },
+  { id: 'outcome', label: 'Outcome' },
+  { id: 'reflections', label: 'Reflections' },
+];
+---
+
+<nav class={`toc toc--${variant}`} aria-label="Mục lục case study">
+  <ul>
+    {sections.map((s) => (
+      <li>
+        <a href={`#${s.id}`} data-toc-link={s.id}>{s.label}</a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .toc ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .toc a {
+    text-decoration: none;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+
+  .toc a:hover {
+    color: var(--color-text);
+  }
+
+  /* Mục đang đọc: script thêm aria-current="true" */
+  .toc a[aria-current='true'] {
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  /* --- Sidebar (desktop) --- */
+  .toc--sidebar {
+    display: none;
+  }
+
+  .toc--sidebar ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    border-left: 1px solid var(--color-border);
+  }
+
+  .toc--sidebar a {
+    display: block;
+    padding: 0.4rem 0 0.4rem var(--space-2);
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+  }
+
+  .toc--sidebar a[aria-current='true'] {
+    border-left-color: var(--color-accent);
+  }
+
+  /* --- Thanh ngang (mobile) --- */
+  .toc--bar {
+    position: sticky;
+    top: var(--nav-height);
+    z-index: 40;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .toc--bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .toc--bar ul {
+    display: flex;
+    gap: var(--space-3);
+    padding: 0.75rem var(--space-3);
+    width: max-content;
+  }
+
+  .toc--bar a {
+    white-space: nowrap;
+    padding-bottom: 0.2rem;
+    border-bottom: 2px solid transparent;
+  }
+
+  .toc--bar a[aria-current='true'] {
+    border-bottom-color: var(--color-accent);
+  }
+
+  @media (min-width: 64rem) {
+    .toc--bar {
+      display: none;
+    }
+
+    .toc--sidebar {
+      display: block;
+    }
+  }
+</style>
