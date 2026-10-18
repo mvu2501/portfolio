@@ -7,6 +7,9 @@ scope: Side project                            # THAY
 tags: [Prototype, Play]                        # THAY
 description: A short line about this side project.   # THAY
 order: 1
+# THAY: ảnh cover của thẻ (đặt trong public/images/fun/), bỏ dấu # để dùng.
+# cover: /images/fun/sample-cover.jpg
+# coverAlt: Mô tả ngắn ảnh cover
 ---
 
 Optional longer description. Can stay empty if the project doesn't need its own page.

@@ -35,7 +35,7 @@ const words = text.split(' ').map((word) => ({
     --loader-start: 0.2s;       /* chờ trước khi chữ bắt đầu hiện */
     --loader-stagger: 0.04s;    /* độ trễ giữa hai ký tự */
     --loader-leave: 2s;         /* thời điểm chữ bắt đầu bay lên */
-    --loader-leave-duration: 0.8s;
+    --loader-leave-duration: 0.4s;
     --loader-font-size: 20px;   /* cỡ chữ trên mobile (tỉ lệ 28/46 so với 32px desktop) */
   }
 
@@ -63,7 +63,7 @@ const words = text.split(' ').map((word) => ({
     padding: var(--space-3);
     background: var(--color-bg);
     /* sau khi chữ bay đi, phủ nền biến mất và không chặn thao tác */
-    animation: loader-out 0.4s ease calc(var(--loader-leave) + 0.3s) forwards;
+    animation: loader-out 0.3s ease calc(var(--loader-leave) + var(--loader-leave-duration) * 0.6) forwards;
   }
 
   .loader__text {
@@ -95,7 +95,7 @@ const words = text.split(' ').map((word) => ({
   html.is-loading main,
   html.is-loading .footer {
     opacity: 0;
-    animation: loader-content-in 0.9s ease calc(var(--loader-leave) + 0.35s) forwards;
+    animation: loader-content-in 0.9s ease calc(var(--loader-leave) + var(--loader-leave-duration) * 0.75) forwards;
   }
 
   @keyframes loader-char-in {

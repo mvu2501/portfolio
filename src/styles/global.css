@@ -15,6 +15,8 @@
   --color-hairline: #b7372b;      /* đỏ gạch: chỉ dùng cho đường kẻ 1px và vạch đánh dấu */
   --color-tint: rgba(31, 29, 26, 0.07);      /* nền nút, tag */
   --color-tint-strong: rgba(31, 29, 26, 0.14);
+  --color-tag: rgba(60, 45, 25, 0.07);        /* nền tag dạng viên thuốc (theo Figma) */
+  --color-cover: #efe8d8;                     /* nền ô cover khi chưa có ảnh (theo Figma) */
 
   /* Font */
   --font-sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;

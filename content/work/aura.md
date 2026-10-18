@@ -6,6 +6,9 @@ scope: Web & mobile app, 0 → 1         # THAY: phạm vi dự án
 tags: [Product Design, Design System, Research]   # THAY: tag kỹ năng
 description: One line about Aura and the key result.   # THAY
 order: 1                               # Aura đứng đầu danh sách
+# THAY: ảnh cover của thẻ. Bỏ ảnh vào public/images/work/ rồi bỏ dấu # ở 2 dòng dưới.
+# cover: /images/work/aura-cover.jpg
+# coverAlt: Mô tả ngắn ảnh cover của Aura
 ---
 
 ## Overview
