@@ -1,0 +1,126 @@
+---
+// Loader.astro – màn hình loading: chữ hiện từng ký tự, rồi bay lên và nội dung trang hiện ra.
+// Toàn bộ chuyển động là CSS thuần, chạy theo một dòng thời gian cố định (xem biến --loader-*).
+// Script nhỏ trong BaseLayout chỉ có hai việc: bật lớp "is-loading" ở lần xem đầu tiên
+// của mỗi phiên, và gỡ lớp đó khi hoạt ảnh kết thúc.
+
+// THAY: dòng chữ hiện trên màn hình loading
+const text = 'things designed by Vu.';
+
+// Tách thành từ → ký tự để mỗi ký tự hiện ra lần lượt (giữ từ không bị ngắt giữa chừng).
+let index = 0;
+const words = text.split(' ').map((word) => ({
+  chars: [...word].map((char) => ({ char, i: index++ })),
+}));
+---
+
+<div class="loader" aria-hidden="true">
+  <p class="loader__text">
+    {words.map((word, w) => (
+      <>
+        <span class="loader__word">
+          {word.chars.map(({ char, i }) => (
+            <span class="loader__char" style={`--i:${i}`}>{char}</span>
+          ))}
+        </span>
+        {w < words.length - 1 && ' '}
+      </>
+    ))}
+  </p>
+</div>
+
+<style is:global>
+  :root {
+    /* Dòng thời gian (giây). Muốn nhanh/chậm hơn: sửa các số này. */
+    --loader-start: 0.2s;       /* chờ trước khi chữ bắt đầu hiện */
+    --loader-stagger: 0.04s;    /* độ trễ giữa hai ký tự */
+    --loader-leave: 2s;         /* thời điểm chữ bắt đầu bay lên */
+    --loader-leave-duration: 0.8s;
+  }
+
+  .loader {
+    display: none;
+  }
+
+  html.is-loading {
+    overflow: hidden;
+  }
+
+  html.is-loading .loader {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-3);
+    background: var(--color-bg);
+    /* sau khi chữ bay đi, phủ nền biến mất và không chặn thao tác */
+    animation: loader-out 0.4s ease calc(var(--loader-leave) + 0.3s) forwards;
+  }
+
+  .loader__text {
+    margin: 0;
+    max-width: 20ch;
+    text-align: center;
+    font-size: var(--text-display);
+    line-height: 1.22;
+    letter-spacing: var(--tracking-display);
+    animation: loader-text-out var(--loader-leave-duration) cubic-bezier(0.6, 0, 0.9, 0.4)
+      var(--loader-leave) forwards;
+  }
+
+  .loader__word {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .loader__char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.5em);
+    animation: loader-char-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+    animation-delay: calc(var(--loader-start) + var(--i) * var(--loader-stagger));
+  }
+
+  /* Nội dung trang ẩn trong lúc loading, rồi hiện lên khi chữ bắt đầu bay */
+  html.is-loading .nav,
+  html.is-loading main,
+  html.is-loading .footer {
+    opacity: 0;
+    animation: loader-content-in 0.9s ease calc(var(--loader-leave) + 0.35s) forwards;
+  }
+
+  @keyframes loader-char-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes loader-text-out {
+    to {
+      opacity: 0;
+      transform: translateY(-45vh);
+    }
+  }
+
+  @keyframes loader-out {
+    to {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+
+  @keyframes loader-content-in {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

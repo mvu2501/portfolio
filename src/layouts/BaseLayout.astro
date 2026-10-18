@@ -5,6 +5,7 @@
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import Loader from '../components/Loader.astro';
 
 interface Props {
   title?: string;
@@ -26,6 +27,31 @@ const {
     <meta name="description" content={description} />
     <title>{title}</title>
 
+    <!-- Màn hình loading: chỉ chạy ở lần xem đầu của mỗi phiên, và bỏ qua nếu người dùng tắt chuyển động.
+         Chạy ngay trong <head> để trang không bị nháy nội dung trước khi màn hình loading hiện. -->
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        try {
+          var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          if (reduce || sessionStorage.getItem('loaderSeen')) return;
+          sessionStorage.setItem('loaderSeen', '1');
+        } catch (e) {}
+        root.classList.add('is-loading');
+        function done() {
+          root.classList.remove('is-loading');
+          document.removeEventListener('animationend', onEnd);
+        }
+        // Gỡ lớp đúng lúc nội dung hiện xong (hoạt ảnh cuối cùng của màn hình loading)
+        function onEnd(e) {
+          if (e.animationName === 'loader-content-in' && e.target.tagName === 'MAIN') done();
+        }
+        document.addEventListener('animationend', onEnd);
+        // Phương án dự phòng nếu sự kiện trên không chạy
+        setTimeout(done, 6000);
+      })();
+    </script>
+
     <!-- Font Inter Tight (chữ thường) và JetBrains Mono (nút, nhãn, tag) từ Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -35,6 +61,7 @@ const {
     />
   </head>
   <body id="top">
+    <Loader />
     <Nav />
     <main>
       <slot />

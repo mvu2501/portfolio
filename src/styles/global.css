@@ -1,7 +1,7 @@
 /*
   global.css – "bảng màu và quy tắc chung" cho cả website.
   Theo style trong style.md (Yinyee Ho): nền kem ấm, chữ mực, font Inter Tight + JetBrains Mono,
-  góc vuông, gần như không đổ bóng. Muốn đổi màu/khoảng cách toàn site: sửa các biến trong :root.
+  góc vuông, không đổ bóng. Muốn đổi màu/khoảng cách toàn site: sửa các biến trong :root.
 */
 
 :root {
@@ -56,8 +56,6 @@
   --radius-xs: 4px;        /* nút, tag */
   --nav-height: 4rem;
 
-  /* Bóng đổ: chỉ dùng cho thanh Nav */
-  --shadow-nav: 0 0 0 1px rgba(31, 29, 26, 0.06), 0 8px 24px 0 rgba(60, 40, 10, 0.08);
 }
 
 @media (min-width: 48rem) {
