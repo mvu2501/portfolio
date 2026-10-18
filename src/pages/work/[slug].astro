@@ -211,17 +211,21 @@ const { title, role, scope, tags, description } = entry.data;
   }
 
   /* Nội dung Markdown được tạo ra lúc build nên cần :global để style tác động tới nó */
+  /* Heading trong case study: 24px mobile, 28px desktop (riêng cho trang này, không đổi Heading chung) */
   .case-body :global(h2) {
-    font-size: var(--text-heading);
+    font-size: 1.5rem;
     margin-top: var(--space-5);
-    padding-top: var(--space-3);
-    border-top: 1px solid var(--color-hairline);
+  }
+
+  @media (min-width: 48rem) {
+    .case-body :global(h2) {
+      font-size: 1.75rem;
+      margin-top: var(--space-6);
+    }
   }
 
   .case-body :global(h2:first-child) {
     margin-top: 0;
-    border-top: 0;
-    padding-top: 0;
   }
 
   .case-body :global(h3) {
