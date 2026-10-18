@@ -13,10 +13,10 @@ const projectSchema = z.object({
   scope: z.string(),                  // phạm vi, ví dụ "0 → 1, Mobile app"
   tags: z.array(z.string()).default([]), // tag kỹ năng
   description: z.string(),            // một dòng mô tả hiện trên thẻ
-  order: z.number().default(100),     // số nhỏ đứng trước (Aura = 1)
+  order: z.number().default(100),     // số nhỏ đứng trước (case study đầu tiên = 1)
   draft: z.boolean().default(false),  // true = ẩn khỏi trang
   link: z.string().optional(),        // (chỉ dành cho fun) link ngoài nếu có
-  cover: z.string().optional(),       // ảnh cover, ví dụ /images/work/aura-cover.jpg (file đặt trong public/)
+  cover: z.string().optional(),       // ảnh cover, ví dụ /images/work/spot-trading-cover.webp (file đặt trong public/)
   coverAlt: z.string().default(''),   // mô tả ảnh cho người dùng đọc màn hình
 });
 

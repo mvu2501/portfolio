@@ -2,12 +2,11 @@
 title: Designing Spot Trading for a Digital-Asset Wealth App
 role: Sole Product Designer
 scope: Mobile app (iOS & Android), Spot trading feature
-tags: [Fintech, Digital Assets, Trading UX, Mobile]
-description: I designed the Spot trading feature for a digital-asset wealth app, with five order types on one small phone screen.
+tags: [Fintech, Crypto, Trading UX, Mobile]
+description: I designed the Spot trading feature for a crypto trading platform, with five order types on one small phone screen.
 order: 1
-# THAY: ảnh cover của thẻ. Bỏ ảnh vào public/images/work/ rồi bỏ dấu # ở 2 dòng dưới.
-# cover: /images/work/spot-trading-cover.jpg
-# coverAlt: Mô tả ngắn ảnh cover
+cover: /images/work/spot-trading-cover.webp
+coverAlt: Spot trading order ticket on a phone, showing a BTC/USDT limit order with price, amount and Buy button
 ---
 
 ## Overview
