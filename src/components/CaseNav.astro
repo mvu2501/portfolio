@@ -1,0 +1,91 @@
+---
+// CaseNav.astro – điều hướng cuối case study: "Up next" (case study kế tiếp) và "Previous" (trước đó).
+// Thứ tự lấy theo số "order" trong phần đầu file .md (nhỏ đứng trước).
+// Chỉ hiện mục nào tồn tại: case study đầu tiên không có "Previous", cái cuối không có "Up next".
+interface Item {
+  id: string;
+  title: string;
+}
+interface Props {
+  prev?: Item;
+  next?: Item;
+}
+const { prev, next } = Astro.props;
+---
+
+{(prev || next) && (
+  <nav class="pager" aria-label="More case studies">
+    {next && (
+      <a class="pager__item" href={`/work/${next.id}`}>
+        <span class="pager__label">Up next</span>
+        <span class="pager__row">
+          <span class="pager__title">{next.title}</span>
+          <span class="pager__arrow" aria-hidden="true">→</span>
+        </span>
+      </a>
+    )}
+    {prev && (
+      <a class="pager__item" href={`/work/${prev.id}`}>
+        <span class="pager__label">Previous</span>
+        <span class="pager__row">
+          <span class="pager__title">{prev.title}</span>
+          <span class="pager__arrow" aria-hidden="true">←</span>
+        </span>
+      </a>
+    )}
+  </nav>
+)}
+
+<style>
+  .pager {
+    margin-top: var(--space-5);
+  }
+
+  .pager__item {
+    display: block;
+    padding-block: var(--space-4);
+    border-top: 1px solid var(--color-tint-strong);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .pager__label {
+    display: block;
+    margin-bottom: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .pager__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  .pager__title {
+    font-size: var(--text-heading);
+    line-height: 1.15;
+    letter-spacing: var(--tracking-display);
+  }
+
+  .pager__arrow {
+    flex-shrink: 0;
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+  .pager__item:hover .pager__arrow {
+    color: var(--color-text);
+    transform: translateX(4px);
+  }
+
+  /* Mũi tên của "Previous" trượt sang trái */
+  .pager__item:last-child:not(:first-child):hover .pager__arrow {
+    transform: translateX(-4px);
+  }
+</style>

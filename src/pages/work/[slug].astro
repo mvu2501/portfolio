@@ -4,13 +4,21 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CaseToc from '../../components/CaseToc.astro';
+import CaseNav from '../../components/CaseNav.astro';
 
 export async function getStaticPaths() {
-  const works = await getCollection('work', ({ data }) => !data.draft);
-  return works.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+  // Xếp theo "order" để biết case study nào đứng trước/sau (dùng cho Up next / Previous)
+  const works = (await getCollection('work', ({ data }) => !data.draft)).sort(
+    (a, b) => a.data.order - b.data.order
+  );
+  const brief = (e?: (typeof works)[number]) => (e ? { id: e.id, title: e.data.title } : undefined);
+  return works.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: { entry, prev: brief(works[i - 1]), next: brief(works[i + 1]) },
+  }));
 }
 
-const { entry } = Astro.props;
+const { entry, prev, next } = Astro.props;
 const { Content } = await render(entry);
 const { title, role, scope, tags, description } = entry.data;
 ---
@@ -36,12 +44,17 @@ const { title, role, scope, tags, description } = entry.data;
   <div class="container case-layout">
     <!-- Sidebar mục lục cho desktop (ẩn trên mobile) -->
     <aside class="case-layout__side">
+      <!-- Nút quay lại: ẩn lúc đầu trang (đã có nút ở phần tiêu đề), hiện ra khi cuộn qua nó -->
+      <a class="case-layout__back" href="/#work" tabindex="-1" aria-hidden="true">← Work</a>
       <CaseToc variant="sidebar" />
     </aside>
 
-    <article class="case-body">
-      <Content />
-    </article>
+    <div class="case-main">
+      <article class="case-body">
+        <Content />
+      </article>
+      <CaseNav prev={prev} next={next} />
+    </div>
   </div>
 </BaseLayout>
 
@@ -92,6 +105,21 @@ const { title, role, scope, tags, description } = entry.data;
   );
   window.addEventListener('resize', update);
   update();
+
+  // Nút "← Work" trong sidebar: hiện khi nút ở phần tiêu đề đã cuộn khuất sau thanh Nav.
+  const headerBack = document.querySelector('.case-header__back');
+  const sideBack = document.querySelector<HTMLElement>('.case-layout__back');
+  if (headerBack && sideBack) {
+    new IntersectionObserver(
+      ([entry]) => {
+        const show = !entry.isIntersecting;
+        sideBack.classList.toggle('is-visible', show);
+        sideBack.tabIndex = show ? 0 : -1;
+        sideBack.setAttribute('aria-hidden', String(!show));
+      },
+      { rootMargin: '-64px 0px 0px 0px' } // 64px = chiều cao thanh Nav
+    ).observe(headerBack);
+  }
 </script>
 
 <style>
@@ -99,7 +127,8 @@ const { title, role, scope, tags, description } = entry.data;
     padding-bottom: var(--space-4);
   }
 
-  .case-header__back {
+  .case-header__back,
+  .case-layout__back {
     display: inline-block;
     margin-bottom: var(--space-3);
     font-family: var(--font-mono);
@@ -110,7 +139,8 @@ const { title, role, scope, tags, description } = entry.data;
     text-decoration: none;
   }
 
-  .case-header__back:hover {
+  .case-header__back:hover,
+  .case-layout__back:hover {
     color: var(--color-text);
   }
 
@@ -156,6 +186,28 @@ const { title, role, scope, tags, description } = entry.data;
 
   .case-body {
     max-width: var(--reading-width);
+  }
+
+  /* Cột chứa bài viết và phần Up next / Previous (Up next rộng hơn chữ bài viết) */
+  .case-main {
+    min-width: 0;
+  }
+
+  /* Sidebar chỉ có trên desktop; nút Work ẩn (nhưng vẫn giữ chỗ) cho tới khi cuộn qua nút ở tiêu đề */
+  .case-layout__side {
+    display: none;
+  }
+
+  .case-layout__back {
+    margin-bottom: var(--space-2);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s;
+  }
+
+  .case-layout__back.is-visible {
+    opacity: 1;
+    visibility: visible;
   }
 
   /* Nội dung Markdown được tạo ra lúc build nên cần :global để style tác động tới nó */
@@ -265,6 +317,7 @@ const { title, role, scope, tags, description } = entry.data;
 
     /* Cột sidebar dính: phải đặt sticky ở chính cột (cao bằng cả bài), không phải ở mục lục bên trong */
     .case-layout__side {
+      display: block;
       position: sticky;
       top: calc(var(--nav-height) + var(--space-4));
     }
