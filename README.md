@@ -48,11 +48,12 @@ portfolio/
 |---|---|
 | Câu định vị ở đầu trang chủ | `src/pages/index.astro` (chỗ có chú thích `THAY`) |
 | Nội dung case study Aura | `content/work/aura.md` |
-| Tên, vai trò, tag, mô tả trên thẻ dự án | Phần đầu (giữa hai dòng `---`) của file `.md` tương ứng |
+| Tên, tag, mô tả trên thẻ dự án | Phần đầu (giữa hai dòng `---`) của file `.md` tương ứng |
+| Ảnh cover của thẻ | Bỏ ảnh vào `public/images/work/` (hoặc `public/images/fun/`), rồi thêm `cover: /images/work/ten-anh.jpg` và `coverAlt: mô tả ảnh` vào phần đầu file `.md`. Khung cover có tỉ lệ 487 × 314, ảnh tự cắt cho vừa |
 | Thêm dự án mới | Tạo thêm file `.md` trong `content/work/` hoặc `content/fun/` |
 | Thứ tự thẻ | Số `order` trong file `.md` (nhỏ đứng trước) |
 | Ẩn dự án tạm thời | Thêm `draft: true` vào phần đầu file `.md` |
-| Cho thẻ Fun bấm được | Thêm `link: https://...` vào file `.md` của dự án đó |
+| Cho thẻ Fun bấm được (mặc định không bấm được) | Thêm `link: https://...` vào file `.md` của dự án đó |
 | Trang About và 4 bước Process | `content/pages/about.md` |
 | Email, mạng xã hội | `src/components/Footer.astro` |
 | Link trên thanh điều hướng | `src/components/Nav.astro` |
