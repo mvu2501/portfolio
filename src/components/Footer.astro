@@ -35,8 +35,9 @@ const year = new Date().getFullYear();
 
 <style>
   .footer {
-    border-top: 1px solid var(--color-border);
-    padding-block: var(--space-5);
+    border-top: 1px solid var(--color-hairline);
+    padding-top: var(--space-5);
+    padding-bottom: 22px;
   }
 
   .footer__inner {
@@ -46,15 +47,15 @@ const year = new Date().getFullYear();
   }
 
   .footer__email {
-    font-size: var(--text-xl);
-    font-weight: 600;
-    letter-spacing: -0.02em;
+    font-size: var(--text-heading);
+    letter-spacing: var(--tracking-display);
     text-decoration: none;
     word-break: break-all;
   }
 
   .footer__email:hover {
-    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 6px;
   }
 
   .footer__socials {
@@ -67,11 +68,12 @@ const year = new Date().getFullYear();
   }
 
   .footer__socials a {
+    font-size: var(--text-sm);
     color: var(--color-text-muted);
   }
 
   .footer__socials a:hover {
-    color: var(--color-accent);
+    color: var(--color-text);
   }
 
   .footer__meta {
@@ -88,6 +90,10 @@ const year = new Date().getFullYear();
   }
 
   @media (min-width: 48rem) {
+    .footer {
+      padding-top: 126px;
+    }
+
     .footer__inner {
       flex-direction: row;
       justify-content: space-between;

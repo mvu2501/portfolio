@@ -102,17 +102,21 @@ const { title, role, scope, tags, description } = entry.data;
   .case-header__back {
     display: inline-block;
     margin-bottom: var(--space-3);
-    font-size: var(--text-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     color: var(--color-text-muted);
     text-decoration: none;
   }
 
   .case-header__back:hover {
-    color: var(--color-accent);
+    color: var(--color-text);
   }
 
   .case-header__title {
-    font-size: var(--text-hero);
+    font-size: var(--text-display);
+    line-height: 1.22;
     margin-bottom: var(--space-2);
   }
 
@@ -132,16 +136,17 @@ const { title, role, scope, tags, description } = entry.data;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: var(--spacing-xs);
   }
 
   .case-header__tags li {
-    font-size: 0.8rem;
-    padding: 0.2rem 0.7rem;
-    border-radius: 999px;
-    background: var(--color-accent-soft);
-    color: var(--color-accent);
-    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: var(--radius-xs);
+    background: var(--color-tint);
+    font-family: var(--font-mono);
+    font-size: 0.65625rem; /* 10.5px */
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 
   .case-layout {
@@ -155,10 +160,10 @@ const { title, role, scope, tags, description } = entry.data;
 
   /* Nội dung Markdown được tạo ra lúc build nên cần :global để style tác động tới nó */
   .case-body :global(h2) {
-    font-size: var(--text-xl);
+    font-size: var(--text-heading);
     margin-top: var(--space-5);
     padding-top: var(--space-3);
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--color-hairline);
   }
 
   .case-body :global(h2:first-child) {
@@ -172,15 +177,19 @@ const { title, role, scope, tags, description } = entry.data;
   }
 
   .case-body :global(img) {
-    border-radius: var(--radius);
+    border-radius: var(--radius-none);
     margin-block: var(--space-3);
+  }
+
+  .case-body :global(a) {
+    text-underline-offset: 3px;
   }
 
   /* Ghi chú hướng dẫn (dòng bắt đầu bằng ">") */
   .case-body :global(blockquote) {
     margin: 0 0 var(--space-3);
-    padding: var(--space-1) var(--space-2);
-    border-left: 3px solid var(--color-border);
+    padding: var(--spacing-xs) var(--space-2);
+    border-left: 1px solid var(--color-tint-strong);
     color: var(--color-text-muted);
     font-size: var(--text-sm);
   }
@@ -200,16 +209,16 @@ const { title, role, scope, tags, description } = entry.data;
   .case-body :global(.outcome-card) {
     padding: var(--space-3);
     background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
+    border-radius: var(--radius-none);
   }
 
   .case-body :global(.outcome-card h3) {
     margin-top: 0;
-    font-size: var(--text-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-accent);
+    color: var(--color-text);
   }
 
   .case-body :global(.outcome-card blockquote) {

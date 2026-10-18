@@ -41,7 +41,6 @@ const sections = [
     text-decoration: none;
     color: var(--color-text-muted);
     font-size: var(--text-sm);
-    font-weight: 500;
     transition: color 0.15s;
   }
 
@@ -49,10 +48,10 @@ const sections = [
     color: var(--color-text);
   }
 
-  /* Mục đang đọc: script thêm aria-current="true" */
+  /* Mục đang đọc: script thêm aria-current="true" → chữ mực đậm hơn + vạch đỏ gạch */
   .toc a[aria-current='true'] {
-    color: var(--color-accent);
-    font-weight: 700;
+    color: var(--color-text);
+    font-weight: 500;
   }
 
   /* --- Sidebar (desktop) --- */
@@ -63,19 +62,19 @@ const sections = [
   .toc--sidebar ul {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
-    border-left: 1px solid var(--color-border);
+    gap: var(--spacing-xxs);
+    border-left: 1px solid var(--color-tint-strong);
   }
 
   .toc--sidebar a {
     display: block;
-    padding: 0.4rem 0 0.4rem var(--space-2);
+    padding: var(--spacing-xs) 0 var(--spacing-xs) var(--space-2);
     margin-left: -1px;
-    border-left: 2px solid transparent;
+    border-left: 1px solid transparent;
   }
 
   .toc--sidebar a[aria-current='true'] {
-    border-left-color: var(--color-accent);
+    border-left-color: var(--color-hairline);
   }
 
   /* --- Thanh ngang (mobile) --- */
@@ -84,7 +83,7 @@ const sections = [
     top: var(--nav-height);
     z-index: 40;
     background: var(--color-bg);
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-tint-strong);
     overflow-x: auto;
     scrollbar-width: none;
   }
@@ -96,18 +95,18 @@ const sections = [
   .toc--bar ul {
     display: flex;
     gap: var(--space-3);
-    padding: 0.75rem var(--space-3);
+    padding: var(--spacing-sm) var(--space-3);
     width: max-content;
   }
 
   .toc--bar a {
     white-space: nowrap;
-    padding-bottom: 0.2rem;
-    border-bottom: 2px solid transparent;
+    padding-bottom: var(--spacing-xxs);
+    border-bottom: 1px solid transparent;
   }
 
   .toc--bar a[aria-current='true'] {
-    border-bottom-color: var(--color-accent);
+    border-bottom-color: var(--color-hairline);
   }
 
   @media (min-width: 64rem) {

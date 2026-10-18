@@ -67,6 +67,10 @@ portfolio/
 - Dòng bắt đầu bằng `> **Hướng dẫn ...` là ghi chú nhắc việc, xóa khi viết xong.
 - Chèn ảnh: bỏ ảnh vào `public/images/` rồi viết `![Mô tả ảnh](/images/ten-anh.png)`.
 
+## Style giao diện
+Giao diện theo file style tham khảo (Yinyee Ho): nền kem `#FBF8F1`, chữ mực `#1F1D1A`, font **Inter Tight** (chữ thường) và **JetBrains Mono** (nút, nhãn, tag), góc vuông, đường kẻ đỏ gạch `#B7372B`, chỉ thanh Nav có bóng đổ. Mọi giá trị nằm ở khối `:root` trong `src/styles/global.css`.
+Hai chỗ khác với file style gốc, có chủ ý: chữ phụ dùng `#6B6559` (đạt độ tương phản 4.5:1 thay vì `#8C8578`), và nội dung vẫn có chiều rộng tối đa 72rem thay vì tràn hết màn hình.
+
 ## Ngôn ngữ
 Nội dung hiển thị trên site viết bằng **tiếng Anh**. Các chú thích trong code và file này viết bằng tiếng Việt để bạn dễ hiểu.
 

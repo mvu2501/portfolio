@@ -1,41 +1,70 @@
 /*
   global.css – "bảng màu và quy tắc chung" cho cả website.
-  Muốn đổi màu/khoảng cách toàn site: chỉ sửa các biến trong khối :root bên dưới.
+  Theo style trong style.md (Yinyee Ho): nền kem ấm, chữ mực, font Inter Tight + JetBrains Mono,
+  góc vuông, gần như không đổ bóng. Muốn đổi màu/khoảng cách toàn site: sửa các biến trong :root.
 */
 
 :root {
   /* Màu sắc */
-  --color-bg: #f7f3ec;          /* nền kem ấm */
-  --color-surface: #fffdf8;     /* nền thẻ, sáng hơn nền chính một chút */
-  --color-text: #1f1b16;        /* chữ chính */
-  --color-text-muted: #6b6258;  /* chữ phụ, mô tả */
-  --color-border: #e3dccf;      /* đường viền mảnh */
-  --color-accent: #b5532f;      /* màu nhấn (link, mục đang đọc) */
-  --color-accent-soft: #f1ddd2; /* nền nhấn nhạt (tag) */
+  --color-bg: #fbf8f1;            /* nền kem (canvas) */
+  --color-surface: #f3f1ea;       /* nền thẻ */
+  --color-surface-raised: #ebe9e2;/* nền thẻ khi hover */
+  --color-text: #1f1d1a;          /* mực: chữ chính, nút, tiêu đề */
+  --color-info: #2e2a24;          /* chữ nhãn, link điều hướng */
+  --color-text-muted: #6b6559;    /* chữ phụ (đã chỉnh đậm hơn #8C8578 để đủ độ tương phản 4.5:1) */
+  --color-hairline: #b7372b;      /* đỏ gạch: chỉ dùng cho đường kẻ 1px và vạch đánh dấu */
+  --color-tint: rgba(31, 29, 26, 0.07);      /* nền nút, tag */
+  --color-tint-strong: rgba(31, 29, 26, 0.14);
 
   /* Font */
-  --font-sans: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', Monaco, 'Courier New', monospace;
 
-  /* Cỡ chữ (tự co giãn theo màn hình) */
-  --text-sm: 0.875rem;
-  --text-base: 1.0625rem;
-  --text-lg: 1.25rem;
-  --text-xl: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
-  --text-hero: clamp(2rem, 1.2rem + 3.6vw, 3.5rem);
+  /* Cỡ chữ */
+  --text-display: 1.75rem;    /* 28px mobile → 46px từ 768px */
+  --text-heading: 1.5rem;     /* 24px mobile → 34px từ 768px */
+  --text-lg: 1.125rem;
+  --text-base: 1rem;          /* 16px */
+  --text-sm: 0.875rem;        /* 14px */
+  --text-mono: 0.6875rem;     /* 11px, chữ mono của nút/nhãn/tag */
+  --tracking-display: -0.025em;
 
-  /* Khoảng cách */
-  --space-1: 0.5rem;
-  --space-2: 1rem;
-  --space-3: 1.5rem;
-  --space-4: 2.5rem;
-  --space-5: 4rem;
-  --space-6: 7rem;
+  /* Thang khoảng cách theo style: 4 / 8 / 12 / 16 / 20 / 24 / 28 / 32 / 36 / 48 */
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 20px;
+  --spacing-xl: 24px;
+  --spacing-xxl: 28px;
+  --spacing-xxxl: 32px;
+  --spacing-section: 36px;
+  --spacing-band: 48px;
+
+  /* Tên ngắn đang dùng trong các component */
+  --space-1: var(--spacing-xs);
+  --space-2: var(--spacing-md);
+  --space-3: var(--spacing-xl);
+  --space-4: var(--spacing-xxxl);
+  --space-5: var(--spacing-band);
+  --space-6: 96px; /* khoảng cách giữa các khối lớn trên desktop (ngoại lệ so với style, theo yêu cầu "khoảng trắng rộng") */
 
   /* Bố cục */
   --content-width: 72rem;  /* chiều rộng tối đa của nội dung */
   --reading-width: 42rem;  /* chiều rộng tối ưu cho đoạn văn dài */
-  --radius: 0.75rem;
+  --radius-none: 0;
+  --radius-xs: 4px;        /* nút, tag */
   --nav-height: 4rem;
+
+  /* Bóng đổ: chỉ dùng cho thanh Nav */
+  --shadow-nav: 0 0 0 1px rgba(31, 29, 26, 0.06), 0 8px 24px 0 rgba(60, 40, 10, 0.08);
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --text-display: 2.875rem;  /* 46px */
+    --text-heading: 2.125rem;  /* 34px */
+  }
 }
 
 /* ---------- Reset nhẹ ---------- */
@@ -57,7 +86,8 @@ body {
   color: var(--color-text);
   font-family: var(--font-sans);
   font-size: var(--text-base);
-  line-height: 1.65;
+  font-weight: 400;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -74,8 +104,9 @@ a {
 h1,
 h2,
 h3 {
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: var(--tracking-display);
   margin: 0 0 var(--space-2);
 }
 
@@ -84,7 +115,7 @@ p {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-text);
   outline-offset: 3px;
 }
 
@@ -100,43 +131,48 @@ p {
   padding-block: var(--space-5);
 }
 
+/* Nhãn nhỏ viết hoa kiểu mono (Selected works, Fun projects, Contact...) */
 .eyebrow {
-  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.14em;
   color: var(--color-text-muted);
   margin-bottom: var(--space-2);
 }
 
-/* Nút bấm */
+/* Nút: chữ mono nhỏ viết hoa, nền mực nhạt, bo 4px */
 .button {
-  display: inline-block;
-  padding: 0.7rem 1.25rem;
-  border-radius: 999px;
-  border: 1px solid var(--color-text);
-  background: var(--color-text);
-  color: var(--color-bg);
-  font-weight: 600;
-  font-size: var(--text-sm);
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: var(--color-tint);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.15s;
 }
 
 .button:hover {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
+  background: var(--color-tint-strong);
 }
 
+/* Nút phụ: nền trong suốt, chữ phụ */
 .button--ghost {
   background: transparent;
-  color: var(--color-text);
+  color: var(--color-text-muted);
 }
 
 .button--ghost:hover {
-  background: var(--color-text);
-  border-color: var(--color-text);
-  color: var(--color-bg);
+  background: var(--color-tint);
+  color: var(--color-text);
 }
 
 @media (min-width: 48rem) {
@@ -146,6 +182,10 @@ p {
 
   .section {
     padding-block: var(--space-6);
+  }
+
+  .button {
+    min-height: 28px;
   }
 }
 

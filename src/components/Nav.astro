@@ -31,7 +31,7 @@ import { resumeUrl } from '../config';
           <li><a class="nav__link" href={link.href}>{link.label}</a></li>
         ))}
         <li>
-          <a class="button button--ghost nav__resume" href={resumeUrl} target="_blank" rel="noopener">
+          <a class="button nav__resume" href={resumeUrl} target="_blank" rel="noopener">
             Resume
           </a>
         </li>
@@ -46,7 +46,7 @@ import { resumeUrl } from '../config';
     top: 0;
     z-index: 50;
     background: var(--color-bg);
-    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-nav);
   }
 
   .nav__inner {
@@ -57,21 +57,24 @@ import { resumeUrl } from '../config';
   }
 
   .nav__logo {
-    font-weight: 700;
+    font-weight: 500;
     font-size: var(--text-lg);
     letter-spacing: -0.02em;
     text-decoration: none;
   }
 
+  /* Nút Menu (mobile): cùng kiểu với nút chung */
   .nav__toggle {
-    font: inherit;
-    font-size: var(--text-sm);
-    font-weight: 600;
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--color-text);
-    border-radius: 999px;
-    background: transparent;
+    min-height: 32px;
+    padding: 6px 12px;
+    border: 0;
+    border-radius: var(--radius-xs);
+    background: var(--color-tint);
     color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     cursor: pointer;
   }
 
@@ -83,7 +86,7 @@ import { resumeUrl } from '../config';
     left: 0;
     right: 0;
     background: var(--color-bg);
-    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-nav);
     padding: var(--space-2) var(--space-3) var(--space-3);
   }
 
@@ -97,22 +100,25 @@ import { resumeUrl } from '../config';
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: var(--space-1);
   }
 
   .nav__link {
     display: block;
-    padding: 0.5rem 0;
+    padding: var(--spacing-sm) 0;
     text-decoration: none;
-    font-weight: 500;
+    font-size: var(--text-sm);
+    letter-spacing: -0.005em;
+    color: var(--color-info);
   }
 
   .nav__link:hover {
-    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 4px;
   }
 
   .nav__resume {
-    text-align: center;
+    justify-content: center;
   }
 
   /* Desktop: ẩn nút Menu, link nằm ngang bên phải */
@@ -124,7 +130,7 @@ import { resumeUrl } from '../config';
     .nav__menu {
       display: block;
       position: static;
-      border: 0;
+      box-shadow: none;
       padding: 0;
       background: transparent;
     }
