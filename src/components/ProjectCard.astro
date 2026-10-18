@@ -1,0 +1,97 @@
+---
+// ProjectCard.astro – một thẻ dự án (tên, vai trò, phạm vi, tag, mô tả).
+// Dùng cho cả Selected works và Fun projects; Fun dùng bản nhỏ hơn (compact).
+interface Props {
+  title: string;
+  role: string;
+  scope: string;
+  tags: string[];
+  description: string;
+  href?: string;       // nếu có: cả thẻ bấm được
+  external?: boolean;  // true: mở link ở tab mới
+  compact?: boolean;   // true: thẻ nhỏ hơn
+}
+
+const { title, role, scope, tags, description, href, external = false, compact = false } = Astro.props;
+const Tag = href ? 'a' : 'div';
+const linkProps = href
+  ? { href, ...(external ? { target: '_blank', rel: 'noopener' } : {}) }
+  : {};
+---
+
+<Tag class:list={['card', { 'card--compact': compact, 'card--link': !!href }]} {...linkProps}>
+  <h3 class="card__title">{title}</h3>
+  <p class="card__meta">{role} · {scope}</p>
+  <p class="card__desc">{description}</p>
+  {tags.length > 0 && (
+    <ul class="card__tags">
+      {tags.map((tag) => <li>{tag}</li>)}
+    </ul>
+  )}
+</Tag>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+
+  .card--link:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+
+  .card__title {
+    font-size: var(--text-xl);
+    margin-bottom: 0.25rem;
+  }
+
+  .card__meta {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  .card__desc {
+    flex: 1;
+  }
+
+  .card__tags {
+    list-style: none;
+    margin: var(--space-2) 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .card__tags li {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+    font-weight: 500;
+  }
+
+  /* Bản nhỏ cho Fun projects */
+  .card--compact {
+    padding: var(--space-2);
+  }
+
+  .card--compact .card__title {
+    font-size: var(--text-lg);
+  }
+
+  .card--compact .card__desc {
+    font-size: var(--text-sm);
+  }
+</style>

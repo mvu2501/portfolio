@@ -1,22 +1,117 @@
 ---
-// Trang chủ TẠM THỜI – chỉ để kiểm tra màu, font, nút. Sẽ thay hoàn toàn ở Bước 5.
+// Trang chủ. Thứ tự từ trên xuống: Hero → khung duck-football → Selected works → Fun projects.
+// (Nav và Footer đã có sẵn trong BaseLayout.)
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+
+// Lấy các file .md trong content/work và content/fun, bỏ dự án draft, xếp theo "order".
+const byOrder = (a: { data: { order: number } }, b: { data: { order: number } }) =>
+  a.data.order - b.data.order;
+const works = (await getCollection('work', ({ data }) => !data.draft)).sort(byOrder);
+const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrder);
 ---
 
 <BaseLayout>
-  <section class="section">
+  <!-- 1. HERO -->
+  <section class="hero section">
     <div class="container">
-      <p class="eyebrow">Kiểm tra giao diện</p>
-      <h1 style="font-size: var(--text-hero); max-width: 18ch;">
+      <!-- THAY: câu định vị của bạn (1–2 dòng) -->
+      <h1 class="hero__title">
         Senior Product Designer · 10+ năm làm sản phẩm fintech và tài sản số
       </h1>
-      <p style="color: var(--color-text-muted); max-width: var(--reading-width);">
-        Đây là trang thử nghiệm: nền kem, chữ Hanken Grotesk, khoảng trắng rộng.
-      </p>
-      <p style="display: flex; gap: var(--space-1); flex-wrap: wrap;">
-        <a class="button" href="#">Xem Work</a>
-        <a class="button button--ghost" href="#">Nút phụ</a>
-      </p>
+      <a class="button" href="#work">Xem Work</a>
+    </div>
+  </section>
+
+  <!-- 2. KHỐI INTERACTIVE: khung trống để gắn trò chơi sau -->
+  <section class="container interactive">
+    <div id="duck-football" class="interactive__frame">
+      <!-- XÓA dòng chữ này khi gắn trò chơi vào #duck-football -->
+      <span>Khung trò chơi duck-football (đang để trống)</span>
+    </div>
+  </section>
+
+  <!-- 3. SELECTED WORKS -->
+  <section id="work" class="section">
+    <div class="container">
+      <p class="eyebrow">Selected works</p>
+      <div class="grid grid--work">
+        {works.map((w) => (
+          <ProjectCard {...w.data} href={`/work/${w.id}`} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. FUN PROJECTS -->
+  <section id="fun" class="section section--tight">
+    <div class="container">
+      <p class="eyebrow">Fun projects</p>
+      <div class="grid grid--fun">
+        {funs.map((f) => (
+          <ProjectCard
+            {...f.data}
+            compact
+            href={f.data.link}
+            external={!!f.data.link}
+          />
+        ))}
+      </div>
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .hero {
+    padding-bottom: var(--space-4);
+  }
+
+  .hero__title {
+    font-size: var(--text-hero);
+    max-width: 20ch;
+    margin-bottom: var(--space-3);
+  }
+
+  .interactive {
+    margin-bottom: var(--space-2);
+  }
+
+  .interactive__frame {
+    min-height: 18rem;
+    display: grid;
+    place-items: center;
+    border: 1.5px dashed var(--color-border);
+    border-radius: var(--radius);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    text-align: center;
+    padding: var(--space-3);
+  }
+
+  .section--tight {
+    padding-top: 0;
+  }
+
+  .grid {
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 40rem) {
+    .grid--work {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid--fun {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .grid--fun {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
