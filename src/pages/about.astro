@@ -1,0 +1,100 @@
+---
+// Trang About (/about). Nội dung lấy từ content/pages/about.md:
+//  - phần thân (đoạn giới thiệu)  → hiện ở khối đầu trang
+//  - process trong phần thông tin → hiện ở khối Process
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const about = await getEntry('pages', 'about');
+if (!about) throw new Error('Thiếu file content/pages/about.md');
+const { Content } = await render(about);
+const { title, process } = about.data;
+
+// THAY: file resume thật đặt tại public/resume.pdf
+const resumeHref = '/resume.pdf';
+---
+
+<BaseLayout title={`${title} · vunguyen.me`}>
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">{title}</p>
+      <div class="about__intro">
+        <Content />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <p class="eyebrow">Process</p>
+      <ol class="process">
+        {process.map((step, i) => (
+          <li class="process__step">
+            <span class="process__num">{String(i + 1).padStart(2, '0')}</span>
+            <h2 class="process__name">{step.name}</h2>
+            <p class="process__text">{step.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <a class="button" href={resumeHref} download>Tải Resume</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section--tight {
+    padding-top: 0;
+  }
+
+  .about__intro {
+    max-width: var(--reading-width);
+    font-size: var(--text-lg);
+  }
+
+  .process {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .process__step {
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .process__num {
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+
+  .process__name {
+    font-size: var(--text-xl);
+    margin: 0.25rem 0 var(--space-1);
+  }
+
+  .process__text {
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  @media (min-width: 40rem) {
+    .process {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .process {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

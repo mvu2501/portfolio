@@ -28,4 +28,16 @@ const fun = defineCollection({
   schema: projectSchema,
 });
 
-export const collections = { work, fun };
+// Các trang văn bản thường (hiện tại: About).
+// Phần thông tin đầu file gồm tiêu đề và 4 bước Process; phần thân là đoạn giới thiệu.
+const pages = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './content/pages' }),
+  schema: z.object({
+    title: z.string(),
+    process: z
+      .array(z.object({ name: z.string(), text: z.string() }))
+      .default([]),
+  }),
+});
+
+export const collections = { work, fun, pages };
