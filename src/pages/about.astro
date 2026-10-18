@@ -4,14 +4,12 @@
 //  - process trong phần thông tin → hiện ở khối Process
 import { getEntry, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { resumeUrl } from '../config';
 
 const about = await getEntry('pages', 'about');
 if (!about) throw new Error('Thiếu file content/pages/about.md');
 const { Content } = await render(about);
 const { title, process } = about.data;
-
-// THAY: file resume thật đặt tại public/resume.pdf
-const resumeHref = '/resume.pdf';
 ---
 
 <BaseLayout title={`${title} · vunguyen.me`}>
@@ -41,7 +39,7 @@ const resumeHref = '/resume.pdf';
 
   <section class="section section--tight">
     <div class="container">
-      <a class="button" href={resumeHref} download>Tải Resume</a>
+      <a class="button" href={resumeUrl} target="_blank" rel="noopener">View Resume</a>
     </div>
   </section>
 </BaseLayout>

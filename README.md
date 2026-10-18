@@ -20,10 +20,9 @@ Tắt server: `Ctrl + C`. Kiểm tra bản build: `npm run build` (kết quả n
 portfolio/
 ├── content/                  ← NỘI DUNG của bạn (Markdown) – sửa ở đây
 │   ├── work/aura.md          ← case study Aura (mỗi file .md = một dự án + một trang)
-│   ├── fun/duck-football.md  ← dự án nhỏ (chỉ hiện thẻ ở trang chủ)
+│   ├── fun/sample-project.md ← dự án nhỏ (chỉ hiện thẻ ở trang chủ)
 │   └── pages/about.md        ← nội dung trang About (giới thiệu + 4 bước Process)
-├── public/                   ← file giữ nguyên, truy cập thẳng bằng URL
-│   └── resume.pdf            ← (CHƯA CÓ) bỏ CV của bạn vào đây với đúng tên này
+├── public/                   ← file giữ nguyên, truy cập thẳng bằng URL (hiện để trống)
 ├── src/
 │   ├── pages/                ← mỗi file = một trang web
 │   │   ├── index.astro       ← trang chủ "/"
@@ -34,6 +33,7 @@ portfolio/
 │   │   ├── Footer.astro      ← chân trang (email, mạng xã hội, lên đầu trang)
 │   │   ├── ProjectCard.astro ← thẻ dự án
 │   │   └── CaseToc.astro     ← mục lục case study (sidebar + thanh ngang mobile)
+│   ├── config.ts             ← link Resume (Google Drive), dùng chung cho Nav và About
 │   ├── layouts/BaseLayout.astro ← khung chung mọi trang (font, CSS, Nav, Footer)
 │   ├── styles/global.css     ← màu, font, khoảng cách, nút (biến CSS ở khối :root)
 │   ├── plugins/rehype-outcome.mjs ← gói mục Outcome thành 4 khung (không cần sửa)
@@ -58,8 +58,8 @@ portfolio/
 | Link trên thanh điều hướng | `src/components/Nav.astro` |
 | Màu sắc, khoảng cách | `src/styles/global.css`, khối `:root` |
 | Tiêu đề/mô tả hiện trên Google | `src/layouts/BaseLayout.astro` |
-| CV | Bỏ file vào `public/resume.pdf` |
-| Trò chơi duck-football | Gắn vào `<div id="duck-football">` trong `src/pages/index.astro` |
+| Link Resume (nút Resume ở Nav và About) | `src/config.ts`, biến `resumeUrl` |
+| Bật lại khung duck-football | Trong `src/pages/index.astro`, bỏ dấu comment ở khối "KHỐI INTERACTIVE" và thêm CSS `.interactive` / `.interactive__frame` (khung đường nét đứt, cao ~18rem) |
 
 ### Lưu ý khi viết case study
 - Giữ nguyên **6 tiêu đề `##`**: Overview, Problem, Research, Design Decisions, Outcome, Reflections. Mục lục dùng tên này để nhảy tới đúng chỗ.
@@ -67,7 +67,10 @@ portfolio/
 - Dòng bắt đầu bằng `> **Hướng dẫn ...` là ghi chú nhắc việc, xóa khi viết xong.
 - Chèn ảnh: bỏ ảnh vào `public/images/` rồi viết `![Mô tả ảnh](/images/ten-anh.png)`.
 
+## Ngôn ngữ
+Nội dung hiển thị trên site viết bằng **tiếng Anh**. Các chú thích trong code và file này viết bằng tiếng Việt để bạn dễ hiểu.
+
 ## Chưa làm (cố ý, theo yêu cầu)
 - Deploy lên internet.
-- Code trò chơi duck-football (mới có khung trống).
-- File `public/resume.pdf` và nội dung thật (đang là placeholder, tìm chữ `THAY`).
+- Trò chơi duck-football (khung đang tạm tắt trên trang chủ).
+- Nội dung thật (đang là placeholder, tìm chữ `THAY` trong code và `[Replace: ...]` trong nội dung).

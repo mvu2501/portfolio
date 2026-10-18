@@ -1,5 +1,6 @@
 ---
-// Trang chủ. Thứ tự từ trên xuống: Hero → khung duck-football → Selected works → Fun projects.
+// Trang chủ. Thứ tự từ trên xuống: Hero → Selected works → Fun projects.
+// (Khung trò chơi duck-football đang tạm tắt, xem đoạn chú thích bên dưới để bật lại.)
 // (Nav và Footer đã có sẵn trong BaseLayout.)
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -18,21 +19,20 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
     <div class="container">
       <!-- THAY: câu định vị của bạn (1–2 dòng) -->
       <h1 class="hero__title">
-        Senior Product Designer · 10+ năm làm sản phẩm fintech và tài sản số
+        Senior Product Designer · 10+ years building fintech and digital asset products
       </h1>
-      <a class="button" href="#work">Xem Work</a>
+      <a class="button" href="#work">View work</a>
     </div>
   </section>
 
-  <!-- 2. KHỐI INTERACTIVE: khung trống để gắn trò chơi sau -->
+  <!-- KHỐI INTERACTIVE (đang tắt). Khi có trò chơi: bỏ dấu comment ở khối dưới
+       và thêm lại CSS .interactive (xem README).
   <section class="container interactive">
-    <div id="duck-football" class="interactive__frame">
-      <!-- XÓA dòng chữ này khi gắn trò chơi vào #duck-football -->
-      <span>Khung trò chơi duck-football (đang để trống)</span>
-    </div>
+    <div id="duck-football" class="interactive__frame"></div>
   </section>
+  -->
 
-  <!-- 3. SELECTED WORKS -->
+  <!-- 2. SELECTED WORKS -->
   <section id="work" class="section">
     <div class="container">
       <p class="eyebrow">Selected works</p>
@@ -44,7 +44,7 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
     </div>
   </section>
 
-  <!-- 4. FUN PROJECTS -->
+  <!-- 3. FUN PROJECTS -->
   <section id="fun" class="section section--tight">
     <div class="container">
       <p class="eyebrow">Fun projects</p>
@@ -71,22 +71,6 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
     font-size: var(--text-hero);
     max-width: 20ch;
     margin-bottom: var(--space-3);
-  }
-
-  .interactive {
-    margin-bottom: var(--space-2);
-  }
-
-  .interactive__frame {
-    min-height: 18rem;
-    display: grid;
-    place-items: center;
-    border: 1.5px dashed var(--color-border);
-    border-radius: var(--radius);
-    color: var(--color-text-muted);
-    font-size: var(--text-sm);
-    text-align: center;
-    padding: var(--space-3);
   }
 
   .section--tight {

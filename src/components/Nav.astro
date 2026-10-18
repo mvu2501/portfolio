@@ -9,8 +9,7 @@ const links = [
   { label: 'About', href: '/about' },
 ];
 
-// THAY: file resume thật của bạn đặt tại public/resume.pdf
-const resumeHref = '/resume.pdf';
+import { resumeUrl } from '../config';
 ---
 
 <header class="nav">
@@ -26,13 +25,13 @@ const resumeHref = '/resume.pdf';
       <span class="nav__toggle-label">Menu</span>
     </button>
 
-    <nav id="nav-menu" class="nav__menu" aria-label="Điều hướng chính">
+    <nav id="nav-menu" class="nav__menu" aria-label="Main navigation">
       <ul class="nav__list">
         {links.map((link) => (
           <li><a class="nav__link" href={link.href}>{link.label}</a></li>
         ))}
         <li>
-          <a class="button button--ghost nav__resume" href={resumeHref} target="_blank" rel="noopener">
+          <a class="button button--ghost nav__resume" href={resumeUrl} target="_blank" rel="noopener">
             Resume
           </a>
         </li>

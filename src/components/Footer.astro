@@ -1,5 +1,5 @@
 ---
-// Footer.astro – chân trang: email, mạng xã hội, nút "Lên đầu trang".
+// Footer.astro – chân trang: email, mạng xã hội, nút "Back to top".
 
 // THAY: email thật của bạn
 const email = 'hello@vunguyen.me';
@@ -17,7 +17,7 @@ const year = new Date().getFullYear();
 <footer class="footer">
   <div class="container footer__inner">
     <div>
-      <p class="eyebrow">Liên hệ</p>
+      <p class="eyebrow">Contact</p>
       <a class="footer__email" href={`mailto:${email}`}>{email}</a>
       <ul class="footer__socials">
         {socials.map((s) => (
@@ -27,7 +27,7 @@ const year = new Date().getFullYear();
     </div>
 
     <div class="footer__meta">
-      <a class="button button--ghost" href="#top">↑ Lên đầu trang</a>
+      <a class="button button--ghost" href="#top">↑ Back to top</a>
       <p class="footer__copy">© {year} vunguyen.me</p>
     </div>
   </div>
