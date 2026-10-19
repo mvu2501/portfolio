@@ -1,7 +1,7 @@
 ---
-// CaseNav.astro – điều hướng cuối case study: "Up next" (case study kế tiếp) và "Previous" (trước đó).
+// CaseNav.astro – điều hướng cuối case study: "Up next" (case study kế tiếp). Không hiện "Previous".
 // Thứ tự lấy theo số "order" trong phần đầu file .md (nhỏ đứng trước).
-// Chỉ hiện mục nào tồn tại: case study đầu tiên không có "Previous", cái cuối không có "Up next".
+// Case study cuối cùng không có "Up next" nên không hiện gì.
 interface Item {
   id: string;
   title: string;
@@ -13,26 +13,15 @@ interface Props {
 const { prev, next } = Astro.props;
 ---
 
-{(prev || next) && (
+{next && (
   <nav class="pager" aria-label="More case studies">
-    {next && (
-      <a class="pager__item" href={`/work/${next.id}`}>
-        <span class="pager__label">Up next</span>
-        <span class="pager__row">
-          <span class="pager__title">{next.title}</span>
-          <span class="pager__arrow" aria-hidden="true">→</span>
-        </span>
-      </a>
-    )}
-    {prev && (
-      <a class="pager__item" href={`/work/${prev.id}`}>
-        <span class="pager__label">Previous</span>
-        <span class="pager__row">
-          <span class="pager__title">{prev.title}</span>
-          <span class="pager__arrow" aria-hidden="true">←</span>
-        </span>
-      </a>
-    )}
+    <a class="pager__item" href={`/work/${next.id}`}>
+      <span class="pager__label">Up next</span>
+      <span class="pager__row">
+        <span class="pager__title">{next.title}</span>
+        <span class="pager__arrow" aria-hidden="true">→</span>
+      </span>
+    </a>
   </nav>
 )}
 
@@ -85,8 +74,4 @@ const { prev, next } = Astro.props;
     transform: translateX(4px);
   }
 
-  /* Mũi tên của "Previous" trượt sang trái */
-  .pager__item:last-child:not(:first-child):hover .pager__arrow {
-    transform: translateX(-4px);
-  }
 </style>

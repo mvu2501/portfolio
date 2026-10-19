@@ -297,6 +297,31 @@ const info = [
     margin-top: var(--space-4);
   }
 
+  /* Nhóm ảnh màn hình điện thoại đặt cạnh nhau (data-n = số ảnh) */
+  .case-body :global(.shots) {
+    display: grid;
+    grid-template-columns: repeat(var(--n, 3), 1fr);
+    gap: var(--space-2);
+    align-items: start;
+    margin: var(--space-4) 0;
+  }
+
+  .case-body :global(.shots[data-n='1']) { --n: 1; max-width: 16rem; }
+  .case-body :global(.shots[data-n='2']) { --n: 2; }
+  .case-body :global(.shots[data-n='3']) { --n: 3; }
+  .case-body :global(.shots[data-n='4']) { --n: 4; }
+
+  .case-body :global(.shots img) {
+    width: 100%;
+    height: auto;
+    margin: 0;
+    border-radius: var(--radius-xs);
+  }
+
+  @media (max-width: 39.99rem) {
+    .case-body :global(.shots[data-n='4']) { --n: 2; }
+  }
+
   /* Ghi chú nằm trong khung nền xám nhẹ (ví dụ: "We did not test with real clients…") */
   .case-body :global(.note) {
     margin: var(--space-5) 0 var(--space-3);
