@@ -336,3 +336,31 @@
 }
 /* Khi bấm mục lục, tiêu đề không bị thanh Nav và thanh mục lục che */
 .cs [id] { scroll-margin-top: calc(var(--nav-height) + 72px); }
+
+/* Nút "← Work": trên đầu tiêu đề, và (từ 1280px) trên menu dọc khi cuộn qua; kiểu giống bài Trading */
+.cs .back {
+  display: inline-block;
+  margin-bottom: 20px;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+}
+.cs .back:hover { color: var(--fg); }
+.cs .back--side { display: none; }
+@media (min-width: 80rem) {
+  .cs .back--side {
+    display: inline-block;
+    position: fixed;
+    left: 32px;
+    top: calc(var(--nav-height) + 8px);
+    margin: 0;
+    z-index: 30;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s;
+  }
+  .cs .back--side.is-visible { opacity: 1; visibility: visible; }
+}

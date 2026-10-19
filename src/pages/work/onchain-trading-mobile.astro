@@ -36,6 +36,7 @@ const tocSections = [
 
 <header class="hero">
   <div class="hero-text">
+    <a class="back back--head" href="/#work">← Work</a>
     <h1>Designing a Mobile Trade Flow for an On-Chain Trading Terminal</h1>
     <p class="lede">This is an on-chain trading terminal for new tokens. I designed the mobile app, which followed the desktop release on one shared design system. The focus of this case study is the trade flow: getting from a token to a filled order in as few taps as possible.</p>
     <dl class="meta">
@@ -50,6 +51,7 @@ const tocSections = [
 <figure class="cover"><img src="/images/work/onchain-trading-mobile/cover-v2.jpg" alt="Mobile app: Token Details with a Limit order and the safety check"></figure>
 
 <CaseToc variant="bar" sections={tocSections} />
+<a class="back back--side" href="/#work" tabindex="-1" aria-hidden="true">← Work</a>
 <CaseToc variant="sidebar" sections={tocSections} />
 
 <section>
@@ -305,6 +307,23 @@ const tocSections = [
   if(document.readyState==='complete') all();
 })();
 
+</script>
+
+<script>
+  // Nút "← Work" ở menu dọc: hiện khi nút ở phần tiêu đề đã cuộn khuất sau thanh Nav (giống bài Trading).
+  const headBack = document.querySelector('.back--head');
+  const sideBack = document.querySelector<HTMLElement>('.back--side');
+  if (headBack && sideBack) {
+    new IntersectionObserver(
+      ([entry]) => {
+        const show = !entry.isIntersecting;
+        sideBack.classList.toggle('is-visible', show);
+        sideBack.tabIndex = show ? 0 : -1;
+        sideBack.setAttribute('aria-hidden', String(!show));
+      },
+      { rootMargin: '-64px 0px 0px 0px' }
+    ).observe(headBack);
+  }
 </script>
 
 <script>
