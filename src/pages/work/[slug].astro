@@ -5,6 +5,7 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CaseToc from '../../components/CaseToc.astro';
 import CaseNav from '../../components/CaseNav.astro';
+import AmountInputDemo from '../../components/AmountInputDemo.astro';
 
 export async function getStaticPaths() {
   // Xếp theo "order" để biết case study nào đứng trước/sau (dùng cho Up next / Previous)
@@ -20,6 +21,10 @@ export async function getStaticPaths() {
 
 const { entry, prev, next } = Astro.props;
 const { Content } = await render(entry);
+// Chèn component tương tác vào giữa bài: trong .md ghi <!-- demo:amount-input -->, ở đây tách HTML tại dấu đó.
+const MARKER = '<!-- demo:amount-input -->';
+const html = entry.rendered?.html ?? '';
+const parts = html.includes(MARKER) ? html.split(MARKER) : null;
 const { title, role, year, platform, tags, description } = entry.data;
 // Khối thông tin dưới tiêu đề: chỉ hiện mục nào có dữ liệu
 const info = [
@@ -65,7 +70,15 @@ const info = [
 
     <div class="case-main">
       <article class="case-body">
-        <Content />
+        {parts ? (
+          <>
+            <Fragment set:html={parts[0]} />
+            <AmountInputDemo />
+            <Fragment set:html={parts[1]} />
+          </>
+        ) : (
+          <Content />
+        )}
       </article>
       <CaseNav prev={prev} next={next} />
     </div>
@@ -211,6 +224,78 @@ const info = [
 
   .case-body > :global(.wide) {
     max-width: none;
+  }
+
+  /* Mỗi thay đổi sau test: huy hiệu số + tên, cột Feedback | Decision */
+  .case-body :global(.change) {
+    margin: var(--space-5) 0 var(--space-3);
+  }
+
+  .case-body :global(.change__head) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+
+  .case-body :global(.change__num) {
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #0e766e;
+    color: #fff;
+    font-size: var(--text-sm);
+    font-weight: 500;
+  }
+
+  .case-body :global(h3.change__title) {
+    margin: 0;
+  }
+
+  .case-body :global(.change__cols) {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .case-body :global(.change__label) {
+    margin: 0 0 var(--spacing-xs);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .case-body :global(.change__quote) {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-style: italic;
+  }
+
+  .case-body :global(.change__who) {
+    margin: var(--spacing-xs) 0 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .case-body :global(.change__col--decision) {
+    padding-left: var(--space-2);
+    border-left: 2px solid #1eb5a4;
+  }
+
+  .case-body :global(.change__text) {
+    margin: 0;
+  }
+
+  @media (min-width: 40rem) {
+    .case-body :global(.change__cols) {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
   }
 
   /* Hàng 3 phần có ảnh minh họa (ảnh trên, chữ dưới) */

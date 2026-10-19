@@ -44,9 +44,31 @@ Every order type follows the same steps: choose Buy or Sell, choose a type, ente
 
 I tested version 1 with the PM, RMs, the trading team and engineers. Their feedback changed three things:
 
-1. **Amount input.** RMs said: “I want to know how much USDT to spend, not how many coins to buy.” I added a switch so users can type the amount in coin or USDT.
-2. **Limit price.** The trading team said: “I want to tap a quick % from the current price, not do the math or type a guess.” I added a group of % buttons, and tapping again adds up the %.
-3. **Price can move.** The trading team said: “The price can move before my order fills. I need a limit on the worst price I’ll get.” [TO CONFIRM: quote and who said it] I added a Max price for buy and a Min price for sell. If the limit is far from the market price, the screen warns that the order could fill at a much worse price, and the user can still place it.
+<div class="change">
+<div class="change__head"><span class="change__num">1</span><h3 class="change__title">Amount input</h3></div>
+<div class="change__cols">
+<div class="change__col"><p class="change__label">Feedback</p><blockquote class="change__quote">“I want to know how much USDT to spend, not how many coins to buy.”</blockquote><p class="change__who">— RMs</p></div>
+<div class="change__col change__col--decision"><p class="change__label">Decision</p><p class="change__text">Add a switch button, so users can type in coin or USDT.</p></div>
+</div>
+</div>
+
+<!-- demo:amount-input -->
+
+<div class="change">
+<div class="change__head"><span class="change__num">2</span><h3 class="change__title">Limit price</h3></div>
+<div class="change__cols">
+<div class="change__col"><p class="change__label">Feedback</p><blockquote class="change__quote">“I want to tap a quick % from the current price, not do the math or type a guess.”</blockquote><p class="change__who">— Trading team</p></div>
+<div class="change__col change__col--decision"><p class="change__label">Decision</p><p class="change__text">Add a group of % buttons. Tapping again adds up the %.</p></div>
+</div>
+</div>
+
+<div class="change">
+<div class="change__head"><span class="change__num">3</span><h3 class="change__title">Price can move</h3></div>
+<div class="change__cols">
+<div class="change__col"><p class="change__label">Feedback</p><blockquote class="change__quote">“The price can move before my order fills. I need a limit on the worst price I’ll get.”</blockquote><p class="change__who">— Trading team [TO CONFIRM: quote and who said it]</p></div>
+<div class="change__col change__col--decision"><p class="change__label">Decision</p><p class="change__text">Add a Max price for buy and a Min price for sell. If the limit is far from the market price, the screen warns that the order could fill at a much worse price, and the user can still place it.</p></div>
+</div>
+</div>
 
 We did not test with real clients. RMs and the trading team were the closest we had.
 
