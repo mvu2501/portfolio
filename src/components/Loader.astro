@@ -36,13 +36,7 @@ const words = text.split(' ').map((word) => ({
     --loader-stagger: 0.04s;    /* độ trễ giữa hai ký tự */
     --loader-leave: 2s;         /* thời điểm chữ bắt đầu bay lên */
     --loader-leave-duration: 0.4s;
-    --loader-font-size: 20px;   /* cỡ chữ trên mobile (tỉ lệ 28/46 so với 32px desktop) */
-  }
-
-  @media (min-width: 48rem) {
-    :root {
-      --loader-font-size: 32px; /* cỡ chữ trên desktop */
-    }
+    --loader-font-size: 18px;   /* cỡ chữ của dòng chữ loading (mobile và desktop) */
   }
 
   .loader {
