@@ -1,5 +1,5 @@
 ---
-// OrderTypesMockup.astro – mockup điện thoại tương tác "Order types" (phần Outcome, case study Trading).
+// OrderTypesMockup.astro – mockup điện thoại tương tác "Order types" (phần Design Decisions › Solution, case study Trading).
 // Chỉ Order form tương tác (src/scripts/order-types.ts dựng form bên trong #fh / #fb);
 // status bar, tab Spot/Convert/OTC, tiêu đề cặp, biểu đồ và thanh điều hướng giữ nguyên và `inert`.
 // Nguồn: order-types-mockup.html (Figma "Aura Mobile v1.1", node 47:34916).
@@ -9,8 +9,10 @@ import { CANDLES } from '../../lib/order-types/chart.ts';
 interface Props {
   /** Dùng để đặt id duy nhất khi có nhiều mockup trên một trang */
   id?: string;
+  /** Tiêu đề hiện phía trên khung xám */
+  title?: string;
 }
-const { id = 'order-types' } = Astro.props;
+const { id = 'order-types', title = 'Placing an order' } = Astro.props;
 
 const GRID = [8, 43, 78, 113, 148];
 const Y_LABELS: [number, number, string][] = [
@@ -22,7 +24,9 @@ const Y_LABELS: [number, number, string][] = [
 ];
 ---
 
-<div class="ot" data-order-types>
+<div class="ot wide" data-order-types>
+  <h4 class="ot-title">{title}</h4>
+  <div class="ot-panel">
   <div class="stage" data-ot="stage">
     <div class="phone" data-ot="phone" role="group" aria-label="Aura Trade, Spot screen prototype">
       <div class="screen" data-ot="screen">
@@ -74,6 +78,7 @@ const Y_LABELS: [number, number, string][] = [
     </div>
   </div>
   <p class="ot-cap">Interactive prototype. Switch Buy/Sell, the order type, Stop type and Time in force, or edit the form.</p>
+  </div>
 </div>
 
 <script>

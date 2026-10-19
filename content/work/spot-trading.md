@@ -66,49 +66,36 @@ I tested version 1 with the PM, RMs, the trading team and engineers. Their feedb
 
 ## Design Decisions
 
-### 1. Order types as tabs, not a dropdown
+### Trade-offs
+
+#### 1. Order types as tabs, not a dropdown
 
 - **Options considered:** one dropdown with every order type, or separate tabs.
 - **Why tabs:** users see the main options and switch in one tap. Each type has its own form, so the screen shows only the fields that matter.
 - **Pushback:** engineers wanted all types in a dropdown, with a “Coming soon” badge on types not available yet. I showed them that separate tabs let them build each type later.
 - **Trade-off:** tabs take more width than a dropdown, so only a few types fit. The rest go under one Stop order tab. If we support more advanced order types later, we may need to rename it.
 
-### 2. Stop orders get their own tab
+#### 2. Stop orders get their own tab
 
 - **Options considered:** keep Stop-limit and Stop-market inside the Limit menu, or give them their own tab.
 - **Why a separate tab:** they were planned for a later release. In their own tab, users can find them easily and engineers can build them separately.
 - **Trade-off:** one more tab on a small screen, and stop orders still need one extra tap to choose.
 
-### 3. Full ticket on the Trade screen
+#### 3. Full ticket on the Trade screen
 
 - **Options considered:** a fixed Buy and Sell bar that opens a bottom sheet, or the full ticket on the Trade screen. [TO CONFIRM: did the team consider the bottom sheet at that time?]
 - **Why the full ticket:** the chart is simple and has no indicators, so it is not the main focus. That leaves room for the ticket. A bottom sheet would add a step and cover the price, and clients need to see the price when they set a limit or stop order.
 - **Trade-off:** a longer page that can feel crowded for new users. Market is the default, so a new user sees one amount field and one button.
 
-## Outcome
+---
 
-### Product
-
-I designed the full Spot trading feature: placing orders, open orders with pause, resume and cancel, and order history. I handed it off to engineering, and the first release shipped with Market and Limit. I am now adapting the layout for desktop. [TO CONFIRM: any numbers after launch, such as orders placed, error rate or use of each order type]
+### Solution
 
 <!-- demo:order-types -->
 
-### Experience
+## Outcome
 
-The ticket stays short for each order type. The header and bottom navigation stay fixed, and the ticket scrolls inside the screen. I designed the edge cases that cause mistakes:
-
-- **Price far from market:** warns that the order could fill at a much worse price, but still lets you place it.
-- **Sub-orders too small:** blocks the TWAP and says how to fix it: a shorter time or a larger quantity.
-- **Trigger on the wrong side:** blocks a buy trigger below the market and points to a Limit order instead.
-- **Expiry too soon:** blocks an expiry in the past and shows the allowed range.
-
-### System
-
-The same tab and ticket structure works for all five order types, so the layout can grow into the desktop version. [TO CONFIRM: which components or patterns were added to the design system, if any]
-
-### Collaboration
-
-I worked with the PM, RMs, the trading team and engineers in workshops, and I tested version 1 with them. When engineers wanted a dropdown, I proposed tabs and explained that they can build each order type later.
+I designed the full Spot trading feature: placing orders, open orders with pause, resume and cancel, and order history. I handed it off to engineering, and the first release shipped with Market and Limit. Then adapting the layout for desktop.
 
 ## Reflections
 

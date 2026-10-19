@@ -360,6 +360,15 @@ const info = [
     margin-top: var(--space-4);
   }
 
+  /* Tiêu đề cấp 4 (các quyết định trong Trade-offs, tiêu đề của mockup trong Solution) */
+  .case-body :global(h4) {
+    margin: var(--space-3) 0 var(--spacing-xs);
+    font-size: var(--text-base);
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: normal;
+  }
+
   .case-body :global(h2 + h3) {
     margin-top: var(--space-2);
   }
@@ -432,11 +441,6 @@ const info = [
     border-left: 0;
     padding: 0;
     margin: 0;
-  }
-
-  /* Thẻ Outcome có mockup điện thoại bên trong (Product) trải hết hàng */
-  .case-body :global(.outcome-card:has(.ot)) {
-    grid-column: 1 / -1;
   }
 
   @media (min-width: 40rem) {
