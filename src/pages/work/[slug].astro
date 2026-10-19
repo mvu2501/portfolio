@@ -199,8 +199,68 @@ const info = [
     padding-block: var(--space-4) var(--space-5);
   }
 
+  /* Chữ trong bài giữ độ rộng dễ đọc (42rem). Khối nào cần rộng hơn thì thêm class "wide":
+     khối đó trải hết cột nội dung (như hàng 3 ảnh ở mục Research). */
   .case-body {
+    max-width: none;
+  }
+
+  .case-body > :global(*) {
     max-width: var(--reading-width);
+  }
+
+  .case-body > :global(.wide) {
+    max-width: none;
+  }
+
+  /* Hàng 3 phần có ảnh minh họa (ảnh trên, chữ dưới) */
+  .case-body :global(.triptych) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3);
+    margin: var(--space-4) 0;
+  }
+
+  .case-body :global(.triptych figure) {
+    margin: 0;
+  }
+
+  .case-body :global(.triptych img) {
+    width: 100%;
+    margin: 0;
+  }
+
+  .case-body :global(.triptych figcaption) {
+    margin-top: var(--spacing-sm);
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    color: var(--color-text-muted);
+  }
+
+  .case-body :global(.triptych strong) {
+    display: block;
+    margin-bottom: var(--spacing-xxs);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  /* Mobile: mỗi phần là một hàng ngang, ảnh nhỏ bên trái, chữ bên phải */
+  @media (max-width: 39.99rem) {
+    .case-body :global(.triptych) {
+      grid-template-columns: 1fr;
+    }
+
+    .case-body :global(.triptych figure) {
+      display: grid;
+      grid-template-columns: 38% 1fr;
+      gap: var(--space-2);
+      align-items: center;
+    }
+
+    .case-body :global(.triptych figcaption) {
+      margin-top: 0;
+    }
   }
 
   /* Cột chứa bài viết và phần Up next / Previous (Up next rộng hơn chữ bài viết) */

@@ -3,7 +3,7 @@ title: Designing Spot Trading for a Digital-Asset Wealth App
 role: Sole Product Designer
 year: 2026
 platform: Mobile
-tags: [Fintech]
+tags: []
 description: I designed the Spot trading feature for a crypto trading platform, with five order types on one small phone screen.
 order: 1
 cover: /images/work/spot-trading-cover.webp
@@ -22,11 +22,23 @@ Clients need more than a simple buy button. They need five order types, and each
 
 ## Research
 
-I started with the people who place trades for clients every day: the relationship managers (RMs) and the trading team.
+After a kickoff with the PMs and the Head of Wealth on scope, I started with the people who place trades for clients every day: the relationship managers (RMs) and the trading team.
 
-- **Interviews:** I talked with RMs and the trading team about how clients trade and what questions they ask.
-- **Competitor review:** I looked at Amber and Independent Reserve. I checked how they handle the ticket, order status and history on mobile.
-- **Workshops:** I ran sessions with the PM, RMs, the trading team and engineers. We ended with a clickable prototype of the ticket.
+<!-- 3 phần nghiên cứu trên một hàng. Sửa chữ trong <figcaption>, giữ nguyên các thẻ HTML. Không chèn dòng trống bên trong khối này. -->
+<div class="triptych wide">
+  <figure>
+    <img src="/images/work/spot-trading-research-interviews.webp" alt="Illustration of a designer talking with relationship managers and the trading team around a table" loading="lazy" decoding="async">
+    <figcaption><strong>Interviews</strong>I talked with RMs and the trading team about how clients trade and what questions they ask.</figcaption>
+  </figure>
+  <figure>
+    <img src="/images/work/spot-trading-research-competitors.webp" alt="Illustration of a designer comparing two competitor trading apps side by side" loading="lazy" decoding="async">
+    <figcaption><strong>Competitor review</strong>I looked at Amber and Independent Reserve. I checked how they handle the ticket, order status and history on mobile.</figcaption>
+  </figure>
+  <figure>
+    <img src="/images/work/spot-trading-research-workshops.webp" alt="Illustration of a workshop where a designer presents a trading app prototype to a team" loading="lazy" decoding="async">
+    <figcaption><strong>Workshops</strong>I ran sessions with the PM, RMs, the trading team and engineers. We ended with a clickable prototype of the ticket.</figcaption>
+  </figure>
+</div>
 
 Every order type follows the same steps: choose Buy or Sell, choose a type, enter an amount, and confirm.
 
