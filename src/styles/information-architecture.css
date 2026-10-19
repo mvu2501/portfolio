@@ -1,0 +1,53 @@
+/*
+  information-architecture.css – khối "Information architecture" trong phần Research của case study Trading.
+  Port từ information-architecture.html (bản tham chiếu): giữ nguyên cấu trúc, kích thước, khoảng cách, viền,
+  bo góc, đường nối và màu nền/viền. Chỉ khác:
+  - Màu chữ dùng token của site (--color-text, --color-text-muted, --color-accent) thay cho màu gốc.
+  - Điểm gập 3 cột → 1 cột tính theo bề rộng của khối (container query, dưới 780px) thay vì bề rộng màn hình 860px,
+    vì khối nằm trong cột bài có sidebar (ở màn hình 860px khối rộng khoảng 780px).
+  - Selector gấp đôi class .cs để thắng các rule ul/li chung của bài viết.
+*/
+.cs.cs{
+  --paper:#FFFFFF; --paper-sunk:#F5F7F8; --line:#E5E7EB; --line-strong:#C9CED6;
+  --brass:#14B8A6; --brass-deep:#0F766E; --brass-tint:#E0F5F2;
+  --ia-pill-bg:#14181B;
+  --ia-text:var(--color-text); --ia-text-soft:var(--color-text-muted); --ia-text-faint:var(--color-text-muted); --ia-accent:var(--color-accent);
+  --sans:'Hanken Grotesk',ui-sans-serif,system-ui,-apple-system,sans-serif;
+  color-scheme:light;
+  container-type:inline-size;
+  color:var(--ia-text); font-family:var(--sans); font-size:17px; line-height:1.7; -webkit-font-smoothing:antialiased;
+}
+.cs.cs *,.cs.cs *::before,.cs.cs *::after{box-sizing:border-box}
+.cs.cs h4{margin:0;text-wrap:balance}
+.cs.cs b{font-weight:600}
+
+.cs.cs .ia{margin-top:24px;background:var(--paper-sunk);border:1px solid var(--line);border-radius:6px;padding:32px 28px;display:flex;flex-direction:column;align-items:center}
+.cs.cs .ia-pill{display:inline-block;background:var(--ia-pill-bg);color:#fff;font-weight:600;font-size:14px;padding:8px 16px;border-radius:999px}
+.cs.cs .ia-seg{display:flex;margin-top:22px;position:relative;border:1px solid var(--line);border-radius:999px;background:var(--paper);padding:3px}
+.cs.cs .ia-seg::before,.cs.cs .ia-bar::before{content:'';position:absolute;left:50%;top:-23px;height:20px;border-left:1.5px solid #9FD9D1}
+.cs.cs .ia-seg span{font-size:13px;padding:6px 16px;border-radius:999px;color:var(--ia-text-faint)}
+.cs.cs .ia-seg span.on{background:#14B8A6;color:#fff;font-weight:600}
+.cs.cs .ia-bar{position:relative;margin-top:22px;background:var(--paper);border:1.5px solid #14B8A6;border-radius:12px;padding:12px 20px;font-weight:600;font-size:15px;text-align:center;display:flex;flex-direction:column;gap:2px}
+.cs.cs .ia-bar em{font-style:normal;font-weight:400;font-size:13px;color:var(--ia-text-faint)}
+.cs.cs .ia-cols{position:relative;margin-top:40px;width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
+.cs.cs .ia-cols::before{content:'';position:absolute;top:-20px;left:16.66%;right:16.66%;border-top:1.5px solid #9FD9D1}
+.cs.cs .ia-cols::after{content:'';position:absolute;top:-40px;left:50%;height:20px;border-left:1.5px solid #9FD9D1}
+.cs.cs .ia-col{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px 16px 18px}
+.cs.cs .ia-col::before{content:'';position:absolute;top:-21px;left:50%;height:20px;border-left:1.5px solid #9FD9D1}
+.cs.cs .ia-col h4{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;margin:0 0 12px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.cs.cs .ia-col h4 b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#E9F6F4;color:var(--ia-accent);font-size:12px}
+.cs.cs .ia ul{list-style:none;margin:0;padding:0}
+.cs.cs .ia ul ul{margin:6px 0 2px 6px;padding-left:14px;border-left:1.5px solid #D5ECE8}
+.cs.cs .ia li{margin:0;position:relative;padding:5px 0 5px 0;font-size:14px;line-height:1.4;color:var(--ia-text)}
+.cs.cs .ia ul ul li::before{content:'';position:absolute;left:-14px;top:15px;width:10px;border-top:1.5px solid #D5ECE8}
+.cs.cs .ia-n{font-weight:500}
+.cs.cs .ia-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.cs.cs .ia-chips i{font-style:normal;font-size:11.5px;line-height:1.3;color:var(--ia-text-soft);background:var(--paper-sunk);border:1px solid var(--line);border-radius:6px;padding:2px 7px}
+.cs.cs .ia li.ia-end > .ia-n{color:var(--ia-accent);font-weight:600}
+@container (max-width:779px){.cs.cs .ia{padding:20px 14px}
+.cs.cs .ia-cols{grid-template-columns:minmax(0,1fr);gap:28px;margin-top:28px}
+.cs.cs .ia-cols::before{display:none}
+.cs.cs .ia-cols::after{top:-28px;height:28px}
+.cs.cs .ia-col::before{top:-29px;height:28px}
+.cs.cs .ia-col:first-child::before{display:none}}
+

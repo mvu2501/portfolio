@@ -12,6 +12,7 @@
   --color-text: #1f1d1a;          /* mực: chữ chính, nút, tiêu đề */
   --color-info: #2e2a24;          /* chữ nhãn, link điều hướng */
   --color-text-muted: #6b6559;    /* chữ phụ (đã chỉnh đậm hơn #8C8578 để đủ độ tương phản 4.5:1) */
+  --color-accent: #2b6b64;        /* chữ nhấn teal trong case study (nhãn, số, "Confirm"); nền #fff đạt 6:1 */
   --color-hairline: #b7372b;      /* đỏ gạch: chỉ dùng cho đường kẻ 1px và vạch đánh dấu */
   --color-tint: rgba(31, 29, 26, 0.07);      /* nền nút, tag */
   --color-tint-strong: rgba(31, 29, 26, 0.14);

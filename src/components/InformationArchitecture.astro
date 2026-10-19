@@ -1,0 +1,122 @@
+---
+// InformationArchitecture.astro – sơ đồ kiến trúc thông tin của tab Trade (phần Research, case study Trading).
+// Nội dung lấy từ content.md (bản tiếng Anh; site chưa có chuyển ngôn ngữ). Giao diện ở src/styles/information-architecture.css.
+import '../styles/information-architecture.css';
+
+interface Item {
+  label: string;
+  chips?: string[];
+  children?: Item[];
+  end?: boolean;
+}
+interface Column {
+  n: number;
+  title: string;
+  items: Item[];
+}
+
+const segments = ['Convert', 'Spot', 'OTC'];
+
+const columns: Column[] = [
+  {
+    n: 1,
+    title: 'Place an order',
+    items: [
+      { label: 'Buy / Sell' },
+      {
+        label: 'Market',
+        children: [
+          { label: 'Amount', chips: ['BTC ⇄ USDT'] },
+          { label: '% of balance', chips: ['25', '50', '75', '100'] },
+        ],
+      },
+      { label: 'Limit', chips: ['Price', '% vs price', 'GTC / GTD'] },
+      {
+        label: 'Stop ▾',
+        children: [
+          { label: 'Stop-limit', chips: ['Trigger', 'Limit price'] },
+          { label: 'Stop-market', chips: ['Trigger'] },
+        ],
+      },
+      {
+        label: 'TWAP',
+        children: [
+          { label: 'Total quantity' },
+          { label: 'Running time' },
+          { label: 'Execution price', chips: ['Market', 'Max / Min price'] },
+        ],
+      },
+      { label: 'Summary', chips: ['Total ≈', 'Fee', 'Expires'] },
+      { label: 'Confirm', end: true },
+    ],
+  },
+  {
+    n: 2,
+    title: 'Open orders',
+    items: [
+      { label: 'Tabs', chips: ['Limit', 'Stop', 'TWAP'] },
+      {
+        label: 'Order card',
+        children: [
+          { label: 'Progress', chips: ['% filled'] },
+          { label: 'Details', chips: ['Price / Trigger', 'Filled / Amount', 'Expires'] },
+        ],
+      },
+      { label: 'Actions', chips: ['Cancel', 'Pause / Resume (TWAP)'] },
+      { label: 'Empty state' },
+      { label: 'View all', end: true },
+    ],
+  },
+  {
+    n: 3,
+    title: 'Order history',
+    items: [
+      { label: 'Filters', chips: ['Type', 'Side'] },
+      {
+        label: 'Order card',
+        children: [{ label: 'Result', chips: ['Avg. price', 'Total', 'Fee'] }],
+      },
+      { label: 'Status', chips: ['Filled', 'Partially Filled', 'Cancelled', 'Expired', 'Failed'] },
+      { label: 'View all', end: true },
+    ],
+  },
+];
+---
+
+<div class="cs wide">
+  <div class="ia" role="group" aria-label="Information architecture of the Trade tab">
+    <div class="ia-root"><span class="ia-pill">Trade tab</span></div>
+    <div class="ia-seg">
+      {segments.map((s) => <span class:list={[{ on: s === 'Spot' }]}>{s}</span>)}
+    </div>
+    <div class="ia-bar">
+      <span>Spot screen</span>
+      <em>Pair selector · Chart · Buy / Sell quote</em>
+    </div>
+    <div class="ia-cols">
+      {columns.map((col) => (
+        <div class="ia-col">
+          <h4><b>{col.n}</b>{col.title}</h4>
+          <ul>
+            {col.items.map((item) => (
+              <li class:list={[{ 'ia-end': item.end }]}>
+                <span class="ia-n">{item.label}</span>
+                {item.chips && <span class="ia-chips">{item.chips.map((c) => <i>{c}</i>)}</span>}
+                {item.children && (
+                  <ul>
+                    {item.children.map((child) => (
+                      <li>
+                        <span class="ia-n">{child.label}</span>
+                        {child.chips && <span class="ia-chips">{child.chips.map((c) => <i>{c}</i>)}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>

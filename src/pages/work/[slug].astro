@@ -5,6 +5,7 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CaseToc from '../../components/CaseToc.astro';
 import CaseNav from '../../components/CaseNav.astro';
+import InformationArchitecture from '../../components/InformationArchitecture.astro';
 import AmountInput from '../../components/trading/AmountInput.astro';
 import LimitPrice from '../../components/trading/LimitPrice.astro';
 import PriceCanMove from '../../components/trading/PriceCanMove.astro';
@@ -26,6 +27,7 @@ const { Content } = await render(entry);
 // Chèn component tương tác vào giữa bài: trong .md ghi <!-- demo:tên --> trên một dòng riêng,
 // ở đây tách HTML tại dấu đó và đặt component tương ứng vào. Thêm demo mới: import ở trên rồi thêm vào DEMOS.
 const DEMOS: Record<string, any> = {
+  'information-architecture': InformationArchitecture,
   'amount-input': AmountInput,
   'limit-price': LimitPrice,
   'price-can-move': PriceCanMove,

@@ -42,6 +42,10 @@ After a kickoff with the PMs and the Head of Wealth on scope, I started with the
 
 Every order type follows the same steps: choose Buy or Sell, choose a type, enter an amount, and confirm.
 
+### Information architecture
+
+<!-- demo:information-architecture -->
+
 I tested version 1 with the PM, RMs, the trading team and engineers. Their feedback changed three things:
 
 <!-- demo:amount-input -->
