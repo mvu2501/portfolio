@@ -1,10 +1,10 @@
 ---
-// Trang chủ. Thứ tự từ trên xuống: Hero → Selected works → Fun projects.
-// (Khung trò chơi duck-football đang tạm tắt, xem đoạn chú thích bên dưới để bật lại.)
+// Trang chủ. Thứ tự từ trên xuống: Hero → Duck Football → Selected works → Fun projects.
 // (Nav và Footer đã có sẵn trong BaseLayout.)
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import DuckFootball from '../components/DuckFootball.astro';
 
 // Lấy các file .md trong content/work và content/fun, bỏ dự án draft, xếp theo "order".
 const byOrder = (a: { data: { order: number } }, b: { data: { order: number } }) =>
@@ -25,12 +25,10 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
     </div>
   </section>
 
-  <!-- KHỐI INTERACTIVE (đang tắt). Khi có trò chơi: bỏ dấu comment ở khối dưới
-       và thêm lại CSS .interactive (xem README).
+  <!-- 2. DUCK FOOTBALL: trò chơi nhỏ ngay dưới hero (code ở src/components/DuckFootball.astro) -->
   <section class="container interactive">
-    <div id="duck-football" class="interactive__frame"></div>
+    <DuckFootball />
   </section>
-  -->
 
   <!-- 2. SELECTED WORKS / FUN PROJECTS: hai tab cạnh nhau -->
   <section id="work" class="section">
