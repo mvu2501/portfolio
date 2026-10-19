@@ -68,24 +68,47 @@ I tested version 1 with the PM, RMs, the trading team and engineers. Their feedb
 
 ### Trade-offs
 
-#### 1. Order types as tabs, not a dropdown
+<h4 class="sr-only">1. Order types as tabs, not a dropdown</h4>
+<figure class="tradeoff wide">
+<img src="/images/work/spot-trading-tradeoff-1.webp" alt="Decision 1, Order types as tabs, not a dropdown. Two phone screens compare option A, one dropdown (option considered), with option B, separate tabs (chosen)." width="1656" height="1088" loading="lazy" decoding="async">
+<details>
+<summary>Read the text in this image</summary>
+<p><strong>Options considered:</strong> One dropdown with every order type, or separate tabs.</p>
+<p><strong>Why tabs:</strong> Users see the main options and switch in one tap. Each type has its own form, so the screen shows only the fields that matter.</p>
+<p><strong>Pushback:</strong> Engineers wanted all types in a dropdown, with a “Coming soon” badge on types not available yet. I showed them that separate tabs let them build each type later.</p>
+<p><strong>Trade-off:</strong> Tabs take more width than a dropdown, so only a few types fit. The rest go under one Stop order tab. If we support more advanced order types later, we may need to rename it.</p>
+<p><strong>A · One dropdown (option considered):</strong> a Market dropdown is open and lists Market, Limit, TWAP, Stop-limit (Coming soon) and Stop-market (Coming soon).</p>
+<p><strong>B · Separate tabs (chosen):</strong> the tabs Market, Limit, TWAP and Stop sit above the amount field.</p>
+</details>
+</figure>
 
-- **Options considered:** one dropdown with every order type, or separate tabs.
-- **Why tabs:** users see the main options and switch in one tap. Each type has its own form, so the screen shows only the fields that matter.
-- **Pushback:** engineers wanted all types in a dropdown, with a “Coming soon” badge on types not available yet. I showed them that separate tabs let them build each type later.
-- **Trade-off:** tabs take more width than a dropdown, so only a few types fit. The rest go under one Stop order tab. If we support more advanced order types later, we may need to rename it.
+<h4 class="sr-only">2. Stop orders get their own tab</h4>
+<figure class="tradeoff wide">
+<img src="/images/work/spot-trading-tradeoff-2.webp" alt="Decision 2, Stop orders get their own tab. Two phone screens compare option A, Stop inside the Limit menu (option considered), with option B, an own Stop tab with an Order type sheet (chosen)." width="1656" height="1088" loading="lazy" decoding="async">
+<details>
+<summary>Read the text in this image</summary>
+<p><strong>Options considered:</strong> Keep Stop-limit and Stop-market inside the Limit menu, or give them their own tab.</p>
+<p><strong>Why a separate tab:</strong> They were planned for a later release. In their own tab, users can find them easily and engineers can build them separately.</p>
+<p><strong>Trade-off:</strong> One more tab on a small screen, and stop orders still need one extra tap to choose.</p>
+<p><strong>A · Stop inside the Limit menu (option considered):</strong> the Limit menu is open and lists Limit, Stop-limit and Stop-market.</p>
+<p><strong>B · Own Stop tab (chosen):</strong> an Order type sheet offers Stop-limit (“Places a limit order at your price once the trigger price is reached. You control the price, but it may not fill.”) and Stop-market (“Places a market order once the trigger price is reached. Fills fast, but the price may slip.”).</p>
+</details>
+</figure>
 
-#### 2. Stop orders get their own tab
+<h4 class="sr-only">3. Full ticket on the Trade screen</h4>
+<figure class="tradeoff wide">
+<img src="/images/work/spot-trading-tradeoff-3.webp" alt="Decision 3, Full ticket on the Trade screen. Two phone screens compare option A, a Buy/Sell bar with a bottom sheet (option considered), with option B, the full ticket on the screen (chosen)." width="1656" height="1088" loading="lazy" decoding="async">
+<details>
+<summary>Read the text in this image</summary>
+<p><strong>Options considered:</strong> A fixed Buy and Sell bar that opens a bottom sheet with the order form, or the full ticket on the Trade screen.</p>
+<p><strong>Why the full ticket:</strong> The chart is simple and has no indicators, so it is not the main focus. That leaves room for the ticket. A bottom sheet would add a step and cover the price, and clients need to see the price when they set a limit or stop order.</p>
+<p><strong>Trade-off:</strong> A longer page that can feel crowded for new users. Market is the default, so a new user sees one amount field and one button.</p>
+<p><strong>A · Buy/Sell bar + bottom sheet (option considered):</strong> the Limit order form opens in a bottom sheet over the dimmed chart.</p>
+<p><strong>B · Full ticket on the screen (chosen):</strong> the Market form sits below the chart on the Trade screen.</p>
+</details>
+</figure>
 
-- **Options considered:** keep Stop-limit and Stop-market inside the Limit menu, or give them their own tab.
-- **Why a separate tab:** they were planned for a later release. In their own tab, users can find them easily and engineers can build them separately.
-- **Trade-off:** one more tab on a small screen, and stop orders still need one extra tap to choose.
-
-#### 3. Full ticket on the Trade screen
-
-- **Options considered:** a fixed Buy and Sell bar that opens a bottom sheet, or the full ticket on the Trade screen. [TO CONFIRM: did the team consider the bottom sheet at that time?]
-- **Why the full ticket:** the chart is simple and has no indicators, so it is not the main focus. That leaves room for the ticket. A bottom sheet would add a step and cover the price, and clients need to see the price when they set a limit or stop order.
-- **Trade-off:** a longer page that can feel crowded for new users. Market is the default, so a new user sees one amount field and one button.
+<!-- TO CONFIRM (decision 3): did the team consider the bottom sheet at that time? -->
 
 ---
 

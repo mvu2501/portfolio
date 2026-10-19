@@ -238,6 +238,45 @@ const info = [
     max-width: none;
   }
 
+  /* Quyết định trade-off dạng ảnh: ảnh full-width kèm bản chữ trong <details> (chữ nằm trong ảnh nên cần bản văn bản) */
+  .case-body :global(figure.tradeoff) {
+    margin: var(--space-4) 0 0;
+  }
+
+  .case-body :global(figure.tradeoff img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    border-radius: 1.6% / 2.4%; /* bo góc khớp góc bo của ảnh, cắt phần nền trắng ở góc */
+  }
+
+  .case-body :global(figure.tradeoff details) {
+    margin-top: var(--spacing-xs);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .case-body :global(figure.tradeoff summary) {
+    cursor: pointer;
+    width: fit-content;
+  }
+
+  .case-body :global(figure.tradeoff details p) {
+    margin: var(--spacing-xs) 0 0;
+    max-width: var(--reading-width);
+  }
+
+  .case-body :global(.sr-only) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
   /* Đường kẻ phân chia các phần nhỏ trong Research; trải hết cột (kể cả khi các khối demo rộng hơn cột chữ) */
   .case-body :global(hr) {
     max-width: none;
