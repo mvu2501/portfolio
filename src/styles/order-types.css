@@ -1,0 +1,175 @@
+/*
+  order-types.css – mockup điện thoại tương tác "Order types" trong phần Outcome của case study Trading.
+  Mọi selector nằm dưới .ot nên không ảnh hưởng phần còn lại của site.
+  Phần khung máy và form (.stage … .opt) giữ nguyên từ bản tham chiếu order-types-mockup.html;
+  khung máy luôn nền sáng như Figma, không đổi theo dark mode. Chỉ caption bên ngoài khung máy dùng token của site.
+*/
+.ot,
+.ot *,
+.ot *::before,
+.ot *::after {
+  box-sizing: border-box;
+}
+
+.ot {
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-top: var(--space-3);
+}
+
+.ot .ot-cap {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.ot .stage{position:relative;width:min(100%,340px)}
+.ot .phone{position:absolute;left:0;top:0;width:422px;height:894px;padding:10px;background:#111;border-radius:48px;transform-origin:0 0;box-shadow:0 18px 40px -18px rgba(16,18,20,.45)}
+.ot .screen{--f-ink:#101214;--f-ink2:#4e5964;--f-ink3:#66727f;--f-dis:#a3adb8;--f-line:#e4e7ea;--f-line2:#c8cfd5;--f-subtle:#f2f4f5;--f-primary:#14b8a6;--f-psub:#f0fdfa;
+  --f-buy:#00b47d;--f-buy-up:#007a56;--f-buy-sub:#e6f8f2;--f-sell:#f85550;--f-sell-sub:#fff1f1;--f-down:#c62a36;
+  position:relative;width:402px;height:874px;background:#fff;border-radius:38px;overflow:hidden;display:flex;flex-direction:column;
+  font:400 14px/20px var(--font);color:var(--f-ink);color-scheme:light}
+.ot .screen svg{display:block}
+.ot .screen button{font-family:inherit}
+.ot .opt,
+.ot .cbrow{color:var(--f-ink)}
+.ot .status{flex:none;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-weight:600}
+.ot .hdr{flex:none;display:flex;flex-direction:column;gap:12px;padding:0 20px 12px}
+.ot .tabs{display:flex;gap:20px;align-items:flex-end;border-bottom:1px solid var(--f-line)}
+.ot .tab{display:flex;flex-direction:column;gap:4px;padding-top:12px;font:600 17px/24px var(--font);color:var(--f-ink3)}
+.ot .tab i{display:block;height:2px;border-radius:1px}
+.ot .tab.on{color:var(--f-ink)}
+.ot .tab.on i{background:var(--f-primary)}
+.ot .pair{display:flex;gap:4px;align-items:center}
+.ot .pair b{font:600 20px/28px var(--font)}
+.ot .pair em{font:600 14px/20px var(--font);font-style:normal;color:var(--f-buy-up)}
+.ot .scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.ot .scroll::-webkit-scrollbar{display:none}
+.ot .chart{display:flex;flex-direction:column;gap:8px}
+.ot .tf{display:flex;gap:16px;align-items:center;padding:0 20px;font-size:12px;line-height:16px;color:var(--f-ink3)}
+.ot .tf .on{font-weight:600;color:var(--f-ink)}
+.ot .tf span{display:inline-flex;align-items:center;gap:2px}
+.ot .plot{position:relative;height:170px;overflow:hidden}
+.ot .plot .g{position:absolute;left:0;right:0;height:1px;background:var(--f-line);opacity:.6}
+.ot .plot .y{position:absolute;font-size:11px;line-height:14px;color:var(--f-ink3);white-space:nowrap}
+.ot .plot .c{position:absolute}
+.ot .plot .b{background:var(--f-buy)}
+.ot .plot .s{background:var(--f-sell)}
+.ot .plot .tag{position:absolute;right:2px;top:21.26px;background:var(--f-ink);color:#fff;font-size:11px;line-height:14px;padding:1px 4px;border-radius:2px}
+.ot .plot .dash{position:absolute;left:310px;top:29px;width:37px;border-top:1px dashed var(--f-ink2)}
+.ot .nav{flex:none;border-top:1px solid var(--f-line);padding:12px 16px 40px;display:flex;justify-content:space-between;align-items:flex-end;background:#fff}
+.ot .ni{width:40px;height:47px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;line-height:16px;color:var(--f-ink2);white-space:nowrap}
+.ot .ni.on{color:var(--f-ink)}
+.ot .ni svg{stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ot .form{display:flex;flex-direction:column;gap:16px;padding:16px 20px}
+.ot .fcol{display:flex;flex-direction:column;gap:16px}
+.ot .side{display:flex;gap:8px}
+.ot .sd{flex:1;min-width:0;height:42px;border-radius:8px;border:0;padding:0 12px;display:flex;align-items:center;justify-content:space-between;font:400 14px/20px var(--font);cursor:pointer;white-space:nowrap;transition:background .15s,box-shadow .15s}
+.ot .sd span{font-weight:500}
+.ot .sd.buy{background:var(--f-buy-sub);color:var(--f-buy-up)}
+.ot .sd.sell{background:var(--f-sell-sub);color:var(--f-down)}
+.ot .sd.on{padding:0 13.5px}
+.ot .sd.on b{font-weight:600}
+.ot .sd b{font-weight:400}
+.ot .sd.buy.on{box-shadow:inset 0 0 0 1.5px var(--f-buy)}
+.ot .sd.sell.on{box-shadow:inset 0 0 0 1.5px var(--f-sell)}
+.ot .types{display:flex;align-items:center;justify-content:space-between}
+.ot .tl{display:flex;gap:16px;align-items:center}
+.ot .tb{appearance:none;border:0;background:none;padding:0;cursor:pointer;font:400 14px/20px var(--font);color:var(--f-ink3);display:inline-flex;align-items:center;gap:2px;white-space:nowrap}
+.ot .tb.on{font-weight:600;color:var(--f-ink)}
+.ot .tif{appearance:none;border:0;background:var(--f-subtle);border-radius:4px;padding:4px 8px;cursor:pointer;font:600 12px/16px var(--font);color:var(--f-ink2);display:inline-flex;align-items:center;gap:2px}
+.ot .tif:disabled{color:var(--f-dis);cursor:default}
+.ot .tb:focus-visible,
+.ot .tif:focus-visible,
+.ot .sd:focus-visible,
+.ot .qchip:focus-visible,
+.ot .unitb:focus-visible,
+.ot .tbtn:focus-visible,
+.ot .cb:focus-visible,
+.ot .slider:focus-visible,
+.ot .opt:focus-visible{outline:2px solid var(--f-primary);outline-offset:2px}
+.ot .helper{margin:0;font-size:12px;line-height:16px;color:var(--f-ink3)}
+.ot .group{display:flex;flex-direction:column;gap:8px}
+.ot .field{border:1px solid var(--f-line2);border-radius:12px;padding:8px 12px;background:#fff;display:flex;flex-direction:column;gap:2px;cursor:text;transition:border-color .15s,box-shadow .15s;min-width:0}
+.ot .field:focus-within{border-color:var(--f-primary);box-shadow:0 0 0 1px var(--f-primary)}
+.ot .lbl{font-size:12px;line-height:16px;color:var(--f-ink3);width:max-content}
+.ot .rv{display:flex;align-items:center;gap:8px}
+.ot .rv input{flex:1;min-width:0;border:0;outline:0;background:transparent;padding:0;margin:0;font:400 16px/24px var(--font);color:var(--f-ink);font-variant-numeric:tabular-nums}
+.ot .unit{font-size:14px;line-height:20px;color:var(--f-ink3);white-space:nowrap}
+.ot .unitb{appearance:none;border:0;cursor:pointer;background:var(--f-subtle);color:var(--f-ink2);border-radius:4px;padding:4px 8px;font:600 12px/16px var(--font);display:inline-flex;align-items:center;gap:4px}
+.ot .unitb svg{stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ot .helpers{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ot .off{font-size:12px;line-height:16px;color:var(--f-ink3);white-space:nowrap;font-variant-numeric:tabular-nums}
+.ot .quick{display:flex;gap:8px;flex:none}
+.ot .qchip{appearance:none;cursor:pointer;background:var(--f-subtle);color:var(--f-ink2);border:1px solid transparent;font:600 12px/16px var(--font);height:28px;padding:0 12px;border-radius:8px;transition:background .15s,border-color .15s,transform .1s}
+.ot .qchip:hover{background:var(--f-line)}
+.ot .qchip:active{transform:scale(.94)}
+.ot .qchip.on{background:var(--f-psub);border-color:var(--f-primary);color:#0f766e}
+.ot .slider{position:relative;height:32px;touch-action:none;cursor:pointer;user-select:none}
+.ot .track{position:absolute;left:0;right:0;top:5px;height:2px;background:var(--f-line)}
+.ot .fill{position:absolute;left:0;top:5px;height:2px;background:var(--f-primary);width:calc(3px + (100% - 6px)*var(--pct,0))}
+.ot .stop{position:absolute;top:3px;width:6px;height:6px;border-radius:50%;background:var(--f-line2);left:calc((100% - 6px)*var(--p))}
+.ot .stop.on{background:var(--f-primary)}
+.ot .pl{position:absolute;top:16px;font-size:11px;line-height:14px;color:var(--f-ink3);transform:translateX(-50%);left:calc(3px + (100% - 6px)*var(--p))}
+.ot .pl.first{left:0;transform:none}
+.ot .pl.last{left:auto;right:0;transform:none}
+.ot .knob{position:absolute;top:1px;width:10px;height:10px;background:var(--f-primary);border:2px solid #fff;transform:rotate(45deg);left:calc(3px + (100% - 6px)*var(--pct,0) - 5px);box-shadow:0 0 0 .5px var(--f-primary)}
+.ot .alloc{display:flex;flex-direction:column;gap:8px}
+.ot .sum{display:flex;align-items:center;gap:4px;font-size:12px;line-height:16px}
+.ot .sum .k{flex:1;min-width:0;color:var(--f-ink3)}
+.ot .sum .v{color:var(--f-ink);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ot .sum .plus{color:var(--f-primary);display:inline-flex}
+.ot .sum .plus svg{stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ot .order{display:flex;flex-direction:column;gap:8px}
+.ot .divider{height:1px;background:var(--f-line)}
+.ot .rt{display:flex;flex-direction:column;gap:8px}
+.ot .rt h4{margin:0;font:600 15px/22px var(--font)}
+.ot .duo{display:flex;gap:12px}
+.ot .duo .field{flex:1}
+.ot .presets{display:flex;gap:8px}
+.ot .presets .qchip{flex:1;padding:0}
+.ot .cbrow{display:flex;align-items:center;gap:8px;appearance:none;border:0;background:none;padding:0;cursor:pointer;font:400 14px/20px var(--font);text-align:left}
+.ot .cbx{width:20px;height:20px;border-radius:4px;border:1.5px solid var(--f-line2);background:#fff;display:grid;place-items:center;flex:none;transition:background .15s,border-color .15s}
+.ot .cbx svg{stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;opacity:0}
+.ot .cbrow[aria-checked="true"] .cbx{background:var(--f-primary);border-color:var(--f-primary)}
+.ot .cbrow[aria-checked="true"] .cbx svg{opacity:1}
+.ot .seg{display:flex;gap:2px;padding:2px;background:var(--f-subtle);border-radius:8px}
+.ot .seg button{appearance:none;border:0;cursor:pointer;flex:1;min-width:0;height:32px;border-radius:4px;background:transparent;color:var(--f-ink2);font:600 14px/20px var(--font);transition:background .15s,color .15s}
+.ot .seg button.on{background:#fff;color:var(--f-ink);box-shadow:0 1px 1.5px rgba(16,18,20,.08),0 1px 1px rgba(16,18,20,.06)}
+.ot .seg button:focus-visible{outline:2px solid var(--f-primary);outline-offset:2px}
+.ot .cal{flex:none;width:20px;height:20px;display:inline-flex;color:var(--f-ink3)}
+.ot .cal svg{stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.ot .rv input::placeholder{color:var(--f-dis);opacity:1}
+.ot .tbtn{appearance:none;border:0;cursor:pointer;width:100%;height:52px;border-radius:12px;color:#fff;font:600 16px/24px var(--font);transition:opacity .2s,transform .1s}
+.ot .tbtn.buy{background:var(--f-buy)}
+.ot .tbtn.sell{background:var(--f-sell)}
+.ot .tbtn:active:not(:disabled){transform:scale(.985)}
+.ot .tbtn:disabled{opacity:.4;cursor:not-allowed}
+.ot .scrim{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;visibility:hidden;transition:opacity .2s,visibility 0s .2s}
+.ot .sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;padding:8px 20px 32px;display:flex;flex-direction:column;align-items:center;gap:16px;box-shadow:0 12px 32px rgba(16,18,20,.14),0 4px 8px rgba(16,18,20,.06);transform:translateY(100%);visibility:hidden;transition:transform .26s cubic-bezier(.2,.8,.2,1),visibility 0s .26s}
+.ot .screen.sh .scrim{opacity:1;visibility:visible;transition:opacity .2s}
+.ot .screen.sh .sheet{transform:none;visibility:visible;transition:transform .26s cubic-bezier(.2,.8,.2,1)}
+.ot .handle{width:36px;height:4px;border-radius:2px;background:var(--f-line2)}
+.ot .sheet .sheet-title{margin:0;align-self:stretch;font:600 17px/24px var(--font)}
+.ot .opts{display:flex;flex-direction:column;gap:12px;align-self:stretch}
+.ot .opt{appearance:none;text-align:left;cursor:pointer;display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:12px;background:#fff;border:1px solid var(--f-line)}
+.ot .opt.on{background:var(--f-psub);border-color:var(--f-primary)}
+.ot .rad{flex:none;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--f-line2);background:#fff;display:grid;place-items:center}
+.ot .opt.on .rad{background:var(--f-primary);border-color:var(--f-primary)}
+.ot .opt.on .rad::after{content:"";width:8px;height:8px;border-radius:50%;background:#fff}
+.ot .opt b{display:block;font:600 14px/20px var(--font)}
+.ot .opt small{display:block;font:400 12px/16px var(--font);color:var(--f-ink2)}
+
+@media (prefers-reduced-motion:reduce){.ot .scrim,
+.ot .sheet,
+.ot .screen *{transition:none!important}
+}
+
+/* Trước khi script chạy fit(): giả định khung máy rộng 340px để không bị tràn hoặc nhảy */
+.ot .stage { height: 720px; }
+.ot .phone { transform: scale(0.8057); }

@@ -83,6 +83,10 @@ Ba phần "Amount input / Limit price / Price can move" trong `content/work/spot
 
 Khối sơ đồ trong Research chèn bằng dòng `<!-- demo:information-architecture -->`. Nội dung chữ nằm trong `src/components/InformationArchitecture.astro` (dạng danh sách dữ liệu, sửa nhãn/chip ở đó), giao diện ở `src/styles/information-architecture.css`.
 
+### Mockup điện thoại "Order types" (Outcome)
+
+Mockup tương tác nằm trong thẻ Product của Outcome, chèn bằng dòng `<!-- demo:order-types -->`. Markup ở `src/components/order-types/OrderTypesMockup.astro`, logic ở `src/scripts/order-types.ts`, giao diện ở `src/styles/order-types.css`. Chỉ Order form tương tác; khung máy luôn nền sáng như Figma.
+
 ## Style giao diện
 Giao diện theo file style tham khảo (Yinyee Ho): nền kem `#FBF8F1`, chữ mực `#1F1D1A`, font **Inter Tight** (chữ thường) và **JetBrains Mono** (nút, nhãn, tag), góc vuông, đường kẻ đỏ gạch `#B7372B`, không bóng đổ. Mọi giá trị nằm ở khối `:root` trong `src/styles/global.css`.
 Hai chỗ khác với file style gốc, có chủ ý: chữ phụ dùng `#6B6559` (đạt độ tương phản 4.5:1 thay vì `#8C8578`), và nội dung vẫn có chiều rộng tối đa 72rem thay vì tràn hết màn hình.

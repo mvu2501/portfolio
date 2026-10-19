@@ -91,6 +91,8 @@ I tested version 1 with the PM, RMs, the trading team and engineers. Their feedb
 
 I designed the full Spot trading feature: placing orders, open orders with pause, resume and cancel, and order history. I handed it off to engineering, and the first release shipped with Market and Limit. I am now adapting the layout for desktop. [TO CONFIRM: any numbers after launch, such as orders placed, error rate or use of each order type]
 
+<!-- demo:order-types -->
+
 ### Experience
 
 The ticket stays short for each order type. The header and bottom navigation stay fixed, and the ticket scrolls inside the screen. I designed the edge cases that cause mistakes:

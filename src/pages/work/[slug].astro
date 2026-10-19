@@ -6,6 +6,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CaseToc from '../../components/CaseToc.astro';
 import CaseNav from '../../components/CaseNav.astro';
 import InformationArchitecture from '../../components/InformationArchitecture.astro';
+import OrderTypesMockup from '../../components/order-types/OrderTypesMockup.astro';
 import AmountInput from '../../components/trading/AmountInput.astro';
 import LimitPrice from '../../components/trading/LimitPrice.astro';
 import PriceCanMove from '../../components/trading/PriceCanMove.astro';
@@ -28,6 +29,7 @@ const { Content } = await render(entry);
 // ở đây tách HTML tại dấu đó và đặt component tương ứng vào. Thêm demo mới: import ở trên rồi thêm vào DEMOS.
 const DEMOS: Record<string, any> = {
   'information-architecture': InformationArchitecture,
+  'order-types': OrderTypesMockup,
   'amount-input': AmountInput,
   'limit-price': LimitPrice,
   'price-can-move': PriceCanMove,
@@ -430,6 +432,11 @@ const info = [
     border-left: 0;
     padding: 0;
     margin: 0;
+  }
+
+  /* Thẻ Outcome có mockup điện thoại bên trong (Product) trải hết hàng */
+  .case-body :global(.outcome-card:has(.ot)) {
+    grid-column: 1 / -1;
   }
 
   @media (min-width: 40rem) {
