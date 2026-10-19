@@ -1,0 +1,1527 @@
+---
+// DuckFootball.astro: black ducks play white ducks on a misty pond. Tap anywhere and the ball flies there.
+// A 60-second match loops by itself. The game is drawn on a canvas; see the script below.
+---
+
+<div class="duck-football" data-duck-football>
+  <div class="pitch-wrap">
+    <canvas id="pitch" tabindex="0" role="img"
+            aria-label="Four black ducks play football against four white ducks on a misty pond. Tap anywhere on the pitch to send the ball flying there."></canvas>
+
+    <div class="shutter" id="flash" aria-hidden="true"></div>
+
+    <div class="banner" id="banner" aria-hidden="true">
+      <span class="b1" id="b1"></span>
+      <span class="b2" id="b2"></span>
+    </div>
+
+  </div>
+
+  <div class="controls">
+    <div class="board" id="board" aria-hidden="true">
+      <span class="team">BLACK</span>
+      <span class="digits"><span id="scoreL">0</span><span class="colon">:</span><span id="scoreR">0</span></span>
+      <span class="team">WHITE</span>
+      <span class="sep"></span>
+      <span class="clock" id="clock">01:00</span>
+    </div>
+  <button class="replay" id="replay" type="button" aria-label="Replay match" title="Replay">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></svg>
+    </button>
+  </div>
+
+  <div class="sr-only" role="status" aria-live="polite" id="live"></div>
+</div>
+
+
+<script>
+
+function initDuckFootball(root: HTMLElement) {
+  "use strict";
+
+  // ----- Setup -----
+  const W = 1000, H = 600;                 // drawing space; the canvas scales to fit
+  const PHI = (1 + Math.sqrt(5)) / 2;
+  const BALL_R = 18;
+  const GRAVITY = 1400;                    // px/s²
+  const TAU = Math.PI * 2;
+  const ROLL_K = 1.9;                      // how fast a ball slows down on the water
+  const DS = 0.78;                         // duck size (four per team, so they are a little smaller)
+
+  const MATCH_SECONDS = 60;
+  const KICKOFF_T = 2.0;                   // ducks swim back to their places, ball drops in
+  const GOAL_T = 3.0;                      // quiet celebration
+  const FULLTIME_T = 5.0;
+
+  // The marked pitch on the water
+  const PITCH = { x0: 96, x1: 904, y0: 150, y1: 450 };
+  const GOAL = { y0: 248, y1: 352 };
+  const BALL_BOUNDS = { minX: 112, maxX: 888, minY: 150, maxY: 450 };
+  const DUCK_BOUNDS = { minX: PITCH.x0 + 16, maxX: PITCH.x1 - 16, minY: PITCH.y0 + 12, maxY: PITCH.y1 - 12 };
+  const TEAMS = ["black", "white"];
+
+  // Positions, written as if the team attacks to the right: u = 0 own goal line ... 1 opponent goal line,
+  // v = 0 top touchline ... 1 bottom touchline. White is mirrored automatically.
+  const ROLES = [
+    { id: "gk",  name: "Goalkeeper", home: { u: 0.06, v: 0.50 }, uMin: 0.02, uMax: 0.11, bu: 0,    bv: 0,    speed: 138 },
+    { id: "def", name: "Defender",   home: { u: 0.25, v: 0.50 }, uMin: 0.10, uMax: 0.58, bu: 0.38, bv: 0.38, speed: 112 },
+    { id: "mid", name: "Midfielder", home: { u: 0.46, v: 0.27 }, uMin: 0.20, uMax: 0.86, bu: 0.50, bv: 0.42, speed: 120 },
+    { id: "fwd", name: "Forward",    home: { u: 0.67, v: 0.70 }, uMin: 0.42, uMax: 0.98, bu: 0.55, bv: 0.40, speed: 126 }
+  ];
+
+  const canvas = root.querySelector("#pitch");
+  const ctx = canvas.getContext("2d");
+  const scoreL = root.querySelector("#scoreL");
+  const scoreR = root.querySelector("#scoreR");
+  const clockEl = root.querySelector("#clock");
+  const boardEl = root.querySelector("#board");
+  const bannerEl = root.querySelector("#banner");
+  const flashEl = root.querySelector("#flash");
+  const b1El = root.querySelector("#b1");
+  const b2El = root.querySelector("#b2");
+  const liveEl = root.querySelector("#live");
+  const replayBtn = root.querySelector("#replay");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Sharp rendering on high-density screens
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  // Pond shape, irregular and not round
+  const POND_D =
+    "M 120 150 C 240 66, 430 78, 560 94 S 860 66, 900 176 " +
+    "C 940 270, 916 388, 890 470 S 730 552, 540 534 S 220 560, 116 470 " +
+    "C 74 380, 66 250, 120 150 Z";
+  const POND = new Path2D(POND_D);
+
+  // ----- Small helpers -----
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  function smooth(a, b, x) {
+    const t = clamp((x - a) / (b - a), 0, 1);
+    return t * t * (3 - 2 * t);
+  }
+  function angleDiff(a, b) {
+    let d = a - b;
+    while (d > Math.PI) d -= TAU;
+    while (d < -Math.PI) d += TAU;
+    return d;
+  }
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  // Smooth value noise on a coarse grid (0..1). Used to make fog and water uneven in a natural way.
+  function makeNoise(cell, seed) {
+    const rnd = mulberry32(seed);
+    const gw = Math.ceil(W / cell) + 3, gh = Math.ceil(H / cell) + 3;
+    const g = new Float32Array(gw * gh);
+    for (let i = 0; i < g.length; i++) g[i] = rnd();
+    return function (x, y) {
+      const fx = x / cell, fy = y / cell;
+      const ix = Math.floor(fx), iy = Math.floor(fy);
+      let tx = fx - ix, ty = fy - iy;
+      tx = tx * tx * (3 - 2 * tx);
+      ty = ty * ty * (3 - 2 * ty);
+      const a = g[iy * gw + ix], b = g[iy * gw + ix + 1];
+      const c = g[(iy + 1) * gw + ix], d = g[(iy + 1) * gw + ix + 1];
+      const top = a + (b - a) * tx, bot = c + (d - c) * tx;
+      return top + (bot - top) * ty;
+    };
+  }
+  // Box blur with zero padding (three passes ≈ a soft gaussian)
+  function boxBlur(src, w, h, r) {
+    const tmp = new Float32Array(w * h), out = new Float32Array(w * h);
+    const inv = 1 / (2 * r + 1);
+    for (let y = 0; y < h; y++) {
+      const row = y * w;
+      let sum = 0;
+      for (let x = 0; x <= r && x < w; x++) sum += src[row + x];
+      for (let x = 0; x < w; x++) {
+        tmp[row + x] = sum * inv;
+        const add = x + r + 1 < w ? src[row + x + r + 1] : 0;
+        const rem = x - r >= 0 ? src[row + x - r] : 0;
+        sum += add - rem;
+      }
+    }
+    for (let x = 0; x < w; x++) {
+      let sum = 0;
+      for (let y = 0; y <= r && y < h; y++) sum += tmp[y * w + x];
+      for (let y = 0; y < h; y++) {
+        out[y * w + x] = sum * inv;
+        const add = y + r + 1 < h ? tmp[(y + r + 1) * w + x] : 0;
+        const rem = y - r >= 0 ? tmp[(y - r) * w + x] : 0;
+        sum += add - rem;
+      }
+    }
+    return out;
+  }
+
+  // ----- Colors (read from the page tokens so light and dark stay in sync) -----
+  let C = {};
+  let NET = null;
+  let bgLayer = null, fogLayer = null, goalLayer = null, mistSprite = null;
+
+  function parseHex(hex) {
+    let h = hex.replace("#", "");
+    if (h.length === 3) h = h.split("").map(c => c + c).join("");
+    const n = parseInt(h, 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+  function hexToRgba(hex, a) {
+    const [r, g, b] = parseHex(hex);
+    return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+  }
+
+  function readTokens() {
+    const cs = getComputedStyle(root);
+    const g = n => cs.getPropertyValue(n).trim();
+    C = {
+      fog: g("--fog"), waterMid: g("--water-mid"), waterDeep: g("--water-deep"),
+      waterLight: g("--water-light"), sun: g("--sun"), ink: g("--ink"),
+      duckBlack: g("--duck-black"), duckWhite: g("--duck-white"), beak: g("--beak")
+    };
+    NET = makeNetPattern(C.ink);
+  }
+
+  function makeNetPattern(color) {
+    const c = document.createElement("canvas");
+    c.width = 8; c.height = 8;
+    const x = c.getContext("2d");
+    x.strokeStyle = hexToRgba(color, 0.45);
+    x.lineWidth = 1;
+    x.beginPath();
+    x.moveTo(0, 0); x.lineTo(8, 8);
+    x.moveTo(8, 0); x.lineTo(0, 8);
+    x.stroke();
+    return ctx.createPattern(c, "repeat");
+  }
+
+  // Static parts are painted once into offscreen layers, then copied each frame.
+  function makeLayer() {
+    const c = document.createElement("canvas");
+    c.width = W * dpr;
+    c.height = H * dpr;
+    const g = c.getContext("2d");
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { c, g };
+  }
+
+  // A blurred silhouette of the pond (0 = outside, 1 = deep inside), at half resolution.
+  // Water depth and fog thickness both come from it, so they change smoothly with no edge lines.
+  const LW = W / 2, LH = H / 2;
+  function pondMask() {
+    const c = document.createElement("canvas");
+    c.width = LW; c.height = LH;
+    const g = c.getContext("2d");
+    g.scale(0.5, 0.5);
+    g.fillStyle = "#fff";
+    g.fill(POND);
+    const px = g.getImageData(0, 0, LW, LH).data;
+    let m = new Float32Array(LW * LH);
+    for (let i = 0; i < m.length; i++) m[i] = px[i * 4 + 3] / 255;
+    for (let pass = 0; pass < 3; pass++) m = boxBlur(m, LW, LH, 26);
+    return m;
+  }
+
+  function buildLayers() {
+    const M = pondMask();
+
+    // Below the ducks: water, depth, pitch lines, shore objects
+    bgLayer = makeLayer();
+    drawWater(bgLayer.g, M);
+    drawPitchLines(bgLayer.g);
+    drawShoreObjects(bgLayer.g);
+
+    // Above the ducks: fog (computed per pixel so it is smooth and never banded)
+    fogLayer = makeLayer();
+    drawFog(fogLayer.g, M);
+
+    // Goals sit above the fog so they stay clear
+    goalLayer = makeLayer();
+    drawGoal(goalLayer.g, PITCH.x0 - 26);
+    drawGoal(goalLayer.g, PITCH.x1);
+
+    mistSprite = makeMistSprite();
+  }
+
+  // ----- Vector and rotation helpers (for the 3D ball) -----
+  function cross(a, b) { return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]; }
+  function norm(v) { const l = Math.hypot(v[0], v[1], v[2]); return [v[0] / l, v[1] / l, v[2] / l]; }
+  function rotAxis(ax, ay, az, ang) {
+    const c = Math.cos(ang), s = Math.sin(ang), k = 1 - c;
+    return [
+      c + ax * ax * k, ax * ay * k - az * s, ax * az * k + ay * s,
+      ay * ax * k + az * s, c + ay * ay * k, ay * az * k - ax * s,
+      az * ax * k - ay * s, az * ay * k + ax * s, c + az * az * k
+    ];
+  }
+  function matMul(a, b) {
+    const r = new Array(9);
+    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
+      r[i * 3 + j] = a[i * 3] * b[j] + a[i * 3 + 1] * b[3 + j] + a[i * 3 + 2] * b[6 + j];
+    }
+    return r;
+  }
+  function applyMat(m, p) {
+    return [
+      m[0] * p[0] + m[1] * p[1] + m[2] * p[2],
+      m[3] * p[0] + m[4] * p[1] + m[5] * p[2],
+      m[6] * p[0] + m[7] * p[1] + m[8] * p[2]
+    ];
+  }
+
+  // Black patches of a football sit at the 12 corners of an icosahedron.
+  const ICO = [
+    [0, 1, PHI], [0, -1, PHI], [0, 1, -PHI], [0, -1, -PHI],
+    [1, PHI, 0], [-1, PHI, 0], [1, -PHI, 0], [-1, -PHI, 0],
+    [PHI, 0, 1], [-PHI, 0, 1], [PHI, 0, -1], [-PHI, 0, -1]
+  ];
+  const PATCHES = ICO.map(v => {
+    const d = norm(v);
+    const a = Math.abs(d[2]) < 0.9 ? [0, 0, 1] : [1, 0, 0];
+    const u = norm(cross(d, a));
+    const w = cross(d, u);
+    const rr = 0.42;
+    const pts = [];
+    for (let k = 0; k < 5; k++) {
+      const th = k * TAU / 5;
+      const c = Math.cos(th), s = Math.sin(th);
+      const dir = [u[0] * c + w[0] * s, u[1] * c + w[1] * s, u[2] * c + w[2] * s];
+      pts.push([
+        d[0] * Math.cos(rr) + dir[0] * Math.sin(rr),
+        d[1] * Math.cos(rr) + dir[1] * Math.sin(rr),
+        d[2] * Math.cos(rr) + dir[2] * Math.sin(rr)
+      ]);
+    }
+    return { d, pts };
+  });
+
+  // ----- Pitch geometry helpers -----
+  const PW = PITCH.x1 - PITCH.x0, PHT = PITCH.y1 - PITCH.y0;
+  const teamU = (team, x) => team === "black" ? (x - PITCH.x0) / PW : (PITCH.x1 - x) / PW;
+  const worldX = (team, u) => team === "black" ? PITCH.x0 + u * PW : PITCH.x1 - u * PW;
+  const worldY = v => PITCH.y0 + v * PHT;
+
+  // ----- State -----
+  let ball, ducks, ripples, physTime = 0;
+  let state = "kickoff", stateT = 0;       // kickoff | play | goal | fulltime
+  let score = [0, 0];                      // [black, white]
+  let clock = MATCH_SECONDS;
+  let scorer = null;                       // team that just scored
+  let lastTapAt = -10, ballCd = 0;
+  let shownSecond = -1;
+
+  function newBall() {
+    return { x: 500, y: 300, z: 0, vx: 0, vy: 0, vz: 0, spin: 0, emit: 0, a: 1, M: [1, 0, 0, 0, 1, 0, 0, 0, 1] };
+  }
+  function makeDuck(team, roleIdx) {
+    const r = ROLES[roleIdx];
+    const x = worldX(team, r.home.u), y = worldY(r.home.v);
+    return {
+      team, role: roleIdx, x, y,
+      h: team === "black" ? 0 : Math.PI,               // heading in radians: black faces right, white faces left
+      spd: 0,
+      speed: r.speed * (0.93 + Math.random() * 0.14),  // each duck has its own pace
+      acc: 0.55 + Math.random() * 0.4,                 // aim accuracy
+      power: 0.94 + Math.random() * 0.14,
+      p1: Math.random() * TAU, p2: Math.random() * TAU,
+      bp: Math.random() * TAU,                         // bobbing phase, integrated over time
+      emit: Math.random() * 0.6,
+      cd: 0, kick: 0, chasing: false,
+      lift: 0, hopDelay: 0, hopK: 0
+    };
+  }
+  function resetAll() {
+    ball = newBall();
+    ducks = [];
+    for (const t of TEAMS) for (let i = 0; i < ROLES.length; i++) ducks.push(makeDuck(t, i));
+    ripples = [];
+    startMatch();
+  }
+
+  // ----- Match flow -----
+  function setScoreboard() {
+    scoreL.textContent = String(score[0]);
+    scoreR.textContent = String(score[1]);
+  }
+  function setClock() {
+    const s = Math.ceil(clock - 1e-6);
+    if (s === shownSecond) return;
+    shownSecond = s;
+    // mm:ss, nên 60 giây hiện là 01:00 (không phải 00:60)
+    clockEl.textContent = "0" + Math.floor(s / 60) + ":" + (s % 60 < 10 ? "0" : "") + (s % 60);
+    clockEl.classList.toggle("low", s <= 10);
+  }
+  function showBanner(a, b) {
+    b1El.textContent = a;
+    b2El.textContent = b;
+    bannerEl.classList.add("show");
+  }
+  function hideBanner() { bannerEl.classList.remove("show", "blink"); }
+  function celebrateFlash() {
+    for (const el of [bannerEl, flashEl]) {
+      el.classList.remove(el === bannerEl ? "blink" : "go");
+      void el.offsetWidth;
+    }
+    bannerEl.classList.add("blink");
+    flashEl.classList.add("go");
+  }
+  function flashBoard() {
+    boardEl.classList.remove("flash");
+    void boardEl.offsetWidth;
+    boardEl.classList.add("flash");
+  }
+  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+  const scoreLine = () => "Black " + score[0] + " – " + score[1] + " White";
+
+  function startMatch() {
+    score = [0, 0];
+    clock = MATCH_SECONDS;
+    shownSecond = -1;
+    setScoreboard();
+    setClock();
+    hideBanner();
+    beginKickoff();
+  }
+  function beginKickoff() {
+    state = "kickoff"; stateT = 0;
+    hideBanner();
+    ball.x = 500; ball.y = 300; ball.z = 150;
+    ball.vx = ball.vy = ball.vz = 0;
+    ball.spin = 0;
+    ball.a = 0;                                        // fades in, then drops onto the water
+    ballCd = 0;
+    for (const d of ducks) { d.chasing = false; d.lift = 0; d.hopK = 0; }
+  }
+  function onGoal(team) {
+    state = "goal"; stateT = 0;
+    scorer = team;
+    score[team === "black" ? 0 : 1]++;
+    setScoreboard();
+    flashBoard();
+    showBanner("GOAL", cap(team) + " scores · " + scoreLine());
+    celebrateFlash();
+    liveEl.textContent = cap(team) + " scores. " + scoreLine() + ".";
+    if (!reduce) {
+      // The scorers hop twice
+      let n = 0;
+      for (const d of ducks) {
+        d.hopK = 0;
+        d.hopDelay = d.team === team ? 0.15 + (n++) * 0.14 : 0;
+      }
+    }
+  }
+  function endMatch() {
+    state = "fulltime"; stateT = 0;
+    const [a, b] = score;
+    const res = a === b ? "A draw" : (a > b ? "Black wins" : "White wins");
+    showBanner("FULL TIME", scoreLine() + " · " + res);
+    liveEl.textContent = "Full time. " + scoreLine() + ". " + res + ".";
+  }
+
+  // ----- Water rings -----
+  // age < 0 means the ring has not started yet (used for a second, smaller ring after a splash)
+  function addRipple(x, y, maxR, life, width, delay) {
+    ripples.push({ x, y, age: -(delay || 0), life, maxR, width, top: false, k: 1 });
+  }
+  function splash(x, y, impact) {
+    const s = Math.min(1, impact / 520);
+    addRipple(x, y, 26 + 90 * s, 1.7, 2.2, 0);
+    addRipple(x, y, 16 + 55 * s, 1.4, 1.6, 0.14);
+  }
+
+  // ----- Physics: ball -----
+  function kickRandom() {
+    const ang = Math.random() * TAU;
+    const sp = 300 + Math.random() * 160;
+    ball.vx = Math.cos(ang) * sp;
+    ball.vy = Math.sin(ang) * sp * 0.8;
+    ball.vz = 240 + Math.random() * 90;
+    ball.spin = (Math.random() < 0.5 ? -1 : 1) * (6 + Math.random() * 6);
+  }
+
+  // The viewer's tap: the ball hops up and flies toward the tapped spot, landing about there.
+  function tapKick(x, y) {
+    if (state === "goal") return;
+    if (physTime - lastTapAt < 0.4) return;            // short cooldown so tapping cannot make it chaotic
+    lastTapAt = physTime;
+    const tx = clamp(x, BALL_BOUNDS.minX, BALL_BOUNDS.maxX);
+    const ty = clamp(y, BALL_BOUNDS.minY, BALL_BOUNDS.maxY);
+    let dx = tx - ball.x, dy = ty - ball.y;
+    const dist = Math.hypot(dx, dy);
+    let sp, vz;
+    if (Math.hypot(x - ball.x, y - (ball.y - ball.z)) < BALL_R * 1.6) {
+      // Tapped the ball itself: it pops up and rolls off away from the tapped side
+      const ang = dist > 0.5 ? Math.atan2(-(y - (ball.y - ball.z)), -(x - ball.x)) : Math.random() * TAU;
+      dx = Math.cos(ang); dy = Math.sin(ang);
+      sp = 230; vz = 380;
+    } else {
+      sp = clamp(dist / 1.15, 190, 640);
+      vz = 320;
+      dx /= dist; dy /= dist;
+    }
+    ball.vx = dx * sp;
+    ball.vy = dy * sp;
+    ball.vz = vz;
+    ball.spin = (Math.random() < 0.5 ? -1 : 1) * (5 + sp / 90);
+    // A small ring where the viewer tapped
+    addRipple(tx, ty, 34, 0.9, 1.6, 0);
+    addRipple(tx, ty, 18, 0.7, 1.2, 0.1);
+  }
+
+  function updateBall(dt) {
+    ball.vz -= GRAVITY * dt;
+    ball.z += ball.vz * dt;
+    if (ball.z < 0) {
+      const impact = -ball.vz;               // speed when it hits the water
+      ball.z = 0;
+      if (impact > 60) splash(ball.x, ball.y, impact);
+      ball.vz = impact > 90 ? impact * 0.5 : 0;
+    }
+    let k = ball.z > 0 ? 0.35 : ROLL_K;
+    if (state === "goal") k += 3;            // the net slows it down
+    const f = Math.exp(-k * dt);
+    ball.vx *= f;
+    ball.vy *= f;
+    ball.x += ball.vx * dt;
+    ball.y += ball.vy * dt;
+
+    const B = BALL_BOUNDS;
+    if (state === "goal") {
+      // Inside the net: stay between the posts and the back of the net
+      const left = scorer === "white";
+      const lo = left ? 84 : PITCH.x1 - 6, hi = left ? PITCH.x0 + 6 : 916;
+      if (ball.x < lo) { ball.x = lo; ball.vx = Math.abs(ball.vx) * 0.3; }
+      if (ball.x > hi) { ball.x = hi; ball.vx = -Math.abs(ball.vx) * 0.3; }
+      if (ball.y < GOAL.y0 + 18) { ball.y = GOAL.y0 + 18; ball.vy = Math.abs(ball.vy) * 0.3; }
+      if (ball.y > GOAL.y1 - 18) { ball.y = GOAL.y1 - 18; ball.vy = -Math.abs(ball.vy) * 0.3; }
+    } else {
+      const mouth = ball.y > GOAL.y0 + 12 && ball.y < GOAL.y1 - 12;
+      if (ball.x < B.minX) {
+        if (mouth) {
+          if (state === "play" && ball.x < PITCH.x0 + 2) onGoal("white");
+          else if (ball.x < 84) { ball.x = 84; ball.vx = Math.abs(ball.vx) * 0.4; }
+        } else { ball.x = B.minX; ball.vx = Math.abs(ball.vx) * 0.7; }
+      }
+      if (ball.x > B.maxX) {
+        if (mouth) {
+          if (state === "play" && ball.x > PITCH.x1 - 2) onGoal("black");
+          else if (ball.x > 916) { ball.x = 916; ball.vx = -Math.abs(ball.vx) * 0.4; }
+        } else { ball.x = B.maxX; ball.vx = -Math.abs(ball.vx) * 0.7; }
+      }
+      if (ball.y < B.minY) { ball.y = B.minY; ball.vy = Math.abs(ball.vy) * 0.7; }
+      if (ball.y > B.maxY) { ball.y = B.maxY; ball.vy = -Math.abs(ball.vy) * 0.7; }
+    }
+
+    const sp = Math.hypot(ball.vx, ball.vy);
+    if (sp > 0.5) {
+      const ax = -ball.vy / sp, ay = ball.vx / sp;
+      ball.M = matMul(rotAxis(ax, ay, 0, (sp * dt) / BALL_R), ball.M);
+    }
+    if (Math.abs(ball.spin) > 0.01) {
+      ball.M = matMul(rotAxis(0, 0, 1, ball.spin * dt), ball.M);
+      ball.spin *= Math.exp(-1.2 * dt);
+    }
+
+    if (ball.z === 0 && sp > 140) {
+      ball.emit -= dt;
+      if (ball.emit <= 0) {
+        addRipple(ball.x, ball.y + 8, 14 + sp * 0.05, 1.1, 1.2, 0);
+        ball.emit = 0.22;
+      }
+    }
+  }
+
+  // ----- Duck players -----
+  // Where a duck wants to stand when it is not chasing the ball: its own spot, leaning toward the ball.
+  function homePos(d, t) {
+    const r = ROLES[d.role];
+    let bu = 0.5, bv = 0.5;
+    if (state === "play") {
+      bu = teamU(d.team, ball.x);
+      bv = (ball.y - PITCH.y0) / PHT;
+    }
+    let u, v;
+    if (r.id === "gk") {
+      u = r.home.u;
+      v = clamp(0.5 + (bv - 0.5) * 0.85, 0.37, 0.63);
+    } else {
+      u = clamp(r.home.u + (bu - r.home.u) * r.bu, r.uMin, r.uMax);
+      v = clamp(r.home.v + (bv - r.home.v) * r.bv, 0.08, 0.92);
+    }
+    // a gentle drift so a waiting duck never looks frozen
+    const dx = r.id === "gk" ? 0 : Math.sin(t * 0.4 + d.p1) * 10;
+    const dy = Math.sin(t * 0.33 + d.p2) * 8;
+    return [worldX(d.team, u) + dx, worldY(v) + dy];
+  }
+
+  // One chaser per team: the nearest duck whose zone contains the ball (the current chaser keeps a small bonus).
+  function chooseChasers() {
+    for (const team of TEAMS) {
+      const mates = ducks.filter(d => d.team === team);
+      const bu = teamU(team, ball.x);
+      let best = null, bestS = 1e9;
+      for (const d of mates) {
+        const r = ROLES[d.role];
+        if (bu < r.uMin - 0.08 || bu > r.uMax + 0.08) continue;
+        const s = Math.hypot(ball.x - d.x, ball.y - d.y) - (d.chasing ? 28 : 0);
+        if (s < bestS) { bestS = s; best = d; }
+      }
+      if (!best) {
+        for (const d of mates) {
+          if (ROLES[d.role].id === "gk") continue;
+          const s = Math.hypot(ball.x - d.x, ball.y - d.y);
+          if (s < bestS) { bestS = s; best = d; }
+        }
+      }
+      for (const d of mates) d.chasing = d === best;
+    }
+  }
+
+  function duckKick(d) {
+    const r = ROLES[d.role];
+    const bu = teamU(d.team, ball.x);
+    const attackX = d.team === "black" ? PITCH.x1 : PITCH.x0;
+    const aimY = 300 + (Math.random() * 2 - 1) * 48 + (Math.random() * 2 - 1) * (1 - d.acc) * 130;
+    let ax = attackX - ball.x, ay = aimY - ball.y;
+    const L = Math.hypot(ax, ay) || 1;
+    ax /= L; ay /= L;
+    let sp, vz;
+    if (bu > 0.6) {                     // shot
+      sp = (520 + Math.random() * 110) * d.power; vz = 90 + Math.random() * 70;
+    } else if (r.id === "gk" || bu < 0.22) {   // clearance
+      sp = (470 + Math.random() * 90) * d.power; vz = 120 + Math.random() * 60;
+    } else {                            // pass or dribble
+      sp = (330 + Math.random() * 90) * d.power; vz = 70 + Math.random() * 50;
+    }
+    ball.vx = ax * sp;
+    ball.vy = ay * sp;
+    ball.vz = vz;
+    ball.spin = (Math.random() < 0.5 ? -1 : 1) * (4 + sp / 80);
+    d.cd = 0.45;
+    d.kick = 0.26;
+    ballCd = 0.18;
+    addRipple(ball.x, ball.y + 6, 24, 0.9, 1.4, 0);
+  }
+
+  // Each duck swims in smooth curves: it turns toward where it wants to go at a limited rate,
+  // and its speed eases, so it always moves like a duck and never slides sideways.
+  function updateDucks(dt, t) {
+    const play = state === "play";
+    if (play) chooseChasers();
+    ballCd = Math.max(0, ballCd - dt);
+
+    for (const d of ducks) {
+      d.cd = Math.max(0, d.cd - dt);
+      d.kick = Math.max(0, d.kick - dt);
+
+      const mine = d.team === "black" ? 0 : 1;
+      const boost = score[mine] < score[1 - mine] ? 1.05 : 1;    // the team that is behind swims a little faster
+      const chase = play && d.chasing;
+
+      let tx, ty, sp;
+      if (chase) {
+        // aim where the ball is going, and come at it from the side away from the goal
+        const dist = Math.hypot(ball.x - d.x, ball.y - d.y);
+        const T = Math.min(0.8, dist / (d.speed + 1));
+        const drift = (1 - Math.exp(-ROLL_K * T)) / ROLL_K;
+        const px = clamp(ball.x + ball.vx * drift, BALL_BOUNDS.minX, BALL_BOUNDS.maxX);
+        const py = clamp(ball.y + ball.vy * drift, BALL_BOUNDS.minY, BALL_BOUNDS.maxY);
+        const gx = d.team === "black" ? PITCH.x1 : PITCH.x0;
+        let ex = gx - px, ey = 300 - py;
+        const el = Math.hypot(ex, ey) || 1;
+        const back = 24 * smooth(40, 130, dist);
+        tx = px - (ex / el) * back;
+        ty = py - (ey / el) * back;
+        sp = d.speed * 1.12 * boost;
+      } else {
+        const hp = homePos(d, t);
+        tx = hp[0]; ty = hp[1];
+        const dh = Math.hypot(tx - d.x, ty - d.y);
+        sp = d.speed * (play ? 0.62 : 0.55) * smooth(6, 95, dh) * boost;
+      }
+      tx = clamp(tx, DUCK_BOUNDS.minX, DUCK_BOUNDS.maxX);
+      ty = clamp(ty, DUCK_BOUNDS.minY, DUCK_BOUNDS.maxY);
+
+      let vx = 0, vy = 0;
+      const dx = tx - d.x, dy = ty - d.y, dd = Math.hypot(dx, dy);
+      if (dd > 0.01) { vx = (dx / dd) * sp; vy = (dy / dd) * sp; }
+
+      // keep a little room between ducks
+      for (const o of ducks) {
+        if (o === d) continue;
+        const sx = d.x - o.x, sy = d.y - o.y, sd = Math.hypot(sx, sy);
+        if (sd < 58 && sd > 0.01) {
+          const push = (1 - sd / 58) * 70;
+          vx += (sx / sd) * push;
+          vy += (sy / sd) * push;
+        }
+      }
+
+      const want = Math.hypot(vx, vy);
+      let spdTarget;
+      if (want < 9) {
+        // settled: slowly turn to watch the ball
+        const look = Math.atan2(ball.y - d.y, ball.x - d.x);
+        const df = angleDiff(look, d.h);
+        d.h += clamp(df * 1.4 * dt, -1.2 * dt, 1.2 * dt);
+        spdTarget = 5;
+      } else {
+        const hd = Math.atan2(vy, vx);
+        const df = angleDiff(hd, d.h);
+        d.h += clamp(df * 5 * dt, -3.6 * dt, 3.6 * dt);
+        spdTarget = want * (0.25 + 0.75 * Math.max(0, Math.cos(df)));
+      }
+      d.h = angleDiff(d.h, 0);
+      d.spd += (spdTarget - d.spd) * Math.min(1, dt * 3);
+
+      d.x += Math.cos(d.h) * d.spd * dt;
+      d.y += Math.sin(d.h) * d.spd * dt;
+      if (d.x < DUCK_BOUNDS.minX) { d.x = DUCK_BOUNDS.minX; d.h = Math.PI - d.h; }
+      if (d.x > DUCK_BOUNDS.maxX) { d.x = DUCK_BOUNDS.maxX; d.h = Math.PI - d.h; }
+      if (d.y < DUCK_BOUNDS.minY) { d.y = DUCK_BOUNDS.minY; d.h = -d.h; }
+      if (d.y > DUCK_BOUNDS.maxY) { d.y = DUCK_BOUNDS.maxY; d.h = -d.h; }
+
+      // Bobbing: phase grows with time, so changing speed never causes a jump
+      d.bp += dt * (3.2 + d.spd * 0.03);
+
+      // Faster ducks make more rings, and each ring spreads wider
+      if (d.spd > 12) {
+        d.emit -= dt;
+        if (d.emit <= 0) {
+          addRipple(d.x, d.y + 12, 20 + d.spd * 0.3, 1.5 + Math.random() * 0.4, 1.2, 0);
+          d.emit = Math.max(0.2, 1.4 - d.spd / 90);
+        }
+      }
+
+      // The beak and webbed feet reach the ball a little ahead of the body
+      if (play && ballCd <= 0 && d.cd <= 0 && ball.z < 24) {
+        const fx = d.x + Math.cos(d.h) * 12 * DS * 1.3;
+        const fy = d.y + Math.sin(d.h) * 12 * DS * 1.3;
+        if (Math.hypot(ball.x - fx, ball.y - fy) < 27) duckKick(d);
+      }
+
+      // Goal celebration: two small hops, with a ring each time the duck lands
+      if (state === "goal" && d.team === scorer) {
+        const tt = stateT - d.hopDelay;
+        if (tt > 0 && tt < 1.0) {
+          const ph = tt / 0.5;
+          d.lift = 15 * Math.abs(Math.sin(Math.PI * ph));
+          const kk = Math.floor(ph);
+          if (kk !== d.hopK) {
+            if (kk >= 1) addRipple(d.x, d.y + 10, 30, 1.1, 1.2, 0);
+            d.hopK = kk;
+          }
+        } else {
+          d.lift = 0;
+          if (tt >= 1.0 && d.hopK !== 2) { addRipple(d.x, d.y + 10, 30, 1.1, 1.2, 0); d.hopK = 2; }
+        }
+      } else {
+        d.lift = 0;
+      }
+    }
+
+    // Ducks do not overlap
+    for (let i = 0; i < ducks.length; i++) {
+      for (let j = i + 1; j < ducks.length; j++) {
+        const a = ducks[i], b = ducks[j];
+        const sx = b.x - a.x, sy = b.y - a.y, sd = Math.hypot(sx, sy);
+        const min = 34;
+        if (sd < min && sd > 0.01) {
+          const o = (min - sd) * 0.5 * Math.min(1, dt * 10);
+          a.x -= (sx / sd) * o; a.y -= (sy / sd) * o;
+          b.x += (sx / sd) * o; b.y += (sy / sd) * o;
+        }
+      }
+    }
+  }
+
+  function updateRipples(dt) {
+    for (const r of ripples) r.age += dt;
+    ripples = ripples.filter(r => r.age < r.life);
+  }
+
+  // One step of the whole game
+  function advance(dt) {
+    physTime += dt;
+    stateT += dt;
+    if (state === "play") {
+      if (!reduce) {
+        clock -= dt;
+        if (clock <= 0) { clock = 0; endMatch(); }
+        setClock();
+      }
+    } else if (state === "kickoff") {
+      if (ball.a < 1) ball.a = Math.min(1, ball.a + dt * 2.5);
+      if (stateT > KICKOFF_T) { state = "play"; stateT = 0; }
+    } else if (state === "goal") {
+      if (stateT > GOAL_T - 0.45) ball.a = Math.max(0, (GOAL_T - stateT) / 0.45);
+      if (stateT >= GOAL_T) beginKickoff();
+    } else if (state === "fulltime") {
+      if (stateT >= FULLTIME_T) startMatch();
+    }
+    if (!reduce) updateDucks(dt, physTime);
+    updateRipples(dt);
+    updateBall(dt);
+  }
+
+  // ----- Drawing: pond (painted once) -----
+  // Water color comes from the blurred pond silhouette: pale and see-through in the shallows near the bank,
+  // darker toward the middle. It is computed per pixel at half resolution and scaled up, so it is perfectly smooth.
+  function drawWater(g, M) {
+    g.fillStyle = C.fog;
+    g.fillRect(0, 0, W, H);
+
+    const mid = parseHex(C.waterMid), deep = parseHex(C.waterDeep), light = parseHex(C.waterLight);
+    const fogc = parseHex(C.fog), sun = parseHex(C.sun);
+    const shallow = [0, 1, 2].map(i => light[i] + (fogc[i] - light[i]) * 0.45);
+    const n3 = makeNoise(260, 5), n4 = makeNoise(90, 9);
+    const rnd = mulberry32(77);
+    const img = new ImageData(LW, LH);
+    const px = img.data;
+    for (let y = 0; y < LH; y++) {
+      const Y = (y + 0.5) * 2;
+      for (let x = 0; x < LW; x++) {
+        const X = (x + 0.5) * 2;
+        const m = M[y * LW + x];
+        const i = (y * LW + x) * 4;
+        const wa = smooth(0.26, 0.50, m);
+        if (wa <= 0.002) { px[i + 3] = 0; continue; }
+        const shT = (1 - smooth(0.40, 0.82, m)) * 0.9;
+        const dpT = smooth(0.66, 1.0, m) * 0.78;
+        // faint, slow variation in the water so it does not look flat
+        const wv = 1 + ((n3(X, Y) * 0.6 + n4(X, Y) * 0.4) - 0.5) * 0.07;
+        const sunA = clamp(1 - Math.hypot(X - 500, Y + 40) / 520, 0, 1) * 0.30;
+        for (let c = 0; c < 3; c++) {
+          let v = mid[c] + (shallow[c] - mid[c]) * shT;
+          v = v + (deep[c] - v) * dpT;
+          v = v + (sun[c] - v) * sunA;
+          v *= wv;
+          px[i + c] = v + (rnd() - 0.5);
+        }
+        px[i + 3] = wa * 255;
+      }
+    }
+    const tmp = document.createElement("canvas");
+    tmp.width = LW; tmp.height = LH;
+    tmp.getContext("2d").putImageData(img, 0, 0);
+    g.imageSmoothingEnabled = true;
+    g.imageSmoothingQuality = "high";
+    g.drawImage(tmp, 0, 0, W, H);
+  }
+
+  // Soft white markings, like a football pitch drawn on the water
+  function drawPitchLines(g) {
+    const { x0, x1, y0, y1 } = PITCH;
+    const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+    g.save();
+    g.clip(POND);
+    g.strokeStyle = "rgba(255,255,255,0.30)";
+    g.fillStyle = "rgba(255,255,255,0.30)";
+    g.lineWidth = 2.4;
+    g.lineJoin = "round";
+    g.lineCap = "round";
+
+    g.strokeRect(x0, y0, x1 - x0, y1 - y0);          // touchlines and goal lines
+    g.beginPath(); g.moveTo(cx, y0); g.lineTo(cx, y1); g.stroke();   // halfway line
+    g.beginPath(); g.arc(cx, cy, 56, 0, TAU); g.stroke();            // centre circle
+    g.beginPath(); g.arc(cx, cy, 3.5, 0, TAU); g.fill();             // centre spot
+
+    // Penalty areas and goal areas
+    g.strokeRect(x0, cy - 90, 130, 180);
+    g.strokeRect(x0, cy - 48, 48, 96);
+    g.strokeRect(x1 - 130, cy - 90, 130, 180);
+    g.strokeRect(x1 - 48, cy - 48, 48, 96);
+
+    // Penalty spots and the arcs outside the penalty areas
+    const a = Math.acos(40 / 50);
+    g.beginPath(); g.arc(x0 + 90, cy, 3, 0, TAU); g.fill();
+    g.beginPath(); g.arc(x0 + 90, cy, 50, -a, a); g.stroke();
+    g.beginPath(); g.arc(x1 - 90, cy, 3, 0, TAU); g.fill();
+    g.beginPath(); g.arc(x1 - 90, cy, 50, Math.PI - a, Math.PI + a); g.stroke();
+    g.restore();
+  }
+
+  // ----- Drawing: decorations at the corners of the pond (painted once) -----
+  function drawRock(g, x, y, s, rot) {
+    // Shadow and a faint ring where the rock meets the water
+    g.fillStyle = "rgba(10,50,52,0.25)";
+    g.beginPath(); g.ellipse(x + s * 0.3, y + s * 0.5, s * 1.1, s * 0.5, 0, 0, TAU); g.fill();
+    g.strokeStyle = "rgba(255,255,255,0.28)";
+    g.lineWidth = 1.5;
+    g.beginPath(); g.ellipse(x, y + s * 0.35, s * 1.5, s * 0.85, 0, 0, TAU); g.stroke();
+
+    g.save();
+    g.translate(x, y);
+    g.rotate(rot);
+    const pts = [[1, 0], [0.82, 0.6], [0.2, 0.86], [-0.5, 0.76], [-1, 0.2], [-0.82, -0.5], [-0.2, -0.84], [0.62, -0.66]];
+    const P = pts.map(p => [p[0] * s, p[1] * s]);
+    g.beginPath();
+    for (let i = 0; i < P.length; i++) {
+      const a = P[i], b = P[(i + 1) % P.length];
+      const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
+      if (i === 0) g.moveTo(mx, my);
+      else g.quadraticCurveTo(a[0], a[1], mx, my);
+    }
+    const a0 = P[0], b0 = P[1];
+    g.quadraticCurveTo(a0[0], a0[1], (a0[0] + b0[0]) / 2, (a0[1] + b0[1]) / 2);
+    g.closePath();
+    const rg = g.createRadialGradient(-0.35 * s, -0.4 * s, s * 0.1, 0, 0, s * 1.25);
+    rg.addColorStop(0, "#d4d9d7");
+    rg.addColorStop(0.55, "#8d9a98");
+    rg.addColorStop(1, "#56635f");
+    g.fillStyle = rg;
+    g.fill();
+    g.strokeStyle = "rgba(0,0,0,0.18)";
+    g.lineWidth = 1;
+    g.stroke();
+    g.restore();
+  }
+
+  function drawLilyPad(g, x, y, r, rot, flower) {
+    g.save();
+    g.translate(x, y);
+    g.rotate(rot);
+    g.fillStyle = "rgba(10,50,52,0.20)";
+    g.beginPath(); g.ellipse(2, 3, r, r * 0.95, 0, 0, TAU); g.fill();
+
+    g.beginPath();
+    g.moveTo(0, 0);
+    g.arc(0, 0, r, 0.35, TAU - 0.35);
+    g.closePath();
+    const pg = g.createRadialGradient(-0.3 * r, -0.3 * r, 0, 0, 0, r);
+    pg.addColorStop(0, "#c2dd7a");
+    pg.addColorStop(1, "#6fa33a");
+    g.fillStyle = pg;
+    g.fill();
+    g.strokeStyle = "rgba(30,80,30,0.35)";
+    g.lineWidth = 1;
+    g.stroke();
+
+    g.strokeStyle = "rgba(255,255,255,0.20)";
+    for (let k = 0; k < 8; k++) {
+      const ang = 0.35 + ((TAU - 0.7) * (k + 0.5)) / 8;
+      g.beginPath();
+      g.moveTo(0, 0);
+      g.lineTo(Math.cos(ang) * r * 0.92, Math.sin(ang) * r * 0.92);
+      g.stroke();
+    }
+    if (flower) {
+      g.fillStyle = "#f6d3de";
+      for (let k = 0; k < 6; k++) {
+        g.save();
+        g.rotate((k * TAU) / 6);
+        g.beginPath(); g.ellipse(r * 0.28, 0, r * 0.26, r * 0.12, 0, 0, TAU); g.fill();
+        g.restore();
+      }
+      g.fillStyle = "#f2c94c";
+      g.beginPath(); g.arc(0, 0, r * 0.1, 0, TAU); g.fill();
+    }
+    g.restore();
+  }
+
+  function drawLeaf(g, x, y, len, rot) {
+    g.save();
+    g.translate(x, y);
+    g.rotate(rot);
+    g.fillStyle = "rgba(10,50,52,0.18)";
+    g.beginPath(); g.ellipse(2, 3, len / 2, len * 0.2, 0, 0, TAU); g.fill();
+
+    g.beginPath();
+    g.moveTo(-len / 2, 0);
+    g.quadraticCurveTo(0, -len * 0.34, len / 2, 0);
+    g.quadraticCurveTo(0, len * 0.34, -len / 2, 0);
+    g.closePath();
+    const lg = g.createLinearGradient(0, -len * 0.3, 0, len * 0.3);
+    lg.addColorStop(0, "#a8d467");
+    lg.addColorStop(1, "#5c9438");
+    g.fillStyle = lg;
+    g.fill();
+    g.strokeStyle = "rgba(255,255,255,0.35)";
+    g.lineWidth = 1.2;
+    g.beginPath(); g.moveTo(-len / 2, 0); g.lineTo(len / 2, 0); g.stroke();
+    g.restore();
+  }
+
+  function drawShoreObjects(g) {
+    g.save();
+    g.clip(POND);
+    // Top left: rocks
+    drawRock(g, 176, 126, 16, 0.3);
+    drawRock(g, 204, 140, 10, 0.8);
+    drawRock(g, 150, 146, 9, 1.2);
+    // Top right: floating leaves
+    drawLeaf(g, 826, 122, 36, 0.6);
+    drawLeaf(g, 858, 142, 27, -0.4);
+    drawLeaf(g, 800, 138, 22, 1.1);
+    // Bottom left: lily pads
+    drawLilyPad(g, 170, 486, 23, 0.4, true);
+    drawLilyPad(g, 208, 506, 16, 1.6, false);
+    drawLilyPad(g, 140, 472, 14, 3, false);
+    // Bottom right: rocks and a pad
+    drawRock(g, 836, 488, 18, 0.2);
+    drawRock(g, 866, 474, 11, 1);
+    drawLilyPad(g, 800, 504, 15, 2.2, false);
+    g.restore();
+  }
+
+  // ----- Drawing: fog and goals (painted once, above the ducks) -----
+  // Fog thickness follows the blurred pond silhouette: thick outside and at the bank, thinning toward the middle.
+  // A little noise bends the edge of the thinning, and a few faint wisps drift inside, so there is no visible ring or band.
+  function drawFog(g, M) {
+    const fogc = parseHex(C.fog);
+    const n1 = makeNoise(170, 11), n2 = makeNoise(80, 23), n3 = makeNoise(240, 37);
+    const rnd = mulberry32(131);
+    const img = new ImageData(LW, LH);
+    const px = img.data;
+    for (let y = 0; y < LH; y++) {
+      const Y = (y + 0.5) * 2;
+      for (let x = 0; x < LW; x++) {
+        const X = (x + 0.5) * 2;
+        const m = M[y * LW + x];
+        const nz = n1(X, Y) * 0.6 + n2(X, Y) * 0.4;
+        const mm = m + (nz - 0.5) * 0.34;
+        let f = Math.pow(1 - smooth(0.34, 0.86, mm), 1.35);
+        let a = 0.95 * f;
+        const wisp = smooth(0.55, 0.95, n3(X, Y)) * 0.11 * smooth(0.3, 0.9, m);
+        a = a + wisp * (1 - a);
+        const i = (y * LW + x) * 4;
+        px[i] = fogc[0]; px[i + 1] = fogc[1]; px[i + 2] = fogc[2];
+        px[i + 3] = a * 255 + (rnd() - 0.5);
+      }
+    }
+    const tmp = document.createElement("canvas");
+    tmp.width = LW; tmp.height = LH;
+    tmp.getContext("2d").putImageData(img, 0, 0);
+    g.imageSmoothingEnabled = true;
+    g.imageSmoothingQuality = "high";
+    g.drawImage(tmp, 0, 0, W, H);
+  }
+
+  // Wisps of mist: long, soft, uneven shapes that drift across the pond and wrap around.
+  // Some pass behind the ducks and some in front, so the air feels like it has depth.
+  function makeMistSprite() {
+    const c = document.createElement("canvas");
+    c.width = 512; c.height = 160;
+    const g = c.getContext("2d");
+    const rnd = mulberry32(5);
+    for (let i = 0; i < 9; i++) {
+      const x = 90 + rnd() * 332, y = 55 + rnd() * 50, r = 55 + rnd() * 50;
+      const gr = g.createRadialGradient(x, y, 0, x, y, r);
+      for (let k = 0; k <= 8; k++) {
+        const t = k / 8;
+        gr.addColorStop(t, hexToRgba(C.fog, 0.32 * Math.pow(1 - smooth(0, 1, t), 1.5)));
+      }
+      g.fillStyle = gr;
+      g.fillRect(x - r, y - r, r * 2, r * 2);
+    }
+    return c;
+  }
+  const MIST = [
+    { y: 190, w: 560, h: 150, vx: 11, x0: 100, a: 0.55, br: 0.21, ph: 0.3, sw: 18, low: false },
+    { y: 330, w: 640, h: 170, vx: 7,  x0: 640, a: 0.50, br: 0.16, ph: 1.7, sw: 24, low: false },
+    { y: 440, w: 520, h: 140, vx: 13, x0: 360, a: 0.50, br: 0.25, ph: 3.1, sw: 16, low: false },
+    { y: 255, w: 600, h: 160, vx: -8, x0: 820, a: 0.45, br: 0.19, ph: 4.4, sw: 22, low: true },
+    { y: 390, w: 700, h: 180, vx: -5, x0: 200, a: 0.45, br: 0.14, ph: 5.5, sw: 28, low: true },
+    { y: 150, w: 480, h: 130, vx: 9,  x0: 760, a: 0.40, br: 0.23, ph: 2.4, sw: 14, low: true }
+  ];
+  const MIST_SCALE = 1.5;                  // wisps are wide and low
+  function drawMist(t, low) {
+    for (const m of MIST) {
+      if (m.low !== low) continue;
+      const mw = m.w * MIST_SCALE, mh = m.h * 1.2;
+      const span = W + 2 * mw;
+      const x = ((((m.x0 + t * m.vx + mw) % span) + span) % span) - mw;
+      const y = m.y + Math.sin(t * 0.13 + m.ph) * m.sw;
+      ctx.globalAlpha = m.a * (0.6 + 0.4 * Math.sin(t * m.br * 2 + m.ph));
+      ctx.drawImage(mistSprite, x, y - mh / 2, mw, mh);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function drawGoal(g, x) {
+    g.save();
+    g.beginPath();
+    g.rect(x, GOAL.y0, 26, GOAL.y1 - GOAL.y0);
+    g.fillStyle = "rgba(255,255,255,0.6)";
+    g.fill();
+    g.fillStyle = NET;
+    g.fill();
+    g.lineJoin = "round";
+    g.strokeStyle = hexToRgba(C.ink, 0.8);
+    g.lineWidth = 7;
+    g.stroke();
+    g.strokeStyle = "#ffffff";
+    g.lineWidth = 3.5;
+    g.stroke();
+    g.restore();
+  }
+
+  // ----- Drawing: things that move -----
+  function drawRipples(top) {
+    for (const r of ripples) {
+      if (r.age < 0 || r.top !== top) continue;
+      const p = r.age / r.life;
+      const eased = 1 - Math.pow(1 - p, 2);
+      const rad = 6 + (r.maxR - 6) * eased;
+      const al = (1 - p) * 0.30 * r.k;       // soft rings, not sharp lines
+      ctx.beginPath();
+      ctx.arc(r.x, r.y, rad, 0, TAU);
+      ctx.strokeStyle = "rgba(255,255,255," + al.toFixed(3) + ")";
+      ctx.lineWidth = r.width * (0.5 + (1 - p) * 0.5);
+      ctx.stroke();
+    }
+  }
+
+  // The duck is seen from above, like the ball: body, wings, neck, head and beak.
+  // It turns in the water with its heading, and its light stays at the top left
+  // of the screen while it turns, so the shading shows the form turning in 3D.
+  function drawDuck(d) {
+    const isBlack = d.team === "black";
+    const cs = Math.cos(d.h), sn = Math.sin(d.h);
+    const bob = Math.sin(d.bp) * (0.5 + Math.min(1, d.spd / 60) * 0.8);
+    const sc = DS * (1 + bob * 0.012 + d.lift * 0.004);
+    const lunge = d.kick > 0 ? Math.sin(Math.PI * (1 - d.kick / 0.26)) * 4 : 0;
+
+    // Soft shadow on the water, offset away from the light; it stays on the water when the duck hops
+    ctx.save();
+    ctx.translate(d.x + 4 * DS, d.y + 7 * DS);
+    ctx.rotate(d.h);
+    ctx.fillStyle = hexToRgba(C.waterDeep, 0.20 * (1 - d.lift / 40));
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 32 * DS * (1 - d.lift / 60), 20 * DS * (1 - d.lift / 60), 0, 0, TAU);
+    ctx.fill();
+    ctx.restore();
+
+    ctx.save();
+    ctx.translate(d.x, d.y - d.lift);
+    ctx.rotate(d.h);
+    ctx.scale(sc, sc);
+
+    // Light comes from the top left of the screen; express it in the duck's own frame
+    const lx = -0.5 * cs - 0.7 * sn;
+    const ly = 0.5 * sn - 0.7 * cs;
+
+    function shade(cxp, cyp, r) {
+      const gr = ctx.createRadialGradient(cxp + lx * r * 0.45, cyp + ly * r * 0.45, 1, cxp, cyp, r * 1.15);
+      if (isBlack) {
+        gr.addColorStop(0, "#6b767d");
+        gr.addColorStop(0.5, "#2a3136");
+        gr.addColorStop(1, C.duckBlack);
+      } else {
+        gr.addColorStop(0, "#ffffff");
+        gr.addColorStop(0.6, "#e6eeeb");
+        gr.addColorStop(1, "#b5c6c1");
+      }
+      return gr;
+    }
+    const edge = isBlack ? "rgba(0,0,0,0.30)" : "rgba(60,90,90,0.35)";
+    ctx.lineWidth = 1 / DS;
+    ctx.strokeStyle = edge;
+
+    // Tail
+    ctx.beginPath();
+    ctx.moveTo(-24, -7); ctx.lineTo(-41, 0); ctx.lineTo(-24, 7); ctx.closePath();
+    ctx.fillStyle = shade(-30, 0, 14);
+    ctx.fill(); ctx.stroke();
+
+    // Body
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 30, 19, 0, 0, TAU);
+    ctx.fillStyle = shade(0, 0, 30);
+    ctx.fill(); ctx.stroke();
+
+    // Wings folded on both sides
+    for (const side of [-1, 1]) {
+      ctx.beginPath();
+      ctx.ellipse(-3, side * 10.5, 17, 7, -side * 0.18, 0, TAU);
+      ctx.fillStyle = isBlack ? "rgba(255,255,255,0.07)" : "rgba(31,111,115,0.10)";
+      ctx.fill();
+      ctx.strokeStyle = edge;
+      ctx.stroke();
+    }
+
+    // Neck and head (the head nods very slightly as the duck swims, and pokes forward on a kick)
+    const hx = 24 + Math.sin(d.bp) * 0.8 + lunge;
+    ctx.beginPath();
+    ctx.ellipse(15 + lunge * 0.5, 0, 10, 8, 0, 0, TAU);
+    ctx.fillStyle = shade(15, 0, 10);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(hx, 0, 11, 0, TAU);
+    ctx.fillStyle = shade(hx, 0, 11);
+    ctx.fill(); ctx.stroke();
+
+    // Beak
+    ctx.beginPath();
+    ctx.moveTo(hx + 7, -5);
+    ctx.quadraticCurveTo(hx + 20, -4, hx + 22, 0);
+    ctx.quadraticCurveTo(hx + 20, 4, hx + 7, 5);
+    ctx.closePath();
+    ctx.fillStyle = C.beak;
+    ctx.fill();
+    ctx.strokeStyle = "rgba(120,50,0,0.35)";
+    ctx.stroke();
+
+    // Eyes, one on each side of the head
+    for (const side of [-1, 1]) {
+      const ex = hx + 3, ey = side * 6;
+      if (isBlack) {
+        ctx.beginPath(); ctx.arc(ex, ey, 2.8, 0, TAU); ctx.fillStyle = "#ffffff"; ctx.fill();
+        ctx.beginPath(); ctx.arc(ex + 0.5, ey, 1.4, 0, TAU); ctx.fillStyle = "#101418"; ctx.fill();
+      } else {
+        ctx.beginPath(); ctx.arc(ex, ey, 2.2, 0, TAU); ctx.fillStyle = "#101418"; ctx.fill();
+        ctx.beginPath(); ctx.arc(ex + 0.6, ey - 0.6, 0.7, 0, TAU); ctx.fillStyle = "#ffffff"; ctx.fill();
+      }
+    }
+    ctx.restore();
+  }
+
+  function drawBall() {
+    if (ball.a <= 0.01) return;
+    const bx = ball.x, by = ball.y, z = ball.z;
+    const s = 1 + z / 900;
+    const R = BALL_R * s;
+    const cx = bx, cy = by - z;
+    ctx.save();
+    ctx.globalAlpha = ball.a;
+
+    // Shadow on the water: smaller and fainter the higher the ball is
+    const sh = Math.max(0.35, 1 - z / 260);
+    ctx.fillStyle = hexToRgba(C.waterDeep, 0.30 * sh + 0.04);
+    ctx.beginPath();
+    ctx.ellipse(bx, by + 6, BALL_R * 1.05 * sh, BALL_R * 0.45 * sh, 0, 0, TAU);
+    ctx.fill();
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, TAU);
+    ctx.clip();
+
+    const base = ctx.createRadialGradient(cx - R * 0.35, cy - R * 0.4, R * 0.05, cx, cy, R * 1.05);
+    base.addColorStop(0, "#ffffff");
+    base.addColorStop(0.6, "#eef2f0");
+    base.addColorStop(1, "#b8c3c0");
+    ctx.fillStyle = base;
+    ctx.fillRect(cx - R, cy - R, R * 2, R * 2);
+
+    const M = ball.M;
+    ctx.fillStyle = "#1a1d20";
+    for (const p of PATCHES) {
+      const center = applyMat(M, p.d);
+      if (center[2] < -0.3) continue;
+      ctx.beginPath();
+      p.pts.forEach((q, i) => {
+        const r = applyMat(M, q);
+        const X = cx + R * r[0], Y = cy - R * r[1];
+        if (i === 0) ctx.moveTo(X, Y); else ctx.lineTo(X, Y);
+      });
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    const shadeG = ctx.createRadialGradient(cx - R * 0.3, cy - R * 0.35, R * 0.1, cx, cy, R);
+    shadeG.addColorStop(0, "rgba(255,255,255,0)");
+    shadeG.addColorStop(0.65, "rgba(0,0,0,0)");
+    shadeG.addColorStop(1, "rgba(0,0,0,0.45)");
+    ctx.fillStyle = shadeG;
+    ctx.fillRect(cx - R, cy - R, R * 2, R * 2);
+
+    const hl = ctx.createRadialGradient(cx - R * 0.38, cy - R * 0.42, 0, cx - R * 0.38, cy - R * 0.42, R * 0.5);
+    hl.addColorStop(0, "rgba(255,255,255,0.75)");
+    hl.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = hl;
+    ctx.fillRect(cx - R, cy - R, R * 2, R * 2);
+    ctx.restore();
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, TAU);
+    ctx.strokeStyle = "rgba(20,30,30,0.35)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function render() {
+    ctx.drawImage(bgLayer.c, 0, 0, W, H);   // water, depth, pitch lines, shore objects
+    drawRipples(false);
+    const mt = reduce ? 0 : physTime;
+    drawMist(mt, true);                     // thin mist behind the ducks
+
+    const order = ducks.slice().sort((a, b) => a.y - b.y);
+    for (const d of order) drawDuck(d);
+
+    ctx.drawImage(fogLayer.c, 0, 0, W, H);  // fog over the water and ducks
+    drawMist(mt, false);                    // mist drifting in front of the ducks
+    drawRipples(true);                      // celebration rings, seen through the mist
+    ctx.drawImage(goalLayer.c, 0, 0, W, H); // goals stay clear
+    drawBall();
+  }
+
+  // ----- Input -----
+  function toCanvas(e) {
+    const r = canvas.getBoundingClientRect();
+    return [(e.clientX - r.left) / r.width * W, (e.clientY - r.top) / r.height * H];
+  }
+  canvas.addEventListener("pointerdown", e => {
+    if (e.button !== undefined && e.button > 0) return;
+    const [x, y] = toCanvas(e);
+    tapKick(x, y);
+  });
+  canvas.addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      if (state !== "goal" && physTime - lastTapAt >= 0.4) { lastTapAt = physTime; kickRandom(); }
+    }
+  });
+  replayBtn.addEventListener("click", () => { resetAll(); });
+
+  // ----- Loop -----
+  readTokens();
+  buildLayers();
+  resetAll();
+
+  // Pause when the pond is off screen or the tab is hidden, to save battery
+  let last = performance.now(), raf = 0, visible = true;
+  function tick(now) {
+    // Smooth time step: the longest step is 1/30 s, so a slow frame never makes a jump
+    const dt = Math.min((now - last) / 1000, 1 / 30);
+    last = now;
+    advance(dt);
+    render();
+    raf = requestAnimationFrame(tick);
+  }
+  function sync() {
+    const run = visible && !document.hidden;
+    if (run && !raf) { last = performance.now(); raf = requestAnimationFrame(tick); }
+    if (!run && raf) { cancelAnimationFrame(raf); raf = 0; }
+  }
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; sync(); }, { threshold: 0.05 }).observe(canvas);
+  }
+  document.addEventListener("visibilitychange", sync);
+  sync();
+}
+
+// Start the game only when the pond is about to scroll into view.
+const frame = document.querySelector<HTMLElement>("[data-duck-football]");
+if (frame) {
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        io.disconnect();
+        initDuckFootball(frame);
+      }
+    }, { rootMargin: "200px" });
+    io.observe(frame);
+  } else {
+    initDuckFootball(frame);
+  }
+}
+</script>
+
+<style>
+.duck-football {
+  /* The game keeps its own pond palette. Only the fog follows the page background, so the pond melts into the page. */
+  --fog: var(--color-bg);
+  --water-deep: #1f6f73;
+  --water-mid: #3f9d9a;
+  --water-light: #bfe3d8;
+  --sun: #f6d58a;
+  --ink: var(--color-text);
+  --ink-soft: var(--color-text-muted);
+  --board: #0d1516;
+  --board-line: #2d3c3d;
+  --board-text: #9fb4b1;
+  --led: #ffd27a;
+  --duck-black: #14181b;
+  --duck-white: #fbf8f0;
+  --beak: #f08a3c;
+  width: 100%;
+  max-width: 60rem;
+  margin-inline: auto;
+}
+.pitch-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 5 / 3;
+  overflow: hidden;
+  background: var(--fog);
+  container-type: inline-size;
+}
+#pitch {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+#pitch:focus-visible { outline: 3px solid var(--water-deep); outline-offset: -3px; }
+
+/* Scoreboard: a small quiet pill under the pond, styled like the replay button */
+.board {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 32px;
+  box-sizing: border-box;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  background: color-mix(in srgb, var(--fog) 55%, transparent);
+  color: var(--ink-soft);
+  pointer-events: none;
+}
+.board .team {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--ink-soft);
+}
+.board .digits {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.board .colon { opacity: 0.5; }
+.board .sep {
+  width: 1px;
+  height: 12px;
+  background: color-mix(in srgb, var(--ink) 18%, transparent);
+}
+.board .clock {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  min-width: 3.4em;
+  text-align: center;
+}
+.board .clock.low { color: var(--ink); }
+.board.flash .digits { animation: bump 0.9s ease-out; }
+@keyframes bump {
+  0%   { transform: scale(1); }
+  20%  { transform: scale(1.28); }
+  100% { transform: scale(1); }
+}
+
+/* Goal and full-time message: a soft pill that fades in below the scoreboard */
+.banner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, calc(-50% + 6px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: clamp(3px, 0.7cqw, 5px) clamp(10px, 1.8cqw, 16px) clamp(3px, 0.8cqw, 6px);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--board) 92%, transparent);
+  border: 0;
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  pointer-events: none;
+  text-align: center;
+}
+.banner.show { opacity: 1; transform: translate(-50%, -50%); }
+.banner.blink .b1 { animation: blinktext 1.5s steps(1, end); }
+@keyframes blinktext {
+  0%, 24%, 48%, 100% { opacity: 1; }
+  12%, 36%, 60% { opacity: 0.25; }
+}
+/* A quick soft camera-flash over the pitch */
+.shutter {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.8), rgba(255,244,214,0.45) 70%);
+  opacity: 0;
+  pointer-events: none;
+}
+.shutter.go { animation: camflash 0.9s ease-out; }
+@keyframes camflash {
+  0%   { opacity: 0; }
+  8%   { opacity: 0.55; }
+  22%  { opacity: 0.05; }
+  34%  { opacity: 0.4; }
+  100% { opacity: 0; }
+}
+.banner .b1 {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: clamp(9px, 2.1cqw, 16px);
+  letter-spacing: 0.28em;
+  padding-left: 0.28em;
+  color: var(--led);
+}
+.banner .b2 {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: clamp(8px, 1.35cqw, 11px);
+  letter-spacing: 0.05em;
+  color: var(--board-text);
+}
+
+/* Scoreboard and replay share one row under the pond */
+.controls {
+  position: relative;
+  margin-top: -5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.replay {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  background: color-mix(in srgb, var(--fog) 55%, transparent);
+  color: var(--ink-soft);
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity 0.2s, background 0.2s;
+}
+.replay svg { width: 16px; height: 16px; }
+.replay:hover { opacity: 1; background: color-mix(in srgb, var(--fog) 85%, transparent); }
+.replay:focus-visible { outline: 3px solid var(--water-deep); outline-offset: 3px; opacity: 1; }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .banner { transition: none; }
+  .banner.blink .b1, .shutter.go { animation: none; }
+  .board.flash .digits { animation: none; }
+}
+</style>

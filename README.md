@@ -23,7 +23,9 @@ portfolio/
 │   ├── work/demo-case-study.md ← case study DEMO để xem Up next / Previous (xóa hoặc thêm draft: true khi có dự án thật)
 │   ├── fun/sample-project.md ← dự án nhỏ (chỉ hiện thẻ ở trang chủ)
 │   └── pages/about.md        ← nội dung trang About (giới thiệu + 4 bước Process)
-├── public/                   ← file giữ nguyên, truy cập thẳng bằng URL (hiện để trống)
+├── public/                   ← file giữ nguyên, truy cập thẳng bằng URL
+│   ├── favicon.svg, favicon.ico, apple-touch-icon.png ← biểu tượng tab (chữ V)
+│   └── images/               ← ảnh cover và ảnh trong case study
 ├── src/
 │   ├── pages/                ← mỗi file = một trang web
 │   │   ├── index.astro       ← trang chủ "/"
@@ -33,7 +35,10 @@ portfolio/
 │   │   ├── Nav.astro         ← thanh điều hướng (+ menu mobile)
 │   │   ├── Footer.astro      ← chân trang (email, mạng xã hội, lên đầu trang)
 │   │   ├── ProjectCard.astro ← thẻ dự án
-│   │   └── CaseToc.astro     ← mục lục case study (sidebar + thanh ngang mobile)
+│   │   ├── CaseToc.astro     ← mục lục case study (sidebar + thanh ngang mobile)
+│   │   ├── CaseNav.astro     ← "Up next / Previous" ở cuối case study
+│   │   ├── Loader.astro      ← màn hình loading "Things designed by Vu."
+│   │   └── DuckFootball.astro ← trò chơi Duck Football ở trang chủ (ngay dưới hero)
 │   ├── config.ts             ← link Resume (Google Drive), dùng chung cho Nav và About
 │   ├── layouts/BaseLayout.astro ← khung chung mọi trang (font, CSS, Nav, Footer)
 │   ├── styles/global.css     ← màu, font, khoảng cách, nút (biến CSS ở khối :root)
@@ -62,7 +67,7 @@ portfolio/
 | Màu sắc, khoảng cách | `src/styles/global.css`, khối `:root` |
 | Tiêu đề/mô tả hiện trên Google | `src/layouts/BaseLayout.astro` |
 | Link Resume (nút Resume ở Nav và About) | `src/config.ts`, biến `resumeUrl` |
-| Bật lại khung duck-football | Trong `src/pages/index.astro`, bỏ dấu comment ở khối "KHỐI INTERACTIVE" và thêm CSS `.interactive` / `.interactive__frame` (khung đường nét đứt, cao ~18rem) |
+| Trò chơi Duck Football | Toàn bộ nằm trong `src/components/DuckFootball.astro`: phần `<script>` là luật chơi và hình vẽ, phần `<style>` là bảng tỉ số, nút Replay và bảng GOAL. Muốn tắt tạm: xóa khối `<DuckFootball />` (và dòng `import`) trong `src/pages/index.astro` |
 
 ### Lưu ý khi viết case study
 - Giữ nguyên **6 tiêu đề `##`**: Overview, Problem, Research, Design Decisions, Outcome, Reflections. Mục lục dùng tên này để nhảy tới đúng chỗ.
@@ -79,5 +84,4 @@ Nội dung hiển thị trên site viết bằng **tiếng Anh**. Các chú thí
 
 ## Chưa làm (cố ý, theo yêu cầu)
 - Deploy lên internet.
-- Trò chơi duck-football (khung đang tạm tắt trên trang chủ).
 - Nội dung thật (đang là placeholder, tìm chữ `THAY` trong code và `[Replace: ...]` trong nội dung).
