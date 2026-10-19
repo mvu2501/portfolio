@@ -318,8 +318,21 @@
   .cs .kd { grid-template-columns: repeat(2, minmax(0, 347px)); column-gap: 40px; }
 }
 
-/* Mục lục: chỉ dùng thanh ngang, hiện cả trên desktop. Không dùng sidebar 14rem vì cột chữ còn lại quá hẹp,
-   làm nhãn của khối callout (cạnh ảnh điện thoại) tràn ra ngoài ở màn hình 1000–1200px. */
+/* Mục lục: màn hình nhỏ dùng thanh ngang; từ 80rem (1280px) dùng menu dọc cố định bên trái, giống bài Trading.
+   Nội dung được đẩy sang phải 190px để không bị menu đè. */
 .cs .toc.toc--bar { display: block; margin: -48px -20px; }
+.cs .toc.toc--sidebar { display: none; }
+@media (min-width: 80rem) {
+  .cs { padding-left: 190px; }
+  .cs .toc.toc--bar { display: none; }
+  .cs .toc.toc--sidebar {
+    display: block;
+    position: fixed;
+    left: 32px;
+    top: calc(var(--nav-height) + 40px);
+    width: 140px;
+    z-index: 30;
+  }
+}
 /* Khi bấm mục lục, tiêu đề không bị thanh Nav và thanh mục lục che */
 .cs [id] { scroll-margin-top: calc(var(--nav-height) + 72px); }

@@ -17,19 +17,12 @@ const prev = brief(works[i - 1]);
 const next = brief(works[i + 1]);
 // Mục lục = các h2 của trang. id phải trùng với id gắn trên từng h2 bên dưới (HTML viết tay không có id tự động)
 const tocSections = [
-  { id: 'problem', label: 'Trading windows close in minutes' },
-  { id: 'approach', label: 'One design system, two layouts' },
-  { id: 'competitor-research', label: 'What the leading terminals do well' },
-  { id: 'trade-flow', label: 'From any list to a filled order' },
-  { id: 'key-decisions', label: 'A few decisions that shaped the trade panel' },
-  { id: 'sign-up-explore', label: 'From sign-up to the first trade' },
-  { id: 'token-details', label: 'Read the token and trade it on one screen' },
-  { id: 'trade-modes', label: 'Two ways to trade, one panel' },
-  { id: 'sell', label: 'From position to profit' },
-  { id: 'order-states', label: 'After the order' },
-  { id: 'rest-of-app', label: 'Built on the same system' },
-  { id: 'outcome', label: 'Shipped, then closed by the market' },
-  { id: 'credits', label: 'Credits' },
+  { id: 'problem', label: 'The problem' },
+  { id: 'approach', label: 'Approach' },
+  { id: 'competitor-research', label: 'Research' },
+  { id: 'sign-up-explore', label: 'Design Decisions' },
+  { id: 'outcome', label: 'Outcome' },
+  { id: 'credits', label: 'Credit' },
 ];
 ---
 
@@ -57,6 +50,7 @@ const tocSections = [
 <figure class="cover"><img src="/images/work/onchain-trading-mobile/cover-v2.jpg" alt="Mobile app: Token Details with a Limit order and the safety check"></figure>
 
 <CaseToc variant="bar" sections={tocSections} />
+<CaseToc variant="sidebar" sections={tocSections} />
 
 <section>
   <span class="eyebrow">The problem</span>
