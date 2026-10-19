@@ -17,9 +17,10 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
   <!-- 1. HERO -->
   <section class="hero section">
     <div class="container">
-      <!-- THAY: câu định vị của bạn (1–2 dòng) -->
+      <!-- THAY: câu định vị của bạn. Avatar nằm ngay sau chữ "Vu"; rê chuột vào (hoặc chạm) để avatar nảy lên và có ánh sáng quét qua -->
       <h1 class="hero__title">
-        Senior Product Designer · 10+ years building fintech and digital asset products
+        <span class="hero__line">Hey, it’s Vu<span class="avatar" data-avatar aria-hidden="true"><span class="avatar__clip"><img class="avatar__img avatar__img--anim" src="/images/avatar-vu.gif" width="220" height="220" alt="" decoding="async" draggable="false" /><img class="avatar__img avatar__img--still" src="/images/avatar-vu-still.webp" width="220" height="220" alt="" decoding="async" draggable="false" /><span class="avatar__shine"></span></span></span>, a senior product designer for Web3 and fintech.</span>{' '}
+        <span class="hero__line">I turn complex money movement into clear, trustworthy products.</span>
       </h1>
       <a class="button" href="#work">View work</a>
     </div>
@@ -81,6 +82,20 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
 </BaseLayout>
 
 <script>
+  // Avatar ở dòng chào: bấm/chạm để chạy lại hiệu ứng (trên điện thoại không có hover).
+  document.querySelectorAll<HTMLElement>('[data-avatar]').forEach((el) => {
+    el.addEventListener('click', () => {
+      el.classList.remove('is-active');
+      void el.offsetWidth; // khởi động lại hoạt ảnh
+      el.classList.add('is-active');
+    });
+    el.addEventListener('animationend', (e) => {
+      if (e.target === el) el.classList.remove('is-active');
+    });
+  });
+</script>
+
+<script>
   // Tab Selected works / Fun projects. Không có JavaScript thì hai khối cùng hiện, xếp dọc.
   const root = document.querySelector<HTMLElement>('[data-tabs]');
   if (root) {
@@ -134,8 +149,108 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
   .hero__title {
     font-size: var(--text-display);
     line-height: 1.22;
-    max-width: 20ch;
+    max-width: 26ch;
     margin-bottom: var(--space-3);
+  }
+
+  /* Hai câu, mỗi câu bắt đầu một dòng mới */
+  .hero__line {
+    display: block;
+  }
+
+  /* Avatar tròn nằm trong dòng chữ; nảy lên + ánh sáng quét qua khi rê chuột (hoặc chạm) */
+  .avatar {
+    position: relative;
+    top: -0.06em;
+    display: inline-block;
+    width: 0.92em;
+    height: 0.92em;
+    margin: 0 0.1em;
+    vertical-align: middle;
+    cursor: pointer;
+    transform-origin: 50% 90%;
+    filter: drop-shadow(0 0.03em 0.05em rgba(60, 40, 10, 0.22));
+  }
+
+  .avatar__clip {
+    position: absolute;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+    border-radius: 50%;
+  }
+
+  /* Phóng nhẹ và dịch ảnh để mặt nhân vật nằm giữa vòng tròn */
+  .avatar__img {
+    position: absolute;
+    top: -10%;
+    left: -22%;
+    display: block;
+    width: 122%;
+    max-width: none;
+    height: 122%;
+    margin: 0;
+    border-radius: 0;
+    user-select: none;
+  }
+
+  .avatar__img--still {
+    display: none;
+  }
+
+  .avatar__shine {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 70%;
+    background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+    opacity: 0;
+    transform: translateX(-120%);
+    pointer-events: none;
+  }
+
+  .avatar:hover,
+  .avatar.is-active {
+    animation: avatar-bounce 0.7s cubic-bezier(0.3, 0.7, 0.4, 1);
+  }
+
+  .avatar:hover .avatar__shine,
+  .avatar.is-active .avatar__shine {
+    animation: avatar-shine 0.7s ease-out 0.08s;
+  }
+
+  @keyframes avatar-bounce {
+    0% { transform: translateY(0) scale(1, 1); }
+    16% { transform: translateY(0) scale(1.08, 0.88); }
+    42% { transform: translateY(-0.3em) scale(0.94, 1.1) rotate(-5deg); }
+    68% { transform: translateY(0) scale(1.07, 0.92); }
+    84% { transform: translateY(-0.07em) scale(0.98, 1.03) rotate(2deg); }
+    100% { transform: translateY(0) scale(1, 1); }
+  }
+
+  @keyframes avatar-shine {
+    0% { opacity: 0; transform: translateX(-120%); }
+    15% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(220%); }
+  }
+
+  /* Người dùng tắt chuyển động: không nảy, không quét sáng, dùng ảnh tĩnh thay cho GIF */
+  @media (prefers-reduced-motion: reduce) {
+    .avatar:hover,
+    .avatar.is-active,
+    .avatar:hover .avatar__shine,
+    .avatar.is-active .avatar__shine {
+      animation: none;
+    }
+
+    .avatar__img--anim {
+      display: none;
+    }
+
+    .avatar__img--still {
+      display: block;
+    }
   }
 
   /* Tab: chữ mono nhỏ viết hoa, tab đang chọn có chữ mực và vạch đỏ gạch bên dưới */
