@@ -20,7 +20,7 @@ export async function getStaticPaths() {
 
 const { entry, prev, next } = Astro.props;
 const { Content } = await render(entry);
-const { title, role, year, platform, tags, description, cover, coverAlt } = entry.data;
+const { title, role, year, platform, tags, description } = entry.data;
 // Khối thông tin dưới tiêu đề: chỉ hiện mục nào có dữ liệu
 const info = [
   { label: 'Role', value: role },
@@ -49,8 +49,6 @@ const info = [
           </div>
         ))}
       </dl>
-
-      {cover && <img class="case-cover" src={cover} alt={coverAlt} decoding="async" fetchpriority="high" />}
     </div>
   </header>
 
@@ -196,36 +194,6 @@ const info = [
     margin: 0;
   }
 
-  /* Ảnh cover dưới khối thông tin: rộng tối đa bằng cột chữ của bài (42rem), giữ nguyên tỉ lệ ảnh (không cắt) */
-  .case-cover {
-    display: block;
-    width: 100%;
-    max-width: var(--reading-width);
-    height: auto;
-    margin-top: var(--space-4);
-    border-radius: 14px;
-    background: var(--color-cover);
-  }
-
-  .case-header__tags {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-xs);
-  }
-
-  .case-header__tags li {
-    padding: 3px 8px;
-    border-radius: var(--radius-xs);
-    background: var(--color-tint);
-    font-family: var(--font-mono);
-    font-size: 0.65625rem; /* 10.5px */
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
   .case-layout {
     display: block;
     padding-block: var(--space-4) var(--space-5);
@@ -300,8 +268,12 @@ const info = [
     margin-top: var(--spacing-xs);
   }
 
+  /* Ảnh trong bài: rộng bằng cột chữ, bo góc 14px giống ảnh cover ở thẻ */
   .case-body :global(img) {
-    border-radius: var(--radius-none);
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 14px;
     margin-block: var(--space-3);
   }
 

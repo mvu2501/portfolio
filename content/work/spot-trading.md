@@ -14,6 +14,8 @@ coverAlt: Spot trading order ticket on a phone, showing a BTC/USDT limit order w
 
 This project is the Spot trading feature of a crypto trading platform. I was the only designer, and I designed the whole experience on mobile: placing an order, following it while it runs, and checking the result in the order history. The feature covers five order types: Market, Limit, Stop-limit, Stop-market and TWAP.
 
+![Spot trading order ticket on a phone, showing a BTC/USDT limit order with price, amount and Buy button](/images/work/spot-trading-cover.webp)
+
 ## Problem
 
 Clients need more than a simple buy button. They need five order types, and each one has different inputs. All of it has to fit on one phone screen, and most clients are not professional traders. The challenge was to give clients control over price and timing, without making the ticket hard to use.

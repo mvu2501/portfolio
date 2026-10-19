@@ -51,7 +51,7 @@ portfolio/
 | Nội dung case study Spot trading | `content/work/spot-trading.md` |
 | Tên, tag, mô tả trên thẻ dự án | Phần đầu (giữa hai dòng `---`) của file `.md` tương ứng |
 | Role, Year, Platform ở đầu case study | Các dòng `role:`, `year:`, `platform:` ở phần đầu file `.md` (dòng nào bỏ trống thì mục đó không hiện) |
-| Ảnh cover (của thẻ, và cũng hiện ở đầu case study) | Bỏ ảnh vào `public/images/work/` (hoặc `public/images/fun/`), rồi thêm `cover: /images/work/ten-anh.jpg` và `coverAlt: mô tả ảnh` vào phần đầu file `.md`. Khung cover có tỉ lệ 487 × 314, ảnh tự cắt cho vừa |
+| Ảnh cover của thẻ (trang chủ) | Bỏ ảnh vào `public/images/work/` (hoặc `public/images/fun/`), rồi thêm `cover: /images/work/ten-anh.jpg` và `coverAlt: mô tả ảnh` vào phần đầu file `.md`. Khung cover có tỉ lệ 487 × 314, ảnh tự cắt cho vừa |
 | Thêm dự án mới | Tạo thêm file `.md` trong `content/work/` hoặc `content/fun/` |
 | Thứ tự thẻ, và thứ tự Up next / Previous ở cuối case study | Số `order` trong file `.md` (nhỏ đứng trước) |
 | Ẩn dự án tạm thời | Thêm `draft: true` vào phần đầu file `.md` |
