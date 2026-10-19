@@ -32,7 +32,7 @@
 .ot .phone{position:absolute;left:0;top:0;width:422px;height:894px;padding:10px;background:#111;border-radius:48px;transform-origin:0 0;box-shadow:0 18px 40px -18px rgba(16,18,20,.45)}
 .ot .screen{--f-ink:#101214;--f-ink2:#4e5964;--f-ink3:#66727f;--f-dis:#a3adb8;--f-line:#e4e7ea;--f-line2:#c8cfd5;--f-subtle:#f2f4f5;--f-primary:#14b8a6;--f-psub:#f0fdfa;
   --f-buy:#00b47d;--f-buy-up:#007a56;--f-buy-sub:#e6f8f2;--f-sell:#f85550;--f-sell-sub:#fff1f1;--f-down:#c62a36;
-  position:relative;width:402px;height:874px;background:#fff;border-radius:38px;overflow:hidden;display:flex;flex-direction:column;
+  position:relative;width:402px;height:874px;background:#fff;border-radius:38px;overflow:clip;display:flex;flex-direction:column;
   font:400 14px/20px var(--font);color:var(--f-ink);color-scheme:light}
 .ot .screen svg{display:block}
 .ot .screen button{font-family:inherit}
@@ -153,7 +153,7 @@
 .ot .scrim{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;visibility:hidden;transition:opacity .2s,visibility 0s .2s}
 .ot .sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;padding:8px 20px 32px;display:flex;flex-direction:column;align-items:center;gap:16px;box-shadow:0 12px 32px rgba(16,18,20,.14),0 4px 8px rgba(16,18,20,.06);transform:translateY(100%);visibility:hidden;transition:transform .26s cubic-bezier(.2,.8,.2,1),visibility 0s .26s}
 .ot .screen.sh .scrim{opacity:1;visibility:visible;transition:opacity .2s}
-.ot .screen.sh .sheet{transform:none;visibility:visible;transition:transform .26s cubic-bezier(.2,.8,.2,1)}
+.ot .screen.sh [data-ot="sheet"]{transform:none;visibility:visible;transition:transform .26s cubic-bezier(.2,.8,.2,1)}
 .ot .handle{width:36px;height:4px;border-radius:2px;background:var(--f-line2)}
 .ot .sheet .sheet-title{margin:0;align-self:stretch;font:600 17px/24px var(--font)}
 .ot .opts{display:flex;flex-direction:column;gap:12px;align-self:stretch}
@@ -164,6 +164,22 @@
 .ot .opt.on .rad::after{content:"";width:8px;height:8px;border-radius:50%;background:#fff}
 .ot .opt b{display:block;font:600 14px/20px var(--font)}
 .ot .opt small{display:block;font:400 12px/16px var(--font);color:var(--f-ink2)}
+.ot .screen.cf .scrim{opacity:1;visibility:visible;transition:opacity .2s}
+.ot .screen.cf .cfm{transform:none;visibility:visible;transition:transform .26s cubic-bezier(.2,.8,.2,1)}
+.ot .sheet.cfm{padding:20px 20px 40px;border-radius:20px 20px 0 0;gap:24px;align-items:stretch}
+.ot .sheet.cfm .sheet-title{font:600 18px/28px var(--font);color:#191c20;padding:2px 0}
+.ot .cfr{display:flex;flex-direction:column;gap:12px}
+.ot .cfr .r{display:flex;align-items:center;gap:8px;height:24px;font-size:14px}
+.ot .cfr .k{width:150px;flex:none;line-height:24px;color:#70808f}
+.ot .cfr .v{flex:1;min-width:0;text-align:right;font-weight:500;line-height:20px;color:#191c20;font-variant-numeric:tabular-nums}
+.ot .cfr .n{font-size:12px;line-height:16px;color:var(--f-ink2)}
+.ot .cfa{display:flex;flex-direction:column;gap:12px}
+.ot .cbtn{appearance:none;cursor:pointer;height:52px;border-radius:12px;font:600 16px/24px var(--font);border:1px solid transparent}
+.ot .cbtn.pri{background:#21262b;color:#f9fafb}
+.ot .cbtn.sec{background:var(--f-subtle);border-color:var(--f-line);color:var(--f-ink)}
+.ot .cbtn:focus-visible{outline:2px solid var(--f-primary);outline-offset:2px}
+.ot .toast{position:absolute;left:50%;top:415px;transform:translateX(-50%);z-index:5;background:#101214;color:#fff;border-radius:8px;padding:12px 16px;font:400 14px/20px var(--font);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s}
+.ot .toast.on{opacity:1}
 
 @media (prefers-reduced-motion:reduce){.ot .scrim,
 .ot .sheet,

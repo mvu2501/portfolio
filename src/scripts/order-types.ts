@@ -262,6 +262,7 @@ form.addEventListener('focusout',function(e){
 });
 form.addEventListener('click',function(e){
   var t=e.target,el;
+  if((el=t.closest('[data-o="btn"]'))){if(S.type==='twap')openConfirm(el);else toast(typeName()+' '+S.side+' order placed');return}
   if((el=t.closest('[data-side]'))){var s=el.getAttribute('data-side');if(s!==S.side){S.side=s;fullRender(true)}return}
   if((el=t.closest('[data-type]'))){
     var ty=el.getAttribute('data-type');
@@ -328,6 +329,33 @@ document.addEventListener('keydown',function(e){
     if(e.shiftKey&&i<=0){f[f.length-1].focus();e.preventDefault()}else if(!e.shiftKey&&i===f.length-1){f[0].focus();e.preventDefault()}}
   if(e.key==='ArrowDown'||e.key==='ArrowUp'){var f2=$$('.opt',opts),j=f2.indexOf(document.activeElement);
     if(j>=0){f2[(j+(e.key==='ArrowDown'?1:-1)+f2.length)%f2.length].focus();e.preventDefault()}}
+});
+
+/* ---------- order placed: toast, TWAP confirm ---------- */
+var cfm=$('[data-ot="cfm"]'),toastEl=$('[data-ot="toast"]'),cfOpen=false,tt=null,cfFrom=null;
+function typeName(){return S.type==='stop'?(S.kind==='limit'?'Stop-limit':'Stop-market'):S.type==='twap'?'TWAP':S.type.charAt(0).toUpperCase()+S.type.slice(1)}
+function toast(msg){toastEl.textContent=msg;toastEl.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){toastEl.classList.remove('on')},2400)}
+function openConfirm(from){
+  var d=D(),rows=[['Total',qtyStr(d.qty)+' BTC']];
+  ['sub','int','ends','cost','fee'].forEach(function(id){var e=$('[data-o="'+id+'"]',form);rows.push([e.previousElementSibling.textContent,e.textContent])});
+  $('[data-ot="cfT"]').textContent='Start TWAP '+S.side;
+  $('[data-ot="cfr"]').innerHTML=rows.map(function(r){return '<div class="r"><span class="k">'+r[0]+'</span><span class="v">'+r[1]+'</span></div>'}).join('')+
+    '<div class="r n">You can cancel anytime. Filled sub-orders stay filled.</div>';
+  cfFrom=from;cfOpen=true;setInert(true);screen.classList.add('cf');
+  setTimeout(function(){$('[data-ot="cfOk"]').focus({preventScroll:true})},RM?0:30);
+}
+function closeConfirm(){
+  if(!cfOpen)return;cfOpen=false;screen.classList.remove('cf');setInert(false);
+  if(cfFrom&&document.body.contains(cfFrom))cfFrom.focus({preventScroll:true});
+}
+$('[data-ot="cfOk"]').addEventListener('click',function(){closeConfirm();toast('TWAP '+S.side+' order placed')});
+$('[data-ot="cfNo"]').addEventListener('click',closeConfirm);
+scrim.addEventListener('click',closeConfirm);
+document.addEventListener('keydown',function(e){
+  if(!cfOpen)return;
+  if(e.key==='Escape'){closeConfirm();e.preventDefault();return}
+  if(e.key==='Tab'){var f=[$('[data-ot="cfOk"]'),$('[data-ot="cfNo"]')],i=f.indexOf(document.activeElement);
+    if(e.shiftKey&&i<=0){f[1].focus();e.preventDefault()}else if(!e.shiftKey&&i===1){f[0].focus();e.preventDefault()}}
 });
 
 /* ---------- fit the 422px phone to its container ---------- */

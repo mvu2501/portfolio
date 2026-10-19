@@ -64,6 +64,12 @@ const Y_LABELS: [number, number, string][] = [
           <div class="sheet-title" role="heading" aria-level="3" id={`${id}-sheet-title`} data-ot="shT"></div>
           <div class="opts" data-ot="opts" role="radiogroup"></div>
         </div>
+        <div class="sheet cfm" data-ot="cfm" role="dialog" aria-modal="true" aria-labelledby={`${id}-confirm-title`}>
+          <div class="sheet-title" role="heading" aria-level="3" id={`${id}-confirm-title`} data-ot="cfT"></div>
+          <div class="cfr" data-ot="cfr"></div>
+          <div class="cfa"><button type="button" class="cbtn pri" data-ot="cfOk">Confirm</button><button type="button" class="cbtn sec" data-ot="cfNo">Cancel</button></div>
+        </div>
+        <div class="toast" data-ot="toast" role="status" aria-live="polite"></div>
       </div>
     </div>
   </div>
