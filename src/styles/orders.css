@@ -29,7 +29,7 @@
 }
 .oo .reset[hidden] { display: none; }
 
-.oo .stage{position:relative;width:min(100%,340px)}
+.oo .stage{position:relative;width:var(--mf-stage-w)}
 .oo .phone{position:absolute;left:0;top:0;width:422px;height:894px;padding:10px;background:#111;border-radius:48px;transform-origin:0 0;box-shadow:0 18px 40px -18px rgba(16,18,20,.45)}
 .oo .screen{--f-ink:#101214;--f-ink2:#4e5964;--f-ink3:#66727f;--f-dis:#a3adb8;--f-line:#e4e7ea;--f-line2:#c8cfd5;--f-subtle:#f2f4f5;--f-primary:#14b8a6;
   --f-buy-up:#007a56;--f-down:#c62a36;--f-link:#0f766e;
@@ -103,6 +103,6 @@
 .oo .screen *{transition:none!important}
 }
 
-/* Trước khi script chạy fit(): giả định khung máy rộng 340px để không bị tràn hoặc nhảy */
-.oo .stage { height: 720px; }
-.oo .phone { transform: scale(0.8057); }
+/* Trước khi script chạy fit(): giả định khung máy rộng khoảng 300px để không bị tràn hoặc nhảy */
+.oo .stage { aspect-ratio: 422 / 894; }
+.oo .phone { transform: scale(0.7); }

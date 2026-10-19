@@ -14,6 +14,18 @@
   margin-top: var(--space-3);
 }
 
+.mf {
+  /* Bề rộng khung điện thoại (script fit() co khung theo bề rộng này). Mặc định 300px; trên màn hình có đủ chiều cao
+     thì to hơn một chút, màn hình thấp thì nhỏ lại (260–320px) để cả khung máy lọt trong màn hình, không bị cắt. */
+  --mf-stage-w: min(100%, 300px);
+}
+
+@supports (height: 100svh) {
+  .mf {
+    --mf-stage-w: min(100%, clamp(260px, calc((100svh - 220px) * 0.472), 320px));
+  }
+}
+
 .mf + .mf {
   margin-top: var(--space-5);
 }

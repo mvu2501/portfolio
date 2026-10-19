@@ -15,7 +15,7 @@
   --font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
-.ot .stage{position:relative;width:min(100%,340px)}
+.ot .stage{position:relative;width:var(--mf-stage-w)}
 .ot .phone{position:absolute;left:0;top:0;width:422px;height:894px;padding:10px;background:#111;border-radius:48px;transform-origin:0 0;box-shadow:0 18px 40px -18px rgba(16,18,20,.45)}
 .ot .screen{--f-ink:#101214;--f-ink2:#4e5964;--f-ink3:#66727f;--f-dis:#a3adb8;--f-line:#e4e7ea;--f-line2:#c8cfd5;--f-subtle:#f2f4f5;--f-primary:#14b8a6;--f-psub:#f0fdfa;
   --f-buy:#00b47d;--f-buy-up:#007a56;--f-buy-sub:#e6f8f2;--f-sell:#f85550;--f-sell-sub:#fff1f1;--f-down:#c62a36;
@@ -173,6 +173,6 @@
 .ot .screen *{transition:none!important}
 }
 
-/* Trước khi script chạy fit(): giả định khung máy rộng 340px để không bị tràn hoặc nhảy */
-.ot .stage { height: 720px; }
-.ot .phone { transform: scale(0.8057); }
+/* Trước khi script chạy fit(): giả định khung máy rộng khoảng 300px để không bị tràn hoặc nhảy */
+.ot .stage { aspect-ratio: 422 / 894; }
+.ot .phone { transform: scale(0.7); }

@@ -267,6 +267,12 @@
   .td .quick { gap: 4px; }
 }
 
+/* Màn hình rộng (hai thẻ nằm cạnh nhau): thu nhỏ hai thẻ form một chút (zoom 0.85) để thẻ cao như TWAP
+   không dài quá màn hình. Màn hình hẹp (xếp dọc) giữ nguyên cỡ. */
+@container (min-width: 49.01rem) {
+  .td .col { zoom: 0.85; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .td *, .td *::before, .td *::after { transition: none !important; animation: none !important; }
   .td .chip.hint::after { opacity: .7; }
