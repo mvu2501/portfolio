@@ -1,0 +1,29 @@
+---
+// Icon.astro – icon Lucide (nét 1.75, 16px) dùng trong order form; đường vẽ lấy từ bản tham chiếu.
+interface Props {
+  name: 'chev' | 'swap' | 'plus' | 'check' | 'arrow';
+  size?: number;
+  stroke?: number;
+}
+const { name, size = 16, stroke = 1.75 } = Astro.props;
+const PATHS = {
+  chev: '<path d="m6 9 6 6 6-6"/>',
+  swap: '<path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/>',
+  plus: '<circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  arrow: '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+};
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={stroke}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  set:html={PATHS[name]}
+/>

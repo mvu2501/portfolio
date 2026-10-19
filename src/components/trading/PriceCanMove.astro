@@ -1,0 +1,24 @@
+---
+// Phần 3 · Price can move: form TWAP với Max price. Version 1 không bao giờ cảnh báo;
+// Improved cảnh báo từ +7.00% so với giá hiện tại nhưng vẫn cho đặt lệnh. Logic ở src/lib/trading/twap.ts.
+import DemoSection from './DemoSection.astro';
+import TwapCard from './TwapCard.astro';
+---
+
+<DemoSection
+  demo="price-can-move"
+  n={3}
+  title="Price can move"
+  quote="“The price can move before my order fills. I need a limit on the worst price I’ll get.”"
+  who="— RMS"
+  decision="Add a Max price for buy and a Min price for sell. If the limit is far from the market price, the screen warns that the order could fill at a much worse price, and the user can still place it."
+  v1Caption="Max price, no warning at any distance."
+  v2Caption="Warns from +7% above the market. Tap a % chip to go further; the order can still be placed."
+>
+  <Fragment slot="v1"><TwapCard live={false} /></Fragment>
+  <Fragment slot="v2"><TwapCard live={true} /></Fragment>
+</DemoSection>
+
+<script>
+  import '../../scripts/trading/price-can-move.ts';
+</script>

@@ -1,0 +1,101 @@
+---
+// Phần 2 · Limit price: Version 1 giá gõ tay → Improved có chip % (-1%, -2%, -5%) cộng dồn và bấm giá Buy để điền.
+// Mặc định cả hai là giá Buy -1% (67,879.47). Logic ở src/lib/trading/limit.ts.
+import DemoSection from './DemoSection.astro';
+import SideSelector from './SideSelector.astro';
+import TypeBar from './TypeBar.astro';
+import AllocSlider from './AllocSlider.astro';
+import { fmtRaw } from '../../lib/trading/format.ts';
+import { CHIPS, LIMIT_V1, MIN_PRICE_TEXT, initialLimitState, limitMeta, offText } from '../../lib/trading/limit.ts';
+
+const s = initialLimitState();
+const meta = limitMeta(s, false);
+---
+
+<DemoSection
+  demo="limit-price"
+  n={2}
+  title="Limit price"
+  quote="“I want to tap a quick % from the current price, not do the math or type a guess.”"
+  who="— Trading team"
+  decision="Add a group of % buttons. Tapping again adds up the %."
+  v1Caption="Price typed by hand."
+  v2Caption="Tap the Buy price to fill -1%. Tap a % chip to add more."
+>
+  <Fragment slot="v1">
+    <div class="card limit">
+      <SideSelector />
+      <TypeBar active="Limit" />
+      <div class="group">
+        <label class="field" for="v1b-price">
+          <span class="lbl">Price</span>
+          <span class="row-val">
+            <input id="v1b-price" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" readonly tabindex="-1" value={LIMIT_V1.price} />
+            <span class="unit">USDT</span>
+          </span>
+        </label>
+      </div>
+      <label class="field" for="v1b-amount">
+        <span class="lbl">Amount</span>
+        <span class="row-val">
+          <input id="v1b-amount" type="text" inputmode="decimal" autocomplete="off" placeholder="0.0000" readonly tabindex="-1" value={LIMIT_V1.amount} />
+          <span class="unit">BTC</span>
+        </span>
+      </label>
+      <div class="err"><div><p>Insufficient balance</p></div></div>
+      <AllocSlider pct={LIMIT_V1.pct} />
+      <div class="order">
+        <div class="divider"></div>
+        <div class="sum"><span class="k">Total</span><span class="v">{LIMIT_V1.total}</span></div>
+        <div class="sum"><span class="k">Est. fee (0.1%)</span><span class="v">{LIMIT_V1.fee}</span></div>
+        <div class="sum"><span class="k">Expires</span><span class="v">Until cancelled</span></div>
+      </div>
+      <button type="button" class="buy-btn">Buy BTC</button>
+    </div>
+  </Fragment>
+
+  <Fragment slot="v2">
+    <div class="card limit">
+      <SideSelector quoteButton />
+      <TypeBar active="Limit" />
+      <div class="group">
+        <label class="field" data-pfield for="v2b-price">
+          <span class="lbl">Price</span>
+          <span class="row-val">
+            <input id="v2b-price" data-price type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" value={fmtRaw(s.price)} />
+            <span class="unit">USDT</span>
+          </span>
+        </label>
+        <div class="err gerr" data-perr><div><p>Minimum price is {MIN_PRICE_TEXT} USDT</p></div></div>
+        <div class="helpers">
+          <span class="off" data-off aria-live="polite">{offText(s)}</span>
+          <div class="quick">
+            {CHIPS.map((c) => (
+              <button type="button" class="qchip" data-chip={c} aria-label={`Add ${c}% to the price`}>{c}%</button>
+            ))}
+          </div>
+        </div>
+      </div>
+      <label class="field" data-afield for="v2b-amount">
+        <span class="lbl">Amount</span>
+        <span class="row-val">
+          <input id="v2b-amount" data-amount type="text" inputmode="decimal" autocomplete="off" placeholder="0.0000" value={fmtRaw(s.amount)} />
+          <span class="unit">BTC</span>
+        </span>
+      </label>
+      <div class="err" data-err><div><p>Insufficient balance</p></div></div>
+      <AllocSlider pct={meta.pct} />
+      <div class="order">
+        <div class="divider"></div>
+        <div class="sum"><span class="k">Total</span><span class="v" data-total aria-live="polite">{meta.totalText}</span></div>
+        <div class="sum"><span class="k">Est. fee (0.1%)</span><span class="v" data-fee>{meta.feeText}</span></div>
+        <div class="sum"><span class="k">Expires</span><span class="v">Until cancelled</span></div>
+      </div>
+      <button type="button" class="buy-btn" data-buy disabled={meta.empty || meta.over || meta.low}>Buy BTC</button>
+    </div>
+  </Fragment>
+</DemoSection>
+
+<script>
+  import '../../scripts/trading/limit-price.ts';
+</script>

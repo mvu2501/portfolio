@@ -1,0 +1,40 @@
+---
+// Thanh trượt phân bổ số dư (0/25/50/75/100%) và dòng Available. `pct` là vị trí ban đầu (0–1).
+import { SLIDER_STOPS, stopIsOn } from '../../lib/trading/slider.ts';
+import Icon from './Icon.astro';
+
+interface Props {
+  pct: number;
+  inert?: boolean;
+}
+const { pct, inert = false } = Astro.props;
+---
+
+<div class="alloc" inert={inert}>
+  <div
+    class="slider"
+    data-slider
+    role="slider"
+    tabindex="0"
+    aria-label="Allocation of available balance"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-valuenow={Math.round(pct * 100)}
+    style={`--pct:${pct}`}
+  >
+    <div class="track"></div>
+    <div class="fill"></div>
+    {SLIDER_STOPS.map((p) => (
+      <>
+        <i class:list={['stop', { on: stopIsOn(p, pct) }]} data-stop={p} style={`--p:${p / 100}`}></i>
+        <span class:list={['pl', { first: p === 0, last: p === 100 }]} style={`--p:${p / 100}`}>{p}%</span>
+      </>
+    ))}
+    <i class="knob"></i>
+  </div>
+  <div class="sum">
+    <span class="k">Available</span>
+    <span class="v">12,450.00 USDT</span>
+    <span class="plus"><Icon name="plus" /></span>
+  </div>
+</div>

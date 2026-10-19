@@ -1,0 +1,51 @@
+---
+// DemoSection.astro – khung của một phần "thay đổi sau test":
+// huy hiệu số + tiêu đề, khối Feedback | Decision, khung xám chứa Version 1 → Improved.
+// Hai slot: "v1" (chỉ để xem, không tương tác) và "v2" (Improved, tương tác).
+import '../../styles/trading-demo.css';
+import Icon from './Icon.astro';
+
+interface Props {
+  demo: string; // 'amount-input' | 'limit-price' | 'price-can-move' (dùng để script tìm đúng khối)
+  n: number;
+  title: string;
+  quote: string;
+  who: string;
+  decision: string;
+  v1Caption: string;
+  v2Caption: string;
+}
+const { demo, n, title, quote, who, decision, v1Caption, v2Caption } = Astro.props;
+const titleId = `td-${demo}-title`;
+---
+
+<section class="td wide" data-demo={demo} aria-labelledby={titleId}>
+  <div class="td-title">
+    <span class="td-badge" aria-hidden="true">{n}</span>
+    <h3 class="td-h" id={titleId}>{title}</h3>
+  </div>
+  <div class="td-brief">
+    <div>
+      <p class="td-eyebrow">Feedback</p>
+      <p class="td-quote">{quote}</p>
+      <p class="td-eyebrow muted">{who}</p>
+    </div>
+    <div class="td-decision">
+      <p class="td-eyebrow">Decision</p>
+      <p class="td-decision-text">{decision}</p>
+    </div>
+  </div>
+  <div class="stage" role="group" aria-label={`${title}: Version 1 and improved order form`}>
+    <div class="col">
+      <span class="tag">Version 1</span>
+      <div data-mount="static" inert><slot name="v1" /></div>
+      <p class="caption">{v1Caption}</p>
+    </div>
+    <div class="arrow" aria-hidden="true"><Icon name="arrow" size={28} stroke={1.5} /></div>
+    <div class="col">
+      <span class="tag new">Improved</span>
+      <div data-mount="live"><slot name="v2" /></div>
+      <p class="caption">{v2Caption}</p>
+    </div>
+  </div>
+</section>

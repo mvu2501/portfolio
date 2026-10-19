@@ -1,0 +1,18 @@
+---
+// Bộ chọn Buy / Sell ở đầu order form. Ở phần Limit price (Improved), giá Buy là nút bấm được.
+interface Props {
+  quoteButton?: boolean;
+  inert?: boolean;
+}
+const { quoteButton = false, inert = false } = Astro.props;
+---
+
+<div class="side" inert={inert}>
+  <div class="buy-side">
+    <b>Buy</b>
+    {quoteButton
+      ? <button type="button" class="qbtn" data-quote aria-label="Fill the price 1% below the Buy price">68,565.12</button>
+      : <span>68,565.12</span>}
+  </div>
+  <div class="sell-side"><span>68,549.12</span><span style="font-weight:400">Sell</span></div>
+</div>

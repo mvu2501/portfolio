@@ -1,0 +1,20 @@
+---
+// Thanh loại lệnh: Market / Limit / TWAP / Stop và nhãn GTC. `active` là loại đang chọn (chữ đậm).
+import Icon from './Icon.astro';
+
+interface Props {
+  active: 'Market' | 'Limit' | 'TWAP';
+  inert?: boolean;
+}
+const { active, inert = false } = Astro.props;
+---
+
+<div class="types" inert={inert}>
+  <div class="list">
+    <span class:list={[{ on: active === 'Market' }]}>Market</span>
+    <span class:list={[{ on: active === 'Limit' }]}>Limit</span>
+    <span class:list={[{ on: active === 'TWAP' }]}>TWAP</span>
+    <span>Stop <Icon name="chev" /></span>
+  </div>
+  <span class="gtc">GTC <Icon name="chev" /></span>
+</div>

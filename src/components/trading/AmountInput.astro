@@ -1,0 +1,80 @@
+---
+// Phần 1 · Amount input: Version 1 chỉ nhập BTC → Improved có chip để đổi USDT ⇄ BTC.
+// Số liệu và chữ trong bài lấy từ README của case study; logic ở src/lib/trading/amount.ts.
+import DemoSection from './DemoSection.astro';
+import SideSelector from './SideSelector.astro';
+import TypeBar from './TypeBar.astro';
+import AllocSlider from './AllocSlider.astro';
+import Icon from './Icon.astro';
+import { fmtRaw } from '../../lib/trading/format.ts';
+import {
+  AMOUNT_V1, amountMeta, chipLabelFor, inputLabelFor, initialAmountState, labelFor, totalText,
+} from '../../lib/trading/amount.ts';
+
+const s = initialAmountState();
+const meta = amountMeta(s);
+---
+
+<DemoSection
+  demo="amount-input"
+  n={1}
+  title="Amount input"
+  quote="“I want to know how much USDT to spend, not how many coins to buy.”"
+  who="RMS"
+  decision="Add a switch button, so users can type in coin or USDT"
+  v1Caption="Amount in BTC only."
+  v2Caption="Tap the switch to type in BTC or USDT."
+>
+  <Fragment slot="v1">
+    <div class="card">
+      <SideSelector />
+      <TypeBar active="Market" />
+      <p class="helper">Fills immediately at the best available price.</p>
+      <label class="field" for="v1-amount">
+        <span class="lbl">Amount</span>
+        <span class="row-val">
+          <input id="v1-amount" type="text" inputmode="decimal" autocomplete="off" placeholder="0.0000" readonly tabindex="-1" value={AMOUNT_V1.amount} />
+          <span class="unit">BTC</span>
+        </span>
+      </label>
+      <div class="err"><div><p>Insufficient balance</p></div></div>
+      <AllocSlider pct={AMOUNT_V1.pct} />
+      <div class="order">
+        <div class="divider"></div>
+        <div class="sum"><span class="k">Total</span><span class="v">{AMOUNT_V1.total}</span></div>
+        <div class="sum"><span class="k">Est. fee (0.1%)</span><span class="v">{AMOUNT_V1.fee}</span></div>
+      </div>
+      <button type="button" class="buy-btn">Buy BTC</button>
+    </div>
+  </Fragment>
+
+  <Fragment slot="v2">
+    <div class="card">
+      <SideSelector />
+      <TypeBar active="Market" />
+      <p class="helper">Fills immediately at the best available price.</p>
+      <label class="field" data-field for="v2-amount">
+        <span class="lbl" data-label>{labelFor(s.unit)}</span>
+        <span class="row-val">
+          <input id="v2-amount" data-input type="text" inputmode="decimal" autocomplete="off" placeholder="0.0000" value={fmtRaw(s.raw)} aria-label={inputLabelFor(s.unit)} />
+          <button type="button" class="chip hint" data-chip aria-label={chipLabelFor(s.unit)}>
+            <span data-chip-text>{s.unit}</span>
+            <span class="ico" data-ico><Icon name="swap" /></span>
+          </button>
+        </span>
+      </label>
+      <div class="err" data-err><div><p>Insufficient balance</p></div></div>
+      <AllocSlider pct={meta.pct} />
+      <div class="order">
+        <div class="divider"></div>
+        <div class="sum"><span class="k">Total</span><span class="v" data-total aria-live="polite">{totalText(s)}</span></div>
+        <div class="sum"><span class="k">Est. fee (0.1%)</span><span class="v" data-fee>{meta.feeText}</span></div>
+      </div>
+      <button type="button" class="buy-btn" data-buy disabled={meta.empty || meta.over}>Buy BTC</button>
+    </div>
+  </Fragment>
+</DemoSection>
+
+<script>
+  import '../../scripts/trading/amount-input.ts';
+</script>

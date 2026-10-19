@@ -1,0 +1,90 @@
+---
+// Form TWAP của phần 3 (Price can move). `live` = Improved: chỉ nhóm Max price hoạt động,
+// các khối còn lại chỉ để xem nên đánh dấu inert. Version 1 không bao giờ cảnh báo.
+import SideSelector from './SideSelector.astro';
+import TypeBar from './TypeBar.astro';
+import AllocSlider from './AllocSlider.astro';
+import Icon from './Icon.astro';
+import { fmtRaw } from '../../lib/trading/format.ts';
+import { CHIPS, chipLabel, initialTwapState, offText, twapMeta, twapV1 } from '../../lib/trading/twap.ts';
+
+interface Props {
+  live: boolean;
+}
+const { live } = Astro.props;
+const v1 = twapV1();
+const s = initialTwapState();
+const meta = twapMeta(s);
+const presets = ['30m', '1h', '4h', '8h', '1d', '3d'];
+---
+
+<div class="card twap">
+  <SideSelector inert={live} />
+  <TypeBar active="TWAP" inert={live} />
+  <div class="field plain" inert={live}>
+    <span class="lbl">Total quantity</span>
+    <span class="row-val"><span class="val">0.0903</span><span class="unit">BTC</span></span>
+  </div>
+  <AllocSlider pct={0.5} inert={live} />
+  <div class="rt" inert={live}>
+    <p class="rt-title">Running time</p>
+    <div class="duo">
+      <div class="field plain"><span class="lbl">Hours</span><span class="row-val"><span class="val">1</span><span class="unit">h</span></span></div>
+      <div class="field plain"><span class="lbl">Minutes</span><span class="row-val"><span class="val">30</span><span class="unit">m</span></span></div>
+    </div>
+    <div class="presets">
+      {presets.map((t) => <span class="preset">{t}</span>)}
+    </div>
+  </div>
+  <div class="check" inert={live}>
+    <span class="box" aria-hidden="true"><Icon name="check" stroke={2.25} /></span>
+    <span>Optional execution price</span>
+  </div>
+  <div class="seg" inert={live}><span class="on">Limit</span><span>Market</span></div>
+  <div class="group">
+    <label class="field" data-pfield for={live ? 'v2c-max' : 'v1c-max'}>
+      <span class="lbl">Max price</span>
+      <span class="row-val">
+        <input
+          id={live ? 'v2c-max' : 'v1c-max'}
+          data-price={live ? '' : undefined}
+          type="text"
+          inputmode="decimal"
+          autocomplete="off"
+          placeholder="0.00"
+          readonly={!live}
+          tabindex={live ? undefined : -1}
+          value={fmtRaw(live ? s.price : v1.price)}
+        />
+        <span class="unit">USDT</span>
+      </span>
+    </label>
+    <div class="helpers">
+      <span class:list={['off', { warn: live && meta.warn }]} data-off aria-live="polite">{live ? offText(s) : v1.off}</span>
+      <div class="quick">
+        {CHIPS.map((c) => (
+          <button type="button" class="qchip" data-chip={c} aria-label={`Add ${chipLabel(c)} to the Max price`}>{chipLabel(c)}</button>
+        ))}
+      </div>
+    </div>
+    {live && (
+      <div class:list={['warnbox', { show: meta.warn }]} data-warn aria-hidden={meta.warn ? 'false' : 'true'}>
+        <div>
+          <div class="wpad">
+            <p class="msg" data-msg>Your max price is much higher than the market price. Your order could fill at a much higher price.</p>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+  <p class="helper">Sub-orders only fill at or below your max price. Parts that can’t fill in an interval are skipped.</p>
+  <div class="order">
+    <div class="divider"></div>
+    <div class="sum"><span class="k">Sub-orders</span><span class="v">180 × 0.0005017 BTC</span></div>
+    <div class="sum"><span class="k">Interval</span><span class="v">Every 30s</span></div>
+    <div class="sum"><span class="k">Ends</span><span class="v">10 Oct, 14:07</span></div>
+    <div class="sum"><span class="k">Max cost</span><span class="v" data-cost={live ? '' : undefined} aria-live="polite">{live ? meta.costText : v1.costText}</span></div>
+    <div class="sum"><span class="k">Est. fee (0.1%)</span><span class="v" data-fee={live ? '' : undefined}>{live ? meta.feeText : v1.feeText}</span></div>
+  </div>
+  <button type="button" class="buy-btn" data-buy={live ? '' : undefined} disabled={live && meta.empty}>Buy BTC · TWAP</button>
+</div>
