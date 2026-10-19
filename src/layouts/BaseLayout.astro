@@ -27,6 +27,11 @@ const {
     <meta name="description" content={description} />
     <title>{title}</title>
 
+    <!-- Biểu tượng tab (favicon): chữ V. SVG cho trình duyệt hiện đại, .ico dự phòng, PNG cho iPhone -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
     <!-- Màn hình loading: chỉ chạy ở lần xem đầu của mỗi phiên, và bỏ qua nếu người dùng tắt chuyển động.
          Chạy ngay trong <head> để trang không bị nháy nội dung trước khi màn hình loading hiện. -->
     <script is:inline>

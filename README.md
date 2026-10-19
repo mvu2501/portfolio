@@ -23,7 +23,9 @@ portfolio/
 │   ├── work/demo-case-study.md ← case study DEMO để xem Up next / Previous (xóa hoặc thêm draft: true khi có dự án thật)
 │   ├── fun/sample-project.md ← dự án nhỏ (chỉ hiện thẻ ở trang chủ)
 │   └── pages/about.md        ← nội dung trang About (giới thiệu + 4 bước Process)
-├── public/                   ← file giữ nguyên, truy cập thẳng bằng URL (hiện để trống)
+├── public/                   ← file giữ nguyên, truy cập thẳng bằng URL
+│   ├── favicon.svg, favicon.ico, apple-touch-icon.png ← biểu tượng tab (chữ V)
+│   └── images/               ← ảnh cover và ảnh trong case study
 ├── src/
 │   ├── pages/                ← mỗi file = một trang web
 │   │   ├── index.astro       ← trang chủ "/"
