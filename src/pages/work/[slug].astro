@@ -232,6 +232,18 @@ const info = [
     max-width: none;
   }
 
+  /* Ghi chú nằm trong khung nền xám nhẹ (ví dụ: "We did not test with real clients…") */
+  .case-body :global(.note) {
+    margin: var(--space-5) 0 var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-surface);
+    border-radius: var(--radius-xs);
+  }
+
+  .case-body :global(.note p) {
+    margin: 0;
+  }
+
   /* Hàng 3 phần có ảnh minh họa (ảnh trên, chữ dưới) */
   .case-body :global(.triptych) {
     display: grid;

@@ -50,7 +50,7 @@ I tested version 1 with the PM, RMs, the trading team and engineers. Their feedb
 
 <!-- demo:price-can-move -->
 
-We did not test with real clients. RMs and the trading team were the closest we had.
+<div class="note"><p>We did not test with real clients. RMs and the trading team were the closest we had.</p></div>
 
 ## Design Decisions
 

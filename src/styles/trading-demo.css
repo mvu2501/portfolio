@@ -75,13 +75,13 @@
   margin: var(--space-5) 0 0;
 }
 
-.td .td-title { display: flex; align-items: center; gap: var(--space-2); }
+.td .td-title { display: flex; align-items: center; gap: var(--spacing-sm); }
 .td .td-badge {
-  width: 32px; height: 32px; border-radius: 50%; background: var(--deep); color: var(--on-deep);
-  display: grid; place-items: center; font-weight: 500; font-size: 16px; flex: none;
+  width: 24px; height: 24px; border-radius: 50%; background: var(--deep); color: var(--on-deep);
+  display: grid; place-items: center; font-weight: 500; font-size: 13px; flex: none;
 }
 .td .td-title .td-h {
-  margin: 0; font-size: 24px; font-weight: 500; line-height: 1.15; letter-spacing: var(--tracking-display);
+  margin: 0; font-size: 18px; font-weight: 500; line-height: 1.2; letter-spacing: var(--tracking-display);
   color: var(--color-text);
 }
 .td .td-brief { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3) var(--space-5); align-items: start; }
@@ -92,7 +92,7 @@
 .td .td-eyebrow.muted { color: var(--color-text-muted); margin: var(--spacing-sm) 0 0; }
 .td .td-quote,
 .td .td-decision-text {
-  margin: 0; font-size: clamp(17px, 2.6cqw, 20px); line-height: 1.4; font-weight: 500;
+  margin: 0; font-size: 15px; line-height: 1.5; font-weight: 400;
   letter-spacing: -.01em; min-width: 0; color: var(--color-text); text-wrap: pretty;
 }
 .td .td-decision { border-left: 1px solid var(--primary); padding-left: var(--space-3); }
