@@ -95,6 +95,10 @@ Mockup thứ hai trong Solution, chèn bằng dòng `<!-- demo:open-orders -->`.
 
 Ba quyết định là ba ảnh `public/images/work/spot-trading-tradeoff-1…3.webp`, viết trực tiếp bằng HTML `<figure class="tradeoff wide">` trong `content/work/spot-trading.md`. Chữ trong ảnh được chép lại trong `<details>` bên dưới mỗi ảnh (cho screen reader và SEO). Nếu sửa chữ trong ảnh, nhớ sửa luôn chữ trong `<details>` và thuộc tính `alt`.
 
+### Case study mới (ví dụ onchain-trading-mobile)
+
+Thêm file `content/work/<tên>.md` là có trang mới. Mục lục bên cạnh tự lấy từ các tiêu đề `##` của bài (Spot Trading kết thúc bằng Reflections, Onchain Trading kết thúc bằng Credit). Ghi chú nội bộ dạng `<!-- ... -->` (nhắc NDA, chỗ đặt ảnh) không hiện ra trang công khai, và tiêu đề `###` chưa có nội dung tự ẩn. Cover chưa có file ảnh trong `public/images/work/` thì thẻ ở trang chủ hiện ô nền be, không bị ảnh vỡ.
+
 ## Style giao diện
 Giao diện theo file style tham khảo (Yinyee Ho): nền kem `#FBF8F1`, chữ mực `#1F1D1A`, font **Inter Tight** (chữ thường) và **JetBrains Mono** (nút, nhãn, tag), góc vuông, đường kẻ đỏ gạch `#B7372B`, không bóng đổ. Mọi giá trị nằm ở khối `:root` trong `src/styles/global.css`.
 Hai chỗ khác với file style gốc, có chủ ý: chữ phụ dùng `#6B6559` (đạt độ tương phản 4.5:1 thay vì `#8C8578`), và nội dung vẫn có chiều rộng tối đa 72rem thay vì tràn hết màn hình.
