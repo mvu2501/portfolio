@@ -15,7 +15,9 @@ const { id = 'orders', title = 'Open orders & history' } = Astro.props;
 ---
 
 <div class="mf oo wide" data-orders data-uid={id}>
-  <MockupHead icon="history" title={title} />
+  <MockupHead icon="history" title={title}>
+    <p class="mf-cap">Interactive prototype<button type="button" class="reset" data-oo="reset" hidden>Reset</button></p>
+  </MockupHead>
   <div class="mf-panel">
     <div class="stage" data-oo="stage">
       <div class="phone" data-oo="phone" role="group" aria-label="Aura Trade, Orders screen prototype">
@@ -38,7 +40,6 @@ const { id = 'orders', title = 'Open orders & history' } = Astro.props;
         </div>
       </div>
     </div>
-    <p class="mf-cap">Interactive prototype. Switch Open orders / Order history, filter by type and cancel an order.<button type="button" class="reset" data-oo="reset" hidden>Reset</button></p>
   </div>
 </div>
 

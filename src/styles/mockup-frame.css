@@ -1,6 +1,6 @@
 /*
   mockup-frame.css – phần "khung" dùng chung cho các mockup điện thoại trong Solution (Placing an order, Open orders & history):
-  hàng tiêu đề có huy hiệu icon, khung xám cùng kiểu với các khung xám ở phần Research, caption bên dưới.
+  hàng tiêu đề có huy hiệu icon (caption "Interactive prototype" nằm cùng hàng, canh phải), khung xám cùng kiểu với các khung xám ở phần Research.
   Selector nằm dưới .mf nên không ảnh hưởng chỗ khác.
 */
 .mf {
@@ -38,6 +38,7 @@
 /* Tiêu đề: huy hiệu tròn xanh có icon (cùng kiểu huy hiệu số ở Research) + chữ */
 .mf .mf-head {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--spacing-sm);
   margin-bottom: var(--space-2);
@@ -67,6 +68,12 @@
   border: 1px solid var(--mf-line);
   border-radius: 16px;
   padding: clamp(24px, 5cqw, 56px) clamp(16px, 3cqw, 48px);
+}
+
+.mf .mf-head .mf-cap {
+  margin: 0 0 0 auto;
+  max-width: none;
+  text-align: right;
 }
 
 .mf .mf-cap {

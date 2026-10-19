@@ -1,5 +1,6 @@
 ---
 // MockupHead.astro – hàng tiêu đề của một mockup: huy hiệu tròn có icon + tiêu đề (h4).
+// Nội dung đặt trong thẻ (slot) hiện bên phải cùng hàng, canh phải (ví dụ "Interactive prototype").
 interface Props {
   title: string;
   icon: 'trade' | 'history';
@@ -17,4 +18,5 @@ const ICONS = {
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" set:html={ICONS[icon]} />
   </span>
   <h4 class="mf-title">{title}</h4>
+  <slot />
 </div>
