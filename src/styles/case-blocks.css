@@ -1,0 +1,220 @@
+/*
+  case-blocks.css – các khối bố cục dùng trong bài case study (khung điện thoại, lưới ảnh,
+  thẻ quyết định, chú thích đánh số, sơ đồ luồng, sitemap).
+  Dùng trong file .md bằng HTML thuần (xem content/work/onchain-trading-mobile.md).
+  Mọi rule nằm trong .case-body nên không ảnh hưởng phần còn lại của site.
+  Màu và khoảng cách lấy từ biến trong global.css, không thêm màu mới.
+*/
+
+/* Cột bài rộng hơn cột chữ để chứa 3-4 khung điện thoại; chữ vẫn giữ độ rộng dễ đọc */
+.case-layout .case-body { max-width: none; }
+.case-layout .case-body > :is(h2, h3, h4, p, ul, ol, blockquote, .outcome-grid) { max-width: var(--reading-width); }
+
+/* Tiêu đề nhỏ (####) trong Design Decisions: nhãn mono */
+.case-layout .case-body h4 {
+  margin: var(--space-4) 0 var(--spacing-xs);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* Bảng Markdown */
+.case-layout .case-body table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  margin: var(--space-2) 0 var(--space-3);
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+.case-layout .case-body th, .case-layout .case-body td {
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--color-tint-strong);
+}
+.case-layout .case-body th {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+}
+.case-layout .case-body td:first-child { font-weight: 500; }
+
+/* ---------- Khung điện thoại ---------- */
+.case-layout .case-body .shot { margin: 0; min-width: 0; display: flex; flex-direction: column; gap: var(--spacing-sm); }
+.case-layout .case-body .shot .frame {
+  position: relative;
+  padding: 5px;
+  border-radius: 28px;
+  background: var(--color-text);
+}
+.case-layout .case-body .shot .frame img {
+  display: block;
+  width: 100%;
+  margin: 0;
+  aspect-ratio: 640 / 1391;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 23px;
+  background: var(--color-cover);
+}
+.case-layout .case-body .shot figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+.case-layout .case-body .shot figcaption b { font-weight: 500; color: var(--color-text); }
+
+/* ---------- Lưới ảnh ---------- */
+.case-layout .case-body .row3, .case-layout .case-body .row4 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: var(--space-3) 0;
+}
+@media (min-width: 40rem) {
+  .case-layout .case-body .row3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }
+  .case-layout .case-body .row4 { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-2); }
+}
+@media (max-width: 39.99rem) {
+  .case-layout .case-body .shot .frame { border-radius: 22px; padding: 4px; }
+  .case-layout .case-body .shot .frame img { border-radius: 18px; }
+}
+
+/* ---------- Sơ đồ 5 bước ---------- */
+.case-layout .case-body .flow { display: grid; grid-template-columns: 1fr; gap: var(--space-3); margin: var(--space-3) 0; }
+.case-layout .case-body .step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  min-width: 0;
+  padding: var(--spacing-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-tint-strong);
+  border-radius: var(--radius-xs);
+}
+.case-layout .case-body .step.key { border-color: var(--color-hairline); }
+.case-layout .case-body .step .n {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.case-layout .case-body .step b { font-weight: 500; }
+.case-layout .case-body .step ul { margin: 0; padding-left: var(--spacing-md); font-size: var(--text-sm); color: var(--color-text-muted); }
+.case-layout .case-body .step li { margin-bottom: 2px; }
+.case-layout .case-body .step:not(:last-child)::after {
+  content: "↓";
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--space-3) / -1 + 2px);
+  transform: translateX(-50%);
+  line-height: 1;
+  color: var(--color-text-muted);
+}
+@media (min-width: 64rem) {
+  .case-layout .case-body .flow { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--spacing-md); }
+  .case-layout .case-body .step:not(:last-child)::after { content: "→"; left: auto; right: -13px; top: 50%; bottom: auto; transform: translateY(-50%); background: var(--color-bg); }
+}
+
+/* ---------- Thẻ quyết định (Desktop / Mobile / Why / Trade-off) ---------- */
+.case-layout .case-body .kd { display: grid; grid-template-columns: 1fr; gap: var(--space-4) var(--space-3); margin: var(--space-3) 0; }
+@media (min-width: 48rem) { .case-layout .case-body .kd { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; } }
+.case-layout .case-body .kd-card { display: flex; flex-direction: column; gap: var(--spacing-sm); min-width: 0; }
+.case-layout .case-body .kd-card .shot { max-width: 17rem; }
+.case-layout .case-body .kd-card h5 { margin: var(--spacing-xs) 0 0; font-size: var(--text-lg); font-weight: 500; line-height: 1.25; letter-spacing: var(--tracking-display); }
+.case-layout .case-body .kd-row { margin: 0; display: grid; grid-template-columns: 4.5rem 1fr; gap: var(--spacing-xs); font-size: var(--text-sm); line-height: 1.45; }
+.case-layout .case-body .kd-row span {
+  padding-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.case-layout .case-body .kd-why { margin: 2px 0 0; padding-left: var(--spacing-sm); border-left: 1px solid var(--color-hairline); font-size: var(--text-sm); line-height: 1.45; color: var(--color-text-muted); }
+
+/* ---------- Điện thoại + chú thích đánh số ---------- */
+.case-layout .case-body .split { display: grid; grid-template-columns: 1fr; gap: var(--space-3); align-items: start; margin: var(--space-3) 0; }
+@media (min-width: 48rem) { .case-layout .case-body .split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-4); } }
+.case-layout .case-body .split .shot { max-width: 17rem; }
+.case-layout .case-body .chain { display: flex; align-items: flex-start; gap: var(--spacing-sm); }
+.case-layout .case-body .chain .shot { flex: 1 1 0; max-width: none; }
+.case-layout .case-body .chain .arrow { align-self: center; flex: none; color: var(--color-text-muted); }
+
+.case-layout .case-body .pin {
+  position: absolute;
+  left: calc(var(--x) * 1%);
+  top: calc(var(--y) * 1%);
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: 600 11px/20px var(--font-sans);
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--color-text);
+}
+
+.case-layout .case-body ol.anno { list-style: none; margin: 0; padding: 0; counter-reset: anno; border-top: 1px solid var(--color-tint-strong); }
+.case-layout .case-body ol.anno li {
+  counter-increment: anno;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: var(--spacing-sm);
+  margin: 0;
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--color-tint-strong);
+  font-size: var(--text-sm);
+}
+.case-layout .case-body ol.anno li::before {
+  content: counter(anno);
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 11px;
+  font-weight: 600;
+}
+.case-layout .case-body ol.anno b { font-weight: 500; }
+
+/* ---------- Hai ảnh có mũi tên giữa (Explore → Trading Settings) ---------- */
+.case-layout .case-body .pair-arrow { display: flex; align-items: center; justify-content: flex-start; gap: var(--spacing-md); max-width: 36rem; margin: var(--space-3) 0; }
+.case-layout .case-body .pair-arrow .shot { flex: 1 1 0; max-width: 15rem; }
+.case-layout .case-body .pair-arrow .arrow { flex: none; font-size: 1.25rem; color: var(--color-text-muted); }
+
+/* ---------- Sitemap rút gọn ---------- */
+.case-layout .case-body .sitemap { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3) var(--space-2); margin: var(--space-3) 0; }
+@media (min-width: 48rem) { .case-layout .case-body .sitemap { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.case-layout .case-body .sitemap > div { border-top: 1px solid var(--color-text); padding-top: var(--spacing-sm); min-width: 0; }
+.case-layout .case-body .sitemap b {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.case-layout .case-body .sitemap ul { list-style: none; margin: 0; padding: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+.case-layout .case-body .sitemap li { margin-bottom: 6px; line-height: 1.35; }
+.case-layout .case-body .sitemap li.key { color: var(--color-text); font-weight: 500; }
+.case-layout .case-body .sitemap li ul { margin: 4px 0 0; padding-left: var(--spacing-sm); border-left: 1px solid var(--color-tint-strong); }
+
