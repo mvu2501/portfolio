@@ -1,0 +1,373 @@
+---
+// Trang case study On-Chain Trading: bố cục lấy nguyên từ artifact (HTML trong template, CSS ở
+// src/styles/case-artifact.css). Trang tĩnh này được ưu tiên hơn route động [slug].astro.
+// File content/work/onchain-trading-mobile.md chỉ để lấy thẻ ở trang chủ và thứ tự Up next / Previous.
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CaseNav from '../../components/CaseNav.astro';
+import CaseToc from '../../components/CaseToc.astro';
+import '../../styles/case-artifact.css';
+
+const works = (await getCollection('work', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order
+);
+const i = works.findIndex((w) => w.id === 'onchain-trading-mobile');
+const brief = (e?: (typeof works)[number]) => (e ? { id: e.id, title: e.data.title } : undefined);
+const prev = brief(works[i - 1]);
+const next = brief(works[i + 1]);
+// Mục lục = các h2 của trang. id phải trùng với id gắn trên từng h2 bên dưới (HTML viết tay không có id tự động)
+const tocSections = [
+  { id: 'problem', label: 'The problem' },
+  { id: 'approach', label: 'Approach' },
+  { id: 'competitor-research', label: 'Research' },
+  { id: 'sign-up-explore', label: 'Design Decisions' },
+  { id: 'outcome', label: 'Outcome' },
+  { id: 'credits', label: 'Credit' },
+];
+---
+
+<BaseLayout
+  title="Designing a Mobile Trade Flow for an On-Chain Trading Terminal · vunguyen.me"
+  description="I designed the mobile trade flow for an on-chain trading terminal, so traders can go from a new token to a filled order in a few taps."
+>
+  <div class="cs">
+
+<div class="wrap">
+
+<header class="hero">
+  <div class="hero-text">
+    <a class="back back--head" href="/#work">← Work</a>
+    <h1>Designing a Mobile Trade Flow for an On-Chain Trading Terminal</h1>
+    <p class="lede">This is an on-chain trading terminal for new tokens. I designed the mobile app, which followed the desktop release on one shared design system. The focus of this case study is the trade flow: getting from a token to a filled order in as few taps as possible.</p>
+    <dl class="meta">
+      <div><dt>Role</dt><dd>product designer, owned mobile</dd></div>
+      <div><dt>Team</dt><dd>2 designers, 1 PM, 2 engineers</dd></div>
+      <div><dt>Timeline</dt><dd>2 months</dd></div>
+      <div><dt>Year</dt><dd>2025</dd></div>
+    </dl>
+  </div>
+</header>
+
+<figure class="cover"><img src="/images/work/onchain-trading-mobile/cover-v2.jpg" alt="Mobile app: Token Details with a Limit order and the safety check"></figure>
+
+<CaseToc variant="bar" sections={tocSections} />
+<a class="back back--side" href="/#work" tabindex="-1" aria-hidden="true">← Work</a>
+<CaseToc variant="sidebar" sections={tocSections} />
+
+<section>
+  <span class="eyebrow">The problem</span>
+  <h2 id="problem">Trading windows close in minutes</h2>
+  <p>Traders check whether a token is safe and buy before the move, often away from a desk. The mobile flow had to keep the speed of buying and selling without hiding what a trader needs to see before pressing Buy or Sell.</p>
+</section>
+
+<section>
+  <span class="eyebrow">Approach</span>
+  <h2 id="approach">One design system, two layouts</h2>
+  <p class="lede">Desktop led and mobile followed close behind: the plan was to release desktop first, then add mobile right after as a responsive app. Both used the same tokens and components; on mobile I kept the visual language and changed how each component behaves on touch.</p>
+  <figure class="desk-mock"><img src="/images/work/onchain-trading-mobile/desktop-mobile-v2.webp" alt="Token Details on desktop and mobile"></figure>
+</section>
+
+<section>
+  <span class="eyebrow">Competitor research</span>
+  <h2 id="competitor-research">What the leading terminals do well</h2>
+  <p class="lede">Before designing, we reviewed the trading terminals our users already used. Each one is strong at one part of the job; none felt built for a phone first.</p>
+  <div class="tablebox">
+    <table class="cr">
+      <thead><tr><th>Product</th><th>Known for</th><th>What we took</th></tr></thead>
+      <tbody>
+        <tr><td>GMGN</td><td>Smart-money and wallet tracking, trader labels, token security checks</td><td>Trader-type filters in Transactions, Tracker with wallet profiles, a safety check behind the 4/4 badge</td></tr>
+        <tr><td>Axiom</td><td>Speed: one-click buys from token lists, new pairs by stage, migration sniping, TP / SL strategies</td><td>Instant mode and Quick Buy on every row, Launch feed by stage, Snipe on pool open, Advanced rules with one shared TP / SL structure</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Trade flow</span>
+  <h2 id="trade-flow">From any list to a filled order</h2>
+  <div class="flow">
+    <div class="step"><span class="n">1 · Entry</span><b>Find a token</b><ul><li>Quick Buy on Explore</li><li>Buy on a launch card</li><li>Quick Buy in the wallet tracker</li><li>Token Details</li></ul></div>
+    <div class="step"><span class="n">2 · Check</span><b>Judge the token</b><ul><li>Stats and chart</li><li>4/4 safety badge</li><li>Live trades, holders</li></ul></div>
+    <div class="step key"><span class="n">3 · Order</span><b>Pick a mode</b><ul><li>Instant</li><li>Market or Limit</li></ul></div>
+    <div class="step"><span class="n">4 · Send</span><b>Review and send</b><ul><li>Active preset: slippage, fees, MEV</li><li>Estimated tokens</li></ul></div>
+    <div class="step"><span class="n">5 · Result</span><b>See what happened</b><ul><li>Filled, with PnL</li><li>Failed, with a fix</li></ul></div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Key decisions</span>
+  <h2 id="key-decisions">A few decisions that shaped the trade panel</h2>
+  <div class="kd">
+    <article class="kd-card">
+      <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/instant-buy.jpg" alt="Amounts as buttons"></div></figure>
+      <h3>Amounts as buttons</h3>
+      <p class="kd-ba"><span>Desktop</span>Type an amount, then press Buy.</p>
+      <p class="kd-ba"><span>Mobile</span>Four amount buttons. One tap sends the order.</p>
+      <p class="kd-why">No keyboard covering the chart, and the same few sizes every trade.</p>
+    </article>
+    <article class="kd-card">
+      <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/settings-v2.jpg" alt="Presets, not fields"></div></figure>
+      <h3>Presets, not fields</h3>
+      <p class="kd-ba"><span>Desktop</span>Fee and slippage fields in the panel.</p>
+      <p class="kd-ba"><span>Mobile</span>Three presets, always shown in a bar.</p>
+      <p class="kd-why">Set once, switch in one tap, always see what applies.</p>
+    </article>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Sign in → Explore</span>
+  <h2 id="sign-up-explore">From sign-up to the first trade</h2>
+  <div class="se-block">
+    <div class="se-head">
+      <h3>Sign up, then buy straight from the list</h3>
+    </div>
+    <div class="se-row">
+      <figure class="shot se-signup"><div class="frame"><img src="/images/work/onchain-trading-mobile/signup.jpg" alt="Sign up sheet"></div><figcaption><b>Sign up</b>One sheet, four ways in</figcaption></figure>
+      <span class="se-arrow" aria-hidden="true">→</span>
+      <div class="callouts">
+    <div class="phone-c"><figure class="shot"><div class="frame" style="position:relative"><img src="/images/work/onchain-trading-mobile/explore-v2.jpg" alt="Explore anatomy"><span class="pin" style="--x:42;--y:17.5">1</span><span class="pin" style="--x:35;--y:22.7">2</span><span class="pin" style="--x:72;--y:27.9">3</span><span class="pin" style="--x:30;--y:40.8">4</span><span class="pin" style="--x:93;--y:49.0">5</span></div></figure></div>
+    <div class="list"><div class="co" style="--x:42;--y:17.5"><span class="n">1</span><span class="ln"></span><div class="lbl"><b>Lists</b> · Trending, Surge, Watchlist</div></div><div class="co" style="--x:35;--y:22.7"><span class="n">2</span><span class="ln"></span><div class="lbl"><b>Time window</b> and Filter</div></div><div class="co" style="--x:72;--y:27.9"><span class="n">3</span><span class="ln"></span><div class="lbl"><b>Wallet, Quick Buy amount</b> and preset P1–P3</div></div><div class="co" style="--x:30;--y:40.8"><span class="n">4</span><span class="ln"></span><div class="lbl"><b>Token row</b> · age, market cap, liquidity</div></div><div class="co" style="--x:93;--y:49.0"><span class="n">5</span><span class="ln"></span><div class="lbl"><b>Lightning button</b> · one tap buys with the active preset</div></div></div>
+  </div>
+    </div>
+  </div>
+  <div class="se-block">
+    <div class="se-head">
+      <h3>Presets make one tap safe</h3>
+      <p>Tap the preset chip on Explore to open Trading Settings. Slippage, fees and MEV are saved per preset, for buy and sell; switch P1–P3 in one tap.</p>
+    </div>
+    <div class="pf">
+      <figure class="shot pf-a"><div class="frame" style="position:relative"><img src="/images/work/onchain-trading-mobile/explore-v2.jpg" alt="Explore with preset chip"><span class="pf-hl"></span></div><figcaption><b>Explore</b>Preset chip P1–P3</figcaption></figure>
+      <svg class="pf-arrow" viewBox="0 0 660 560" aria-hidden="true"><defs><marker id="pfh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#CCFF00"/></marker></defs><path d="M238,157 C320,150 330,225 396,228" fill="none" stroke="#CCFF00" stroke-width="2.5" marker-end="url(#pfh)"/></svg>
+      <figure class="shot pf-b"><div class="frame"><img src="/images/work/onchain-trading-mobile/settings-v2.jpg" alt="Trading Settings sheet"></div><figcaption><b>Trading Settings</b>Opens as a bottom sheet</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Token Details</span>
+  <h2 id="token-details">Read the token and trade it on one screen</h2>
+  <p class="lede">The screen follows the order a trader decides in.</p>
+  <div class="callouts">
+    <div class="phone-c"><figure class="shot"><div class="frame" style="position:relative"><img src="/images/work/onchain-trading-mobile/instant-buy.jpg" alt="Token Details anatomy"><span class="pin" style="--x:22;--y:16.0">1</span><span class="pin" style="--x:40;--y:22.6">2</span><span class="pin" style="--x:50;--y:41.8">3</span><span class="pin" style="--x:50;--y:72.2">4</span><span class="pin" style="--x:62;--y:80.5">5</span><span class="pin" style="--x:15;--y:88.5">6</span></div></figure></div>
+    <div class="list"><div class="co" style="--x:22;--y:16.0"><span class="n">1</span><span class="ln"></span><div class="lbl"><b>Header</b> · token, age, socials, 4/4 safety badge</div></div><div class="co" style="--x:40;--y:22.6"><span class="n">2</span><span class="ln"></span><div class="lbl"><b>Stats</b> · market cap, volume, liquidity, holders</div></div><div class="co" style="--x:50;--y:41.8"><span class="n">3</span><span class="ln"></span><div class="lbl"><b>Chart</b> · the same chart as desktop</div></div><div class="co" style="--x:50;--y:72.2"><span class="n">4</span><span class="ln"></span><div class="lbl"><b>Position</b> · bought, sold, holding, PnL</div></div><div class="co" style="--x:62;--y:80.5"><span class="n">5</span><span class="ln"></span><div class="lbl"><b>Trade panel</b> · wallet, mode, Buy/Sell, amounts</div></div><div class="co" style="--x:15;--y:88.5"><span class="n">6</span><span class="ln"></span><div class="lbl"><b>Preset bar</b> · slippage, fees, MEV</div></div></div>
+  </div>
+  <div class="features">
+<div class="feature">
+<div class="feature-head"><h3>Before the trade</h3><p>Live trades by trader type, holders tagged by wallet type, and the safety check behind the 4/4 badge.</p></div>
+<div class="row3">
+  <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/transactions.jpg" alt="Transactions"></div><figcaption><b>Transactions</b>Filter by Smart, Dev, Sniper</figcaption></figure>
+  <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/ov-holders.jpg" alt="Holders"></div><figcaption><b>Holders</b>Tagged by type and size</figcaption></figure>
+  <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/safety-check.jpg" alt="Safety check"></div><figcaption><b>Safety check</b>Mint, freeze, top 10, LP burnt</figcaption></figure>
+</div>
+</div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Trade modes</span>
+  <h2 id="trade-modes">Two ways to trade, one panel</h2>
+  <p class="lede">Ordered from fastest to most controlled. Switching mode changes only the panel; chart and position stay put.</p>
+  <div class="features">
+<div class="feature">
+<div class="feature-head"><h3>Instant</h3></div>
+<div class="row3 arrowed" id="instant-row">
+  <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/instant-buy.jpg" alt="Instant buy"></div><figcaption><b>Default is Instant</b>Preset amounts, one tap to buy</figcaption></figure>
+  <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/wallet-select.jpg" alt="Wallet picker sheet"></div><figcaption><b>Select wallet</b>Switch to another wallet before trading</figcaption></figure>
+  <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/instant-toast-v3.jpg" alt="Buy success toast"></div><figcaption><b>Order filled</b>Toast confirms tokens received; position updates</figcaption></figure>
+</div>
+</div>
+
+<div class="feature">
+<div class="feature-head"><h3>Market and Limit</h3></div>
+<div class="row3 arrowed" id="market-row">
+  <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/market.jpg" alt="Market buy"></div><figcaption><b>Market</b>Pick a preset or type any amount. The estimate shows how many tokens you get before you tap Buy.</figcaption></figure>
+  <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/limit.jpg" alt="Limit buy"></div><figcaption><b>Limit</b>Set a target market cap, or drag the slider from −100% to +100% of the current one. The order waits until the price gets there.</figcaption></figure>
+  <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/market-strategy-v3.jpg" alt="Advanced Trading Strategy sheet"></div><figcaption><b>Advanced strategy</b>Add take-profit and stop-loss steps before sending. Here: sell 25% at +50%, sell everything at −30%.</figcaption></figure>
+</div>
+</div>
+
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Full cycle · Sell</span>
+  <h2 id="sell">From position to profit</h2>
+  <p class="lede">Positions shows value and PnL per token, each with a Sell button. The sell sheet works in shares of the holding, and the result lands back in the same list.</p>
+  <div class="features">
+<div class="feature">
+<div class="row3 arrowed" id="sell-row">
+  <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/sell-1-holding.jpg" alt="Positions with open STABLE position"></div><figcaption><b>1 · Review positions</b>See value and PnL of every token held, then tap Sell on the one to close.</figcaption></figure>
+  <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/sell-2-sheet.jpg" alt="Sell STABLE sheet"></div><figcaption><b>2 · Choose how much</b>Drag or type a share of the holding and confirm. Fees come from the active preset.</figcaption></figure>
+  <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/sell-3-sold.jpg" alt="Sold toast and realized PnL"></div><figcaption><b>3 · See the result</b>A toast confirms the sale, and the position bar updates to the realized PnL.</figcaption></figure>
+</div>
+</div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Order states</span>
+  <h2 id="order-states">After the order</h2>
+  <p class="lede">Every order reports back in the same toast at the top: sending, filled, a warning before it fails, and the failure with its reason. The chart and panel stay in view.</p>
+  <div class="features">
+<div class="feature">
+<div class="row4">
+  <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/state-sending.jpg" alt="Submitting transaction toast"></div><figcaption><b>Sending</b>Spinner while the transaction is submitted</figcaption></figure>
+  <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/state-filled.jpg" alt="Order filled toast"></div><figcaption><b>Filled</b>Tokens received; position bar updates</figcaption></figure>
+  <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/state-funds.jpg" alt="Insufficient funds warning toast"></div><figcaption><b>Might fail</b>Warns about insufficient funds, with a 10s countdown</figcaption></figure>
+  <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/state-failed.jpg" alt="Transaction failed toast"></div><figcaption><b>Failed</b>Says why it failed: not enough funds for the buy amount</figcaption></figure>
+</div>
+</div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Rest of the app</span>
+  <h2 id="rest-of-app">Built on the same system</h2>
+  <p class="lede">The other modules reuse the components from the trade flow. One screen each.</p>
+  <div class="gallery">
+    <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/launch-feed.jpg" alt="Launch feed"></div><figcaption><b>Launch feed</b>New launches by stage</figcaption></figure>
+    <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/tracker-live.jpg" alt="Tracker"></div><figcaption><b>Tracker</b>Live trades of followed wallets</figcaption></figure>
+    <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/account-spot.jpg" alt="Portfolio"></div><figcaption><b>Portfolio</b>Value and PnL across wallets</figcaption></figure>
+    <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/wallet-deposit.jpg" alt="Deposit"></div><figcaption><b>Wallet</b>Deposit and withdraw funds</figcaption></figure>
+    <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/rewards-quests.jpg" alt="Rewards"></div><figcaption><b>Rewards</b>Tiers, quests and referrals</figcaption></figure>
+    <figure class="shot"><div class="frame"><img src="/images/work/onchain-trading-mobile/account-settings.jpg" alt="Account settings"></div><figcaption><b>Account</b>Profile, recovery key, language</figcaption></figure>
+  </div>
+
+</section>
+
+<section>
+  <span class="eyebrow">Outcome</span>
+  <h2 id="outcome">Shipped, then closed by the market</h2>
+  <div class="reflect">
+    <div><h3>Result</h3><p>The mobile app shipped in 2025, just behind desktop, after two months of focused work. The market went down, so the project was closed.</p></div>
+    <div><h3>Lessons learned</h3><ul class="lessons"><li><b>Speed comes from fewer decisions.</b> Presets, one-tap amounts and Quick Buy did more than fitting more on screen.</li><li><b>One system, two layouts.</b> Designing desktop and mobile together kept them consistent without slowing either team.</li></ul></div>
+  </div>
+</section>
+
+<section class="credits" id="credits">
+  <span class="eyebrow">Credits</span>
+  <p class="lede">Thanks to Dux for working alongside me on this exciting project.</p>
+</section>
+
+</div>
+
+
+  </div>
+  <div class="container">
+    <CaseNav prev={prev} next={next} />
+  </div>
+</BaseLayout>
+
+<script is:inline>
+(function(){
+  var NS='http://www.w3.org/2000/svg';
+  function el(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e}
+  function tag(svg,x,y,text){var g=el('g',{class:'tag'});svg.appendChild(g);var t=el('text',{x:x,y:y+4,'text-anchor':'middle'});t.textContent=text;g.appendChild(t);var w=t.getComputedTextLength()+14;g.insertBefore(el('rect',{x:x-w/2,y:y-9,width:w,height:18,rx:9}),t)}
+  /* each arrow: from [img, x1,y1,x2,y2] box, to [img, x, y], label, route */
+  var specs={
+    'instant-row':[
+      {f:[0,.019,.763,.278,.80],t:[1,0,.62],l:'Tap wallet'},
+      {f:[0,.513,.82,.734,.85],t:[2,.5,1],l:'Tap 1',route:'under'}],
+    'market-row':[
+      {f:[1,.756,.942,.981,.975],t:[2,0,.68],l:'Tap Adv. strat'}],
+    'sell-row':[
+      {f:[0,.84,.39,.96,.43],t:[1,0,.70],l:'Tap Sell'},
+      {f:[1,.036,.898,.964,.945],t:[2,0,.07],l:'Instant Sell'}]
+  };
+  function draw(id){
+    var row=document.getElementById(id); if(!row) return;
+    var old=row.querySelector('.flow-svg'); if(old) old.remove();
+    var imgs=row.querySelectorAll('img'); var R=row.getBoundingClientRect();
+    var r=[].map.call(imgs,function(i){return i.getBoundingClientRect()});
+    for(var k=1;k<r.length;k++){ if(r[k].top>r[0].bottom-10) return; }
+    var svg=el('svg',{class:'flow-svg'}); row.appendChild(svg);
+    var defs=el('defs',{}); var m=el('marker',{id:'ah-'+id,viewBox:'0 0 10 10',refX:'8',refY:'5',markerWidth:'7',markerHeight:'7',orient:'auto-start-reverse'}); m.appendChild(el('path',{d:'M0,0 L10,5 L0,10 z',fill:'#CCFF00'})); defs.appendChild(m); svg.appendChild(defs);
+    function P(i,x,y){var q=r[i];return [q.left-R.left+q.width*x, q.top-R.top+q.height*y]}
+    var bottom=Math.max.apply(null,r.map(function(q){return q.bottom}))-R.top+16;
+    specs[id].forEach(function(sp){
+      var A=P(sp.f[0],sp.f[1],sp.f[2]), B=P(sp.f[0],sp.f[3],sp.f[4]);
+      svg.appendChild(el('rect',{class:'ring',x:A[0],y:A[1],width:B[0]-A[0],height:B[1]-A[1],rx:6}));
+      var E=P(sp.t[0],sp.t[1],sp.t[2]), d, lx, ly;
+      if(sp.route==='under'){
+        var sx=(A[0]+B[0])/2, sy=B[1], yb=bottom, ex=E[0], ey=E[1]+4;
+        d='M'+sx+','+sy+' L'+sx+','+(yb-10)+' Q'+sx+','+yb+' '+(sx+10)+','+yb+' L'+(ex-10)+','+yb+' Q'+ex+','+yb+' '+ex+','+(yb-10)+' L'+ex+','+ey;
+        lx=(sx+ex)/2; ly=yb;
+      } else {
+        var S=[B[0],(A[1]+B[1])/2]; E[0]-=6; var mx=(S[0]+E[0])/2;
+        d='M'+S[0]+','+S[1]+' C'+mx+','+S[1]+' '+mx+','+E[1]+' '+E[0]+','+E[1];
+        lx=mx; ly=(S[1]+E[1])/2-16;
+      }
+      svg.appendChild(el('path',{class:'ln',d:d,'marker-end':'url(#ah-'+id+')'}));
+      tag(svg,lx,ly,sp.l);
+    });
+  }
+  function all(){Object.keys(specs).forEach(draw)}
+  window.addEventListener('load',all); window.addEventListener('resize',all);
+  if(document.readyState==='complete') all();
+})();
+
+</script>
+
+<script>
+  // Nút "← Work" ở menu dọc: hiện khi nút ở phần tiêu đề đã cuộn khuất sau thanh Nav (giống bài Trading).
+  const headBack = document.querySelector('.back--head');
+  const sideBack = document.querySelector<HTMLElement>('.back--side');
+  if (headBack && sideBack) {
+    new IntersectionObserver(
+      ([entry]) => {
+        const show = !entry.isIntersecting;
+        sideBack.classList.toggle('is-visible', show);
+        sideBack.tabIndex = show ? 0 : -1;
+        sideBack.setAttribute('aria-hidden', String(!show));
+      },
+      { rootMargin: '-64px 0px 0px 0px' }
+    ).observe(headBack);
+  }
+</script>
+
+<script>
+  // Đánh dấu mục đang đọc trong thanh mục lục khi cuộn (cùng logic với trang [slug].astro).
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]'));
+  const ids = Array.from(new Set(links.map((a) => a.dataset.tocLink ?? '')));
+
+  function update() {
+    // Mục đang đọc = tiêu đề cuối cùng đã cuộn qua đường mốc cách đỉnh trang ~35% màn hình
+    const line = window.innerHeight * 0.35;
+    let activeId = ids[0];
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top <= line) activeId = id;
+    }
+    // Cuộn chạm đáy trang thì chọn mục cuối
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+      activeId = ids[ids.length - 1];
+    }
+    for (const a of links) {
+      const on = a.dataset.tocLink === activeId;
+      if (on) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+      // Thanh ngang: cuộn để mục đang đọc luôn nằm trong tầm nhìn
+      if (on && a.offsetParent !== null) {
+        const bar = a.closest<HTMLElement>('.toc--bar');
+        bar?.scrollTo({ left: a.offsetLeft - 16, behavior: 'smooth' });
+      }
+    }
+  }
+
+  let ticking = false;
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        update();
+        ticking = false;
+      });
+    },
+    { passive: true }
+  );
+  window.addEventListener('resize', update);
+  update();
+</script>

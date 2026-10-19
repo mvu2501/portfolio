@@ -25,7 +25,9 @@ export async function getStaticPaths() {
 }
 
 const { entry, prev, next } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
+// Mục lục = các tiêu đề ## của bài (ví dụ Spot Trading kết thúc bằng Reflections, Onchain Trading kết thúc bằng Credit)
+const tocSections = headings.filter((h) => h.depth === 2).map((h) => ({ id: h.slug, label: h.text }));
 // Chèn component tương tác vào giữa bài: trong .md ghi <!-- demo:tên --> trên một dòng riêng,
 // ở đây tách HTML tại dấu đó và đặt component tương ứng vào. Thêm demo mới: import ở trên rồi thêm vào DEMOS.
 const DEMOS: Record<string, any> = {
@@ -36,9 +38,13 @@ const DEMOS: Record<string, any> = {
   'limit-price': LimitPrice,
   'price-can-move': PriceCanMove,
 };
-const html = entry.rendered?.html ?? '';
+// Ghi chú nội bộ trong file .md (<!-- ... -->, ví dụ nhắc NDA hoặc chỗ đặt ảnh) không đưa ra trang công khai; chỉ giữ dấu <!-- demo:... -->.
+// Tiêu đề ### chưa có nội dung (ví dụ "Supporting artifacts" mới chỉ có ghi chú) cũng được ẩn cho tới khi có nội dung.
+const html = (entry.rendered?.html ?? '')
+  .replace(/<!--(?!\s*demo:)[\s\S]*?-->/g, '')
+  .replace(/<h3[^>]*>[^<]*<\/h3>\s*(?=<h[1-3][\s>])/g, '');
 const segments = /<!-- demo:[a-z-]+ -->/.test(html) ? html.split(/<!-- demo:([a-z-]+) -->/) : null;
-const { title, role, year, platform, tags, description } = entry.data;
+const { title, role, year, platform, description } = entry.data;
 // Khối thông tin dưới tiêu đề: chỉ hiện mục nào có dữ liệu
 const info = [
   { label: 'Role', value: role },
@@ -53,11 +59,7 @@ const info = [
       <a class="case-header__back" href="/#work">← Work</a>
       <h1 class="case-header__title">{title}</h1>
       <p class="case-header__desc">{description}</p>
-      {tags.length > 0 && (
-        <ul class="case-header__tags">
-          {tags.map((tag) => <li>{tag}</li>)}
-        </ul>
-      )}
+      {/* Tag chỉ hiện ở thẻ dự án trên trang chủ; không hiện dưới tiêu đề case study (theo yêu cầu: bỏ "• Fintech …") */}
 
       <dl class="case-info">
         {info.map((item) => (
@@ -71,14 +73,14 @@ const info = [
   </header>
 
   <!-- Thanh mục lục ngang cho mobile (ẩn trên desktop) -->
-  <CaseToc variant="bar" />
+  <CaseToc variant="bar" sections={tocSections} />
 
   <div class="container case-layout">
     <!-- Sidebar mục lục cho desktop (ẩn trên mobile) -->
     <aside class="case-layout__side">
       <!-- Nút quay lại: ẩn lúc đầu trang (đã có nút ở phần tiêu đề), hiện ra khi cuộn qua nó -->
       <a class="case-layout__back" href="/#work" tabindex="-1" aria-hidden="true">← Work</a>
-      <CaseToc variant="sidebar" />
+      <CaseToc variant="sidebar" sections={tocSections} />
     </aside>
 
     <div class="case-main">
@@ -88,6 +90,8 @@ const info = [
             const Demo = DEMOS[seg];
             return i % 2 === 0 ? <Fragment set:html={seg} /> : Demo ? <Demo /> : null;
           })
+        ) : html ? (
+          <Fragment set:html={html} />
         ) : (
           <Content />
         )}
@@ -461,6 +465,11 @@ const info = [
     grid-template-columns: 1fr;
     gap: var(--space-2);
     margin-top: var(--space-2);
+  }
+
+  /* Khung Outcome trải hết cột (như các khối demo), hai khung Result / Lessons rộng bằng nhau */
+  .case-body > :global(.outcome-grid) {
+    max-width: none;
   }
 
   .case-body :global(.outcome-card) {

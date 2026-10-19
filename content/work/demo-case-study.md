@@ -7,7 +7,7 @@ year: 2026                             # THAY
 platform: Web                          # THAY
 tags: [Demo, Placeholder]              # THAY
 description: A placeholder project used to preview the next and previous navigation.   # THAY
-order: 2
+order: 3
 ---
 
 ## Overview
