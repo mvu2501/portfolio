@@ -1,0 +1,325 @@
+/*
+  case-artifact.css: CSS của trang case study On-Chain Trading, lấy nguyên từ artifact.
+  Mọi rule nằm trong .cs nên không ảnh hưởng phần còn lại của site.
+*/
+/* Layout: one editorial column (max 1080px); real app screenshots in phone frames carry every claim, text sits beside or above them */
+.cs{
+  --bg:#ffffff; --fg:#15170f; --muted:#5e6254; --line:#e5e7de; --soft:#f4f5ef;
+  --accent:#4d6b00;            
+  --lime:#cbff00;              
+  --frame:#0e100b;
+  --display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --body:"Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.cs{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.6;padding:0 20px}
+.cs .wrap{max-width:1080px;margin:0 auto;padding-block:56px 96px;display:flex;flex-direction:column;gap:96px}
+.cs h1,.cs h2,.cs h3{font-family:var(--display);font-weight:400;line-height:1.08;text-wrap:balance;margin:0}
+.cs h1{font-size:clamp(44px,7vw,82px);letter-spacing:-.01em}
+.cs h2{font-size:clamp(32px,4.4vw,48px)}
+.cs h3{font-size:26px}
+.cs p{margin:0;max-width:62ch}
+.cs .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.cs section{display:flex;flex-direction:column;gap:28px}
+.cs .lede{font-size:20px;color:var(--muted);max-width:58ch}
+.cs .muted{color:var(--muted)}
+
+/* phone frame around real screenshots */
+.cs .shot{margin:0;display:flex;flex-direction:column;gap:12px;min-width:0}
+.cs .shot .frame{border-radius:34px;padding:6px;background:var(--frame);box-shadow:0 28px 56px -30px rgba(20,24,8,.55)}
+.cs .shot img{display:block;width:100%;aspect-ratio:640/1391;object-fit:cover;object-position:top;border-radius:28px}
+.cs .shot figcaption{font-size:14px;line-height:1.45;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+.cs .shot figcaption b{color:var(--fg);font-size:15px}
+
+/* hero */
+.cs .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+.cs .hero-text{display:flex;flex-direction:column;gap:22px;min-width:0}
+.cs .meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 28px;border-top:1px solid var(--line);padding-top:22px;margin:6px 0 0}
+.cs .meta dt{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.cs .meta dd{margin:2px 0 0;font-weight:600}
+.cs .hero-shots{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.cs .hero-shots .shot:nth-child(2){margin-top:56px}
+
+.cs .two{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.cs .two>div{display:flex;flex-direction:column;gap:16px;min-width:0}
+
+/* principles */
+.cs .principles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+.cs .principles div{border-top:2px solid var(--fg);padding-top:16px;display:flex;flex-direction:column;gap:8px}
+.cs .principles h3{font-size:24px}
+.cs .principles p{font-size:15.5px;color:var(--muted)}
+
+.cs .tablebox{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+.cs table{border-collapse:collapse;width:100%;min-width:640px;font-size:15px}
+.cs th,.cs td{text-align:left;padding:14px 18px;border-bottom:1px solid var(--line);vertical-align:top}
+.cs th{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--soft)}
+.cs tr:last-child td{border-bottom:0}
+.cs td:first-child{font-weight:600}
+
+/* text + phones */
+.cs .split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:56px;align-items:start}
+.cs .split.rev{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+.cs .split>.txt h3{font-size:30px}
+.cs .split>.txt{display:flex;flex-direction:column;gap:18px;min-width:0}
+.cs .pair{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.cs .single{max-width:300px;justify-self:center;width:100%}
+
+/* annotated list */
+.cs .anno{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.cs .anno li{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15.5px}
+.cs .anno li span{width:24px;height:24px;border-radius:50%;background:var(--fg);color:var(--bg);font-size:12px;font-weight:700;display:grid;place-items:center;margin-top:1px}
+.cs .anno b{font-weight:600}
+
+.cs .row4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.cs .row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+
+.cs .tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--accent);border:1px solid var(--line);width:max-content}
+
+.cs .scope{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 32px;border-top:1px solid var(--line)}
+.cs .scope div{padding:16px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:4px}
+.cs .scope b{font-size:16px}
+.cs .scope span{font-size:14.5px;color:var(--muted);line-height:1.5}
+
+.cs .reflect{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.cs .reflect div{background:var(--soft);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px}
+.cs .reflect p{font-size:15.5px}
+
+@media (max-width:900px){
+  .cs .hero,.cs .split,.cs .split.rev,.cs .two{grid-template-columns:1fr}
+  .cs .split.rev>.txt{order:-1}
+  .cs .row4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cs .principles,.cs .scope{grid-template-columns:1fr}
+  .cs .hero-shots{max-width:560px}
+}
+@media (max-width:560px){
+  .cs{font-size:16px}
+  .cs .row3{grid-template-columns:1fr 1fr}
+  .cs .reflect{grid-template-columns:1fr}
+  .cs .hero-shots .shot:nth-child(2){margin-top:32px}
+  .cs .pair,.cs .row3,.cs .row4{gap:12px}
+  .cs .shot .frame{border-radius:24px;padding:4px}
+  .cs .shot img{border-radius:20px}
+}
+
+.cs .feature{display:flex;flex-direction:column;gap:18px;padding-top:28px;border-top:1px solid var(--line)}
+.cs .feature-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:32px;align-items:baseline}
+.cs .feature-head h3{font-size:30px}
+.cs .feature-head p{font-size:16px;color:var(--muted)}
+.cs .features{display:flex;flex-direction:column;gap:56px}
+.cs .modes3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+.cs .mode-col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.cs .mode-col h3{font-size:28px}
+.cs .mode-col p{font-size:15.5px;color:var(--muted)}
+.cs .mode-col .pair{gap:12px}
+@media (max-width:900px){.cs .modes3{grid-template-columns:1fr}.cs .feature-head{grid-template-columns:1fr;gap:6px}.cs .mode-col .pair{max-width:520px}}
+.cs .shot.todo .frame{background:transparent;box-shadow:none;border:2px dashed var(--line);padding:4px}
+.cs .shot.todo .ph{aspect-ratio:640/1391;border-radius:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:16px;text-align:center;color:var(--muted);font-size:13px;line-height:1.4;background:var(--soft)}
+.cs .shot.todo .ph b{color:var(--fg);font-size:14px}
+.cs .shot.todo .ph span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+
+/* trade flow diagram */
+.cs .flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;align-items:stretch}
+.cs .step{border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px;background:var(--bg);position:relative;min-width:0}
+.cs .step .n{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.cs .step b{font-size:16px}
+.cs .step ul{margin:0;padding-left:16px;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+.cs .step:not(:last-child)::after{content:"→";position:absolute;right:-13px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px;background:var(--bg);line-height:1}
+.cs .step.key{border-color:var(--accent)}
+/* decisions */
+.cs .decision{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:40px;align-items:center;padding-top:28px;border-top:1px solid var(--line)}
+.cs .decision .txt{display:flex;flex-direction:column;gap:12px;min-width:0}
+.cs .decision h3{font-size:30px}
+.cs .kv2{display:grid;grid-template-columns:110px 1fr;gap:8px 16px;font-size:15.5px;margin:0}
+.cs .kv2 dt{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.cs .kv2 dd{margin:0}
+.cs .gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 20px}
+.cs .compare{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);gap:24px;align-items:end}
+.cs .desk-ph{aspect-ratio:16/10;border:2px dashed var(--line);border-radius:16px;background:var(--soft);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:14px;text-align:center;padding:16px}
+.cs .desk-ph span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.cs .desk-ph b{color:var(--fg)}
+@media (max-width:900px){
+  .cs .flow{grid-template-columns:1fr}
+  .cs .step:not(:last-child)::after{content:"↓";right:auto;left:50%;top:auto;bottom:-14px;transform:translateX(-50%)}
+  .cs .decision{grid-template-columns:1fr;gap:20px}
+  .cs .decision .shot{max-width:260px}
+  .cs .gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cs .compare{grid-template-columns:1fr}
+  .cs .compare .shot{max-width:240px}
+}
+.cs .desk-frame{border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 28px 56px -30px rgba(20,24,8,.55)}
+.cs .desk-frame img{display:block;width:100%}
+.cs .compare .shot:first-child{max-width:none}
+.cs .hero{grid-template-columns:1fr !important}
+.cs .hero-text{max-width:820px}
+.cs .cover{margin:-48px 0 0;border-radius:20px;overflow:hidden;background:#0f110c}
+.cs .cover img{display:block;width:100%;height:auto}
+@media (max-width:560px){.cs .cover{margin-top:-56px;border-radius:14px}}
+.cs .desk-mock{margin:0}
+.cs .desk-mock img{display:block;width:100%;height:auto}
+
+/* callouts: numbered pins on the screenshot, lines to labels on the right */
+.cs .callouts{--w:300px;position:relative;width:100%;max-width:760px}
+.cs .callouts .phone-c{width:var(--w);position:relative}
+.cs .callouts .phone-c .shot{margin:0}
+.cs .pin{position:absolute;left:calc(var(--x) * 1%);top:calc(var(--y) * 1%);width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:var(--lime);color:#0e100b;font:700 11px/22px var(--body);text-align:center;box-shadow:0 0 0 3px rgba(14,16,11,.85);z-index:2}
+.cs .co{position:absolute;top:calc(var(--y) * 1%);left:calc(var(--w) * var(--x) / 100);right:0;display:flex;align-items:center;transform:translateY(-50%);pointer-events:none}
+.cs .co .ln{flex:none;height:1px;width:calc(var(--w) * (100 - var(--x)) / 100 + 28px);background:var(--muted);opacity:.7}
+.cs .co .ln::after{content:"";display:block;width:5px;height:5px;border-radius:50%;background:var(--muted);margin:-2px 0 0 auto}
+.cs .co .lbl{padding-left:12px;font-size:14.5px;line-height:1.35;white-space:nowrap}
+.cs .co .lbl b{font-weight:600}
+.cs .co .n{display:none}
+@media (max-width:860px){
+  .cs .callouts{--w:min(300px,100%)}
+  .cs .callouts .phone-c{margin:0 auto}
+  .cs .co{position:static;transform:none;display:grid;grid-template-columns:28px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .cs .co .ln{display:none}
+  .cs .co .lbl{padding:0;white-space:normal}
+  .cs .co .n{display:grid;width:22px;height:22px;border-radius:50%;background:var(--fg);color:var(--bg);font-size:11px;font-weight:700;place-items:center}
+  .cs .callouts .list{margin-top:20px;border-top:1px solid var(--line)}
+}
+.cs .anno-block{display:flex;flex-direction:column;gap:14px}
+.cs .anno-block h3{font-size:30px}
+
+
+/* sitemap */
+.cs .sm{margin-top:28px;display:flex;flex-direction:column;gap:14px}
+.cs .sm-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 24px}
+.cs .sm-head h3{font-size:30px}
+.cs .sm-legend{display:flex;gap:16px;font-size:13px;color:var(--muted)}
+.cs .sm-legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-2px}
+.cs .sm-legend .k1{border:1.5px solid var(--accent)}
+.cs .sm-legend .k2{background:var(--soft);border:1px dashed var(--muted)}
+.cs .sm-scroll{overflow-x:auto;padding-bottom:8px;border:1px solid var(--line);border-radius:16px}
+.cs .sm-tree{min-width:1060px;padding:28px 20px 32px;--c:var(--muted)}
+.cs .sm-tree ul{list-style:none;margin:0;padding:0}
+.cs .node{display:inline-block;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:7px 11px;font-size:13px;line-height:1.3;max-width:190px}
+.cs .node.root{max-width:none;background:#CCFF00;color:#141a00;border-color:#CCFF00;font-weight:700;font-size:14px;padding:9px 16px}
+.cs .node.root small{color:#4f6300;font-weight:500}
+.cs .node.tab{font-weight:700;font-size:14px;border-color:var(--fg)}
+.cs .node.key{border:1.5px solid var(--accent);color:var(--accent);font-weight:700}
+.cs .node small{display:block;color:var(--muted);font-size:11.5px;font-weight:400}
+.cs .node.shared{background:var(--soft);border-style:dashed}
+/* level 1: root -> tabs (horizontal fan) */
+.cs .lv0{display:flex;flex-direction:column;align-items:center}
+.cs .lv0>.node{position:relative}
+.cs .lv0>.node::after{content:"";position:absolute;left:50%;top:100%;height:18px;border-left:1px solid var(--c)}
+.cs .tabs{display:grid;grid-template-columns:1.35fr 1fr 1fr 1fr 1fr;width:100%;margin-top:18px}
+.cs .tabs>li{position:relative;padding:18px 8px 0;display:flex;flex-direction:column;align-items:flex-start}
+.cs .tabs>li::before{content:"";position:absolute;top:0;left:0;right:0;border-top:1px solid var(--c)}
+.cs .tabs>li:first-child::before{left:22px}
+.cs .tabs>li:last-child::before{right:auto;width:22px}
+.cs .tabs>li::after{content:"";position:absolute;top:0;left:22px;height:18px;border-left:1px solid var(--c)}
+/* vertical stacks with a left rail */
+.cs .stack{margin:0 0 0 22px;padding:10px 0 0 0;display:flex;flex-direction:column;gap:7px;position:relative}
+.cs .stack>li{position:relative;padding-left:16px}
+.cs .stack>li::before{content:"";position:absolute;left:0;top:0;bottom:-7px;border-left:1px solid var(--c)}
+.cs .stack>li:last-child::before{bottom:auto;height:17px}
+.cs .stack>li::after{content:"";position:absolute;left:0;top:17px;width:16px;border-top:1px solid var(--c)}
+.cs .stack>li:first-child::before{top:-10px}
+.cs .stack .stack{margin-left:18px}
+.cs .sm-note{font-size:13px;color:var(--muted)}
+
+.cs .ds{margin-top:40px;display:flex;flex-direction:column;gap:18px}
+.cs .ds h3{font-size:30px}
+.cs .ds figure{margin:0;display:flex;flex-direction:column;gap:10px}
+.cs .ds figure img{display:block;width:100%;height:auto;border-radius:16px;border:1px solid var(--line)}
+.cs .ds figcaption{font-size:14px;color:var(--muted)}
+.cs .ds figcaption b{color:var(--fg)}
+
+.cs .kd{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 20px;align-items:start}
+.cs .kd-card{display:flex;flex-direction:column;gap:10px;min-width:0}
+.cs .kd-card h3{font-size:22px;margin-top:6px}
+.cs .kd-ba{font-size:14px;line-height:1.45;margin:0;display:grid;grid-template-columns:62px 1fr;gap:8px}
+.cs .kd-ba span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.cs .kd-why{font-size:14px;line-height:1.45;color:var(--muted);border-left:2px solid var(--accent);padding-left:10px;margin:2px 0 0}
+@media (max-width:900px){.cs .kd{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.cs .kd{grid-template-columns:1fr}.cs .kd-card .shot{max-width:260px}}
+
+.cs .cr td:first-child{white-space:nowrap}
+.cs .cr-take{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.cs .cr-take div{border-top:2px solid var(--fg);padding-top:14px;display:flex;flex-direction:column;gap:6px}
+.cs .cr-take b{font-size:16px}
+.cs .cr-take span{font-size:14.5px;color:var(--muted);line-height:1.5}
+@media (max-width:760px){.cs .cr-take{grid-template-columns:1fr}}
+
+.cs .se-block{display:flex;flex-direction:column;gap:18px;padding-top:28px;border-top:1px solid var(--line)}
+.cs .se-head{display:flex;flex-direction:column;gap:8px}
+.cs .se-head h3{font-size:30px}
+.cs .se-row{display:flex;align-items:flex-start;gap:28px}
+.cs .se-signup{width:240px;flex:none}
+.cs .se-arrow{align-self:center;font-size:28px;color:var(--muted);flex:none}
+.cs .se-row .callouts{flex:1}
+.cs .pf{position:relative;width:660px;max-width:100%;display:flex;justify-content:space-between;align-items:flex-start}
+.cs .pf .shot{width:260px;flex:none}
+.cs .pf .frame{padding:6px}
+.cs .pf-hl{position:absolute;left:calc(6px + 248px * .735);top:calc(6px + 539px * .262);width:calc(248px * .19);height:calc(539px * .034);border:2px solid #CCFF00;border-radius:8px;box-shadow:0 0 0 4px rgba(204,255,0,.18)}
+.cs .pf-arrow{position:absolute;left:0;top:0;width:660px;height:560px;pointer-events:none;overflow:visible}
+@media (max-width:1000px){.cs .se-row{flex-direction:column;align-items:center}.cs .se-arrow{transform:rotate(90deg)}}
+@media (max-width:700px){.cs .pf{flex-direction:column;align-items:center;gap:24px;width:100%}.cs .pf-arrow{display:none}.cs .pf-hl{display:none}}
+.cs .lessons{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:15.5px}
+
+.cs .arrowed{position:relative}
+.cs .arrowed figcaption{margin-top:30px}
+.cs .flow-svg{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.cs .flow-svg .ln{fill:none;stroke:#CCFF00;stroke-width:2}
+.cs .flow-svg .ring{fill:none;stroke:#CCFF00;stroke-width:2}
+.cs .flow-svg .tag rect{fill:#CCFF00}
+.cs .flow-svg .tag text{fill:#141a00;font:600 11px var(--body);text-transform:none;letter-spacing:0}
+
+/* =====================================================================
+   CHỈNH CHO SITE: chỉ đổi font và màu nền, không đổi bố cục.
+   Muốn đổi font: sửa --display (tiêu đề) và --body (chữ thường) ngay dưới đây.
+   Muốn quay lại màu gốc của artifact: xoá các dòng --bg ... --soft.
+   ===================================================================== */
+.cs {
+  --display: var(--font-sans);
+  --body: var(--font-sans);
+  --bg: var(--color-bg);
+  --fg: var(--color-text);
+  --muted: var(--color-text-muted);
+  --line: var(--color-tint-strong);
+  --soft: var(--color-surface);
+  background: transparent;
+}
+.cs .eyebrow { margin: 0; font-family: var(--body); }
+.cs h1, .cs h2, .cs h3 { letter-spacing: var(--tracking-display); }
+/* Cỡ chữ heading theo bài Trading: h1 28→46px, h2 24px mobile / 28px desktop, h3 20px */
+.cs h1 { font-size: clamp(28px, 4.2vw, 46px); line-height: 1.12; }
+.cs h2 { font-size: 24px; line-height: 1.15; }
+.cs h3,
+.cs .principles h3,
+.cs .split > .txt h3,
+.cs .feature-head h3,
+.cs .mode-col h3,
+.cs .decision h3,
+.cs .anno-block h3,
+.cs .sm-head h3,
+.cs .ds h3,
+.cs .kd-card h3,
+.cs .se-head h3 { font-size: 20px; }
+@media (min-width: 48rem) {
+  .cs h2 { font-size: 28px; }
+}
+
+/* Phần chữ bên dưới heading: cùng một cỡ và một màu. Selector giữ đúng độ ưu tiên với các rule gốc ở trên */
+.cs p,
+.cs .lede,
+.cs .feature-head p,
+.cs .reflect p,
+.cs .kd-ba,
+.cs .kd-why,
+.cs .lessons { font-size: 17px; color: var(--fg); }
+
+/* Giá trị trong khối meta: chữ thường, không đậm */
+.cs .meta dd { font-weight: 400; }
+
+/* Thẻ quyết định: còn 2 thẻ nên dùng 2 cột rộng bằng cột cũ, căn trái */
+@media (min-width: 901px) {
+  .cs .kd { grid-template-columns: repeat(2, minmax(0, 347px)); column-gap: 40px; }
+}
+
+/* Mục lục: chỉ dùng thanh ngang, hiện cả trên desktop. Không dùng sidebar 14rem vì cột chữ còn lại quá hẹp,
+   làm nhãn của khối callout (cạnh ảnh điện thoại) tràn ra ngoài ở màn hình 1000–1200px. */
+.cs .toc.toc--bar { display: block; margin: -48px -20px; }
+/* Khi bấm mục lục, tiêu đề không bị thanh Nav và thanh mục lục che */
+.cs [id] { scroll-margin-top: calc(var(--nav-height) + 72px); }
