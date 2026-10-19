@@ -2,6 +2,7 @@
   information-architecture.css – khối "Information architecture" trong phần Research của case study Trading.
   Port từ information-architecture.html (bản tham chiếu): giữ nguyên cấu trúc, kích thước, khoảng cách, viền,
   bo góc, đường nối và màu nền/viền. Chỉ khác:
+  - Font dùng font của site (Inter Tight) thay cho Hanken Grotesk, theo yêu cầu.
   - Màu chữ dùng token của site (--color-text, --color-text-muted, --color-accent) thay cho màu gốc.
   - Điểm gập 3 cột → 1 cột tính theo bề rộng của khối (container query, dưới 780px) thay vì bề rộng màn hình 860px,
     vì khối nằm trong cột bài có sidebar (ở màn hình 860px khối rộng khoảng 780px).
@@ -12,7 +13,7 @@
   --brass:#14B8A6; --brass-deep:#0F766E; --brass-tint:#E0F5F2;
   --ia-pill-bg:#14181B;
   --ia-text:var(--color-text); --ia-text-soft:var(--color-text-muted); --ia-text-faint:var(--color-text-muted); --ia-accent:var(--color-accent);
-  --sans:'Hanken Grotesk',ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --sans:var(--font-sans);
   color-scheme:light;
   container-type:inline-size;
   color:var(--ia-text); font-family:var(--sans); font-size:17px; line-height:1.7; -webkit-font-smoothing:antialiased;
