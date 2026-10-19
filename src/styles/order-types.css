@@ -2,7 +2,7 @@
   order-types.css – mockup điện thoại tương tác "Order types" trong phần Design Decisions › Solution của case study Trading.
   Mọi selector nằm dưới .ot nên không ảnh hưởng phần còn lại của site.
   Phần khung máy và form (.stage … .opt) giữ nguyên từ bản tham chiếu order-types-mockup.html;
-  khung máy luôn nền sáng như Figma, không đổi theo dark mode. Khung xám và caption bên ngoài khung máy theo kiểu khung xám của phần Research.
+  khung máy luôn nền sáng như Figma, không đổi theo dark mode. Khung xám, tiêu đề và caption bên ngoài khung máy nằm ở mockup-frame.css (dùng chung).
 */
 .ot,
 .ot *,
@@ -13,44 +13,6 @@
 
 .ot {
   --font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  /* Khung xám bao quanh khung máy: cùng kiểu và cùng bề rộng với các khung xám ở phần Research */
-  --ot-panel: #f6f7f9;
-  --ot-line: #e4e7ea;
-  --ot-cap: #66727f;
-  container-type: inline-size;
-  display: flex;
-  flex-direction: column;
-  margin-top: var(--space-3);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .ot .ot-panel { --ot-panel: #151b1e; --ot-line: #262e34; --ot-cap: #8d99a5; }
-}
-:root[data-theme="dark"] .ot .ot-panel { --ot-panel: #151b1e; --ot-line: #262e34; --ot-cap: #8d99a5; }
-
-
-.ot.ot .ot-title {
-  margin-top: 0;
-}
-
-.ot .ot-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  background: var(--ot-panel);
-  border: 1px solid var(--ot-line);
-  border-radius: 16px;
-  padding: clamp(24px, 5cqw, 56px) clamp(16px, 3cqw, 48px);
-}
-
-.ot .ot-cap {
-  margin: 0;
-  max-width: 40ch;
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--ot-cap);
-  text-align: center;
 }
 
 .ot .stage{position:relative;width:min(100%,340px)}

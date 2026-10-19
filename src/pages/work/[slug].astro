@@ -6,6 +6,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CaseToc from '../../components/CaseToc.astro';
 import CaseNav from '../../components/CaseNav.astro';
 import InformationArchitecture from '../../components/InformationArchitecture.astro';
+import OrdersMockup from '../../components/order-types/OrdersMockup.astro';
 import OrderTypesMockup from '../../components/order-types/OrderTypesMockup.astro';
 import AmountInput from '../../components/trading/AmountInput.astro';
 import LimitPrice from '../../components/trading/LimitPrice.astro';
@@ -30,6 +31,7 @@ const { Content } = await render(entry);
 const DEMOS: Record<string, any> = {
   'information-architecture': InformationArchitecture,
   'order-types': OrderTypesMockup,
+  'open-orders': OrdersMockup,
   'amount-input': AmountInput,
   'limit-price': LimitPrice,
   'price-can-move': PriceCanMove,

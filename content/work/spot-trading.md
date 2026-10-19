@@ -93,6 +93,8 @@ I tested version 1 with the PM, RMs, the trading team and engineers. Their feedb
 
 <!-- demo:order-types -->
 
+<!-- demo:open-orders -->
+
 ## Outcome
 
 I designed the full Spot trading feature: placing orders, open orders with pause, resume and cancel, and order history. I handed it off to engineering, and the first release shipped with Market and Limit. Then adapting the layout for desktop.

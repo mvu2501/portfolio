@@ -1,0 +1,48 @@
+---
+// OrdersMockup.astro – mockup điện thoại tương tác "Open orders & Order history" (Design Decisions › Solution).
+// Nội dung (danh sách lệnh, tab, chip lọc, sheet huỷ lệnh) do src/scripts/orders.ts dựng; ở đây chỉ có khung sẵn.
+// Nguồn: open-orders-mockup.html (Figma "Aura Mobile v1.1", section 49:38737). Các card đánh dấu "tạm" xem đầu orders.ts.
+import '../../styles/mockup-frame.css';
+import '../../styles/orders.css';
+import MockupHead from '../MockupHead.astro';
+
+interface Props {
+  /** Dùng để đặt id duy nhất khi có nhiều mockup trên một trang */
+  id?: string;
+  title?: string;
+}
+const { id = 'orders', title = 'Open orders & history' } = Astro.props;
+---
+
+<div class="mf oo wide" data-orders data-uid={id}>
+  <MockupHead icon="history" title={title} />
+  <div class="mf-panel">
+    <div class="stage" data-oo="stage">
+      <div class="phone" data-oo="phone" role="group" aria-label="Aura Trade, Orders screen prototype">
+        <div class="screen" data-oo="screen">
+          <div class="otabs" data-oo="tabs" role="tablist" aria-label="Orders">
+            <button type="button" class="otb on" role="tab" id={`${id}-t-open`} data-tab="open" aria-selected="true" aria-controls={`${id}-list`}><span data-o="openlbl">Open orders</span><i></i></button>
+            <button type="button" class="otb" role="tab" id={`${id}-t-hist`} data-tab="hist" aria-selected="false" aria-controls={`${id}-list`}><span>Order history</span><i></i></button>
+          </div>
+          <div class="ofil" data-oo="fil"></div>
+          <div class="olist" data-oo="list" id={`${id}-list`} role="tabpanel"></div>
+          <div class="hind" inert><b></b></div>
+          <div class="scrim" data-oo="scrim"></div>
+          <div class="sheet" data-oo="sheet" role="dialog" aria-modal="true" aria-labelledby={`${id}-sheet-title`}>
+            <div class="handle"></div>
+            <div class="sheet-title" role="heading" aria-level="3" id={`${id}-sheet-title`}>Cancel this order?</div>
+            <p data-oo="shB"></p>
+            <div class="sum" data-oo="shS"></div>
+            <div class="acts"><button type="button" class="sbtn pri" data-oo="shOk">Cancel order</button><button type="button" class="sbtn sec" data-oo="shNo">Keep order</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="mf-cap">Interactive prototype. Switch Open orders / Order history, filter by type and cancel an order.<button type="button" class="reset" data-oo="reset" hidden>Reset</button></p>
+  </div>
+</div>
+
+<script>
+  import { initOrders } from '../../scripts/orders.ts';
+  document.querySelectorAll<HTMLElement>('[data-orders]').forEach((el) => initOrders(el));
+</script>

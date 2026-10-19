@@ -1,0 +1,67 @@
+/*
+  mockup-frame.css – phần "khung" dùng chung cho các mockup điện thoại trong Solution (Placing an order, Open orders & history):
+  hàng tiêu đề có huy hiệu icon, khung xám cùng kiểu với các khung xám ở phần Research, caption bên dưới.
+  Selector nằm dưới .mf nên không ảnh hưởng chỗ khác.
+*/
+.mf {
+  --mf-panel: #f6f7f9;
+  --mf-line: #e4e7ea;
+  --mf-cap: #66727f;
+  --mf-ink: #101214;
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-3);
+}
+
+.mf + .mf {
+  margin-top: var(--space-5);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .mf .mf-panel { --mf-panel: #151b1e; --mf-line: #262e34; --mf-cap: #8d99a5; --mf-ink: #eef1f3; }
+}
+:root[data-theme="dark"] .mf .mf-panel { --mf-panel: #151b1e; --mf-line: #262e34; --mf-cap: #8d99a5; --mf-ink: #eef1f3; }
+
+/* Tiêu đề: huy hiệu tròn xanh có icon (cùng kiểu huy hiệu số ở Research) + chữ */
+.mf .mf-head {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--space-2);
+}
+
+.mf .mf-ico {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.mf .mf-head .mf-title {
+  margin: 0;
+}
+
+.mf .mf-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background: var(--mf-panel);
+  border: 1px solid var(--mf-line);
+  border-radius: 16px;
+  padding: clamp(24px, 5cqw, 56px) clamp(16px, 3cqw, 48px);
+}
+
+.mf .mf-cap {
+  margin: 0;
+  max-width: 40ch;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--mf-cap);
+  text-align: center;
+}

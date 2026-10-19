@@ -3,7 +3,9 @@
 // Chỉ Order form tương tác (src/scripts/order-types.ts dựng form bên trong #fh / #fb);
 // status bar, tab Spot/Convert/OTC, tiêu đề cặp, biểu đồ và thanh điều hướng giữ nguyên và `inert`.
 // Nguồn: order-types-mockup.html (Figma "Aura Mobile v1.1", node 47:34916).
+import '../../styles/mockup-frame.css';
 import '../../styles/order-types.css';
+import MockupHead from '../MockupHead.astro';
 import { CANDLES } from '../../lib/order-types/chart.ts';
 
 interface Props {
@@ -24,9 +26,9 @@ const Y_LABELS: [number, number, string][] = [
 ];
 ---
 
-<div class="ot wide" data-order-types>
-  <h4 class="ot-title">{title}</h4>
-  <div class="ot-panel">
+<div class="mf ot wide" data-order-types>
+  <MockupHead icon="trade" title={title} />
+  <div class="mf-panel">
   <div class="stage" data-ot="stage">
     <div class="phone" data-ot="phone" role="group" aria-label="Aura Trade, Spot screen prototype">
       <div class="screen" data-ot="screen">
@@ -77,7 +79,7 @@ const Y_LABELS: [number, number, string][] = [
       </div>
     </div>
   </div>
-  <p class="ot-cap">Interactive prototype. Switch Buy/Sell, the order type, Stop type and Time in force, or edit the form.</p>
+  <p class="mf-cap">Interactive prototype. Switch Buy/Sell, the order type, Stop type and Time in force, or edit the form.</p>
   </div>
 </div>
 

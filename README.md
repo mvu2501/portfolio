@@ -87,6 +87,10 @@ Khối sơ đồ trong Research chèn bằng dòng `<!-- demo:information-archit
 
 Mockup tương tác nằm ở mục Solution của Design Decisions (tiêu đề "Placing an order"), chèn bằng dòng `<!-- demo:order-types -->`. Markup ở `src/components/order-types/OrderTypesMockup.astro`, logic ở `src/scripts/order-types.ts`, giao diện ở `src/styles/order-types.css`. Chỉ Order form tương tác; khung máy luôn nền sáng như Figma.
 
+### Mockup "Open orders & history" (Design Decisions › Solution)
+
+Mockup thứ hai trong Solution, chèn bằng dòng `<!-- demo:open-orders -->`. Markup ở `src/components/order-types/OrdersMockup.astro`, logic và dữ liệu lệnh (`OPEN0`, `HIST`) ở `src/scripts/orders.ts`, giao diện ở `src/styles/orders.css`. Khung xám + tiêu đề có icon dùng chung với mockup Order types: `src/styles/mockup-frame.css`, `src/components/MockupHead.astro`.
+
 ## Style giao diện
 Giao diện theo file style tham khảo (Yinyee Ho): nền kem `#FBF8F1`, chữ mực `#1F1D1A`, font **Inter Tight** (chữ thường) và **JetBrains Mono** (nút, nhãn, tag), góc vuông, đường kẻ đỏ gạch `#B7372B`, không bóng đổ. Mọi giá trị nằm ở khối `:root` trong `src/styles/global.css`.
 Hai chỗ khác với file style gốc, có chủ ý: chữ phụ dùng `#6B6559` (đạt độ tương phản 4.5:1 thay vì `#8C8578`), và nội dung vẫn có chiều rộng tối đa 72rem thay vì tràn hết màn hình.

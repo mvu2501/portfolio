@@ -1,0 +1,108 @@
+/*
+  orders.css – mockup điện thoại tương tác "Open orders & Order history" (Design Decisions › Solution, case study Trading).
+  Mọi selector nằm dưới .oo nên không ảnh hưởng chỗ khác. Phần khung máy và nội dung (.stage … .acts) giữ nguyên từ
+  bản tham chiếu open-orders-mockup.html; khung máy luôn nền sáng như Figma. Khác duy nhất: lớp .ot của nút tab đổi
+  thành .otb (tránh trùng với .ot của mockup Order types). Khung xám, tiêu đề, caption nằm ở mockup-frame.css.
+*/
+.oo,
+.oo *,
+.oo *::before,
+.oo *::after {
+  box-sizing: border-box;
+}
+
+.oo {
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* Nút Reset nằm trong caption, ngoài khung máy: dùng màu chữ của khung xám */
+.oo .reset {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  margin-left: 8px;
+  font: 600 13px/18px var(--font);
+  color: var(--mf-ink);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.oo .reset[hidden] { display: none; }
+
+.oo .stage{position:relative;width:min(100%,340px)}
+.oo .phone{position:absolute;left:0;top:0;width:422px;height:894px;padding:10px;background:#111;border-radius:48px;transform-origin:0 0;box-shadow:0 18px 40px -18px rgba(16,18,20,.45)}
+.oo .screen{--f-ink:#101214;--f-ink2:#4e5964;--f-ink3:#66727f;--f-dis:#a3adb8;--f-line:#e4e7ea;--f-line2:#c8cfd5;--f-subtle:#f2f4f5;--f-primary:#14b8a6;
+  --f-buy-up:#007a56;--f-down:#c62a36;--f-link:#0f766e;
+  position:relative;width:402px;height:874px;background:#fff;border-radius:38px;overflow:clip;display:flex;flex-direction:column;
+  font:400 14px/20px var(--font);color:var(--f-ink);color-scheme:light}
+.oo .screen svg{display:block}
+.oo .screen button{font-family:inherit}
+.oo .otabs{flex:none;display:flex;gap:20px;align-items:flex-end;padding:40px 20px 0;border-bottom:1px solid var(--f-line)}
+.oo .otb{appearance:none;border:0;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 0 0;font:600 14px/20px var(--font);color:var(--f-ink3);white-space:nowrap}
+.oo .otb i{display:block;height:2px;width:100%;border-radius:1px}
+.oo .otb.on{color:var(--f-ink)}
+.oo .otb.on i{background:var(--f-primary)}
+.oo .otb:focus-visible,
+.oo .fc:focus-visible,
+.oo .cb:focus-visible,
+.oo .sbtn:focus-visible{outline:2px solid var(--f-primary);outline-offset:2px}
+.oo .ofil{flex:none;display:flex;align-items:center;justify-content:space-between;padding:12px 20px}
+.oo .ofl{display:flex;gap:8px}
+.oo .fc{appearance:none;border:0;background:none;cursor:pointer;height:28px;padding:0 12px;border-radius:8px;font:400 12px/16px var(--font);color:var(--f-ink2);white-space:nowrap}
+.oo .fc.on{background:var(--f-subtle);font-weight:600;color:var(--f-ink)}
+.oo .fall{font:600 12px/16px var(--font);color:var(--f-link);white-space:nowrap}
+.oo .hf{display:inline-flex;align-items:center;gap:2px;background:var(--f-subtle);border-radius:4px;padding:4px 8px;font:600 12px/16px var(--font);color:var(--f-ink2);white-space:nowrap}
+.oo .hf svg{stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.oo .olist{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.oo .olist::-webkit-scrollbar{display:none}
+.oo .card{display:flex;flex-direction:column;gap:8px;padding:16px 20px;border-bottom:1px solid var(--f-line);background:#fff;transition:opacity .16s}
+.oo .card.h{padding:12px 20px}
+.oo .card.out{opacity:0}
+.oo .ch{display:flex;align-items:center;justify-content:space-between}
+.oo .ch b{font:600 14px/20px var(--font)}
+.oo .ch span{font:400 11px/14px var(--font);color:var(--f-ink3)}
+.oo .ctr{display:flex;align-items:center;justify-content:space-between}
+.oo .ty{font:600 12px/16px var(--font)}
+.oo .ty.up{color:var(--f-buy-up)}
+.oo .ty.down{color:var(--f-down)}
+.oo .fl{display:flex;align-items:center;gap:8px;font:400 11px/14px var(--font);color:var(--f-ink3);white-space:nowrap}
+.oo .bar{width:80px;height:4px;border-radius:2px;background:var(--f-subtle);overflow:clip}
+.oo .bar i{display:block;height:100%;width:var(--w,0%)}
+.oo .up .bar i,
+.oo .bar.up i{background:var(--f-buy-up)}
+.oo .bar.down i{background:var(--f-down)}
+.oo .cd{display:flex;flex-direction:column;gap:8px}
+.oo .r{display:flex;align-items:center;gap:4px;font:400 12px/16px var(--font)}
+.oo .r .k{flex:1;min-width:0;color:var(--f-ink3)}
+.oo .r .v{color:var(--f-ink);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.oo .ca{display:flex;justify-content:flex-end}
+.oo .cb{appearance:none;cursor:pointer;height:32px;padding:0 12px;border-radius:8px;background:var(--f-subtle);border:1px solid var(--f-line);color:var(--f-ink);font:600 12px/16px var(--font)}
+.oo .badge{padding:2px 8px;border-radius:4px;font:600 12px/16px var(--font);white-space:nowrap}
+.oo .b-ok{background:#e6f8f2;color:#007a56}
+.oo .b-neu{background:#f2f4f5;color:#4e5964}
+.oo .b-warn{background:#fff9e5;color:#8a6800}
+.oo .b-err{background:#fff1f1;color:#c62a36}
+.oo .hind{flex:none;height:34px;display:flex;align-items:center;justify-content:center}
+.oo .hind b{display:block;width:134px;height:5px;border-radius:3px;background:var(--f-ink)}
+.oo .scrim{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;visibility:hidden;transition:opacity .2s,visibility 0s .2s}
+.oo .sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;padding:8px 20px 40px;display:flex;flex-direction:column;align-items:stretch;gap:16px;box-shadow:0 12px 32px rgba(16,18,20,.14),0 4px 8px rgba(16,18,20,.06);transform:translateY(100%);visibility:hidden;transition:transform .26s cubic-bezier(.2,.8,.2,1),visibility 0s .26s}
+.oo .screen.sh .scrim{opacity:1;visibility:visible;transition:opacity .2s}
+.oo .screen.sh .sheet{transform:none;visibility:visible;transition:transform .26s cubic-bezier(.2,.8,.2,1)}
+.oo .handle{align-self:center;width:36px;height:4px;border-radius:2px;background:var(--f-line2)}
+.oo .sheet .sheet-title{margin:0;font:600 17px/24px var(--font)}
+.oo .sheet p{margin:0;font:400 14px/20px var(--font);color:var(--f-ink2)}
+.oo .sum{display:flex;flex-direction:column;gap:8px}
+.oo .acts{display:flex;flex-direction:column;gap:12px}
+.oo .sbtn{appearance:none;cursor:pointer;height:52px;border-radius:12px;font:600 16px/24px var(--font);border:1px solid transparent}
+.oo .sbtn.pri{background:#21262b;color:#f9fafb}
+.oo .sbtn.sec{background:var(--f-subtle);border-color:var(--f-line);color:var(--f-ink)}
+
+@media (prefers-reduced-motion:reduce){.oo .scrim,
+.oo .sheet,
+.oo .card,
+.oo .screen *{transition:none!important}
+}
+
+/* Trước khi script chạy fit(): giả định khung máy rộng 340px để không bị tràn hoặc nhảy */
+.oo .stage { height: 720px; }
+.oo .phone { transform: scale(0.8057); }
