@@ -70,8 +70,8 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
                 description={f.data.description}
                 cover={f.data.cover}
                 coverAlt={f.data.coverAlt}
-                href={f.data.link}
-                external={!!f.data.link}
+                href={f.data.demo ? `/fun-projects/${f.id}` : f.data.link}
+                external={!f.data.demo && !!f.data.link}
               />
             ))}
           </div>
