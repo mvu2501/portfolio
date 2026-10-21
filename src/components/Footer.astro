@@ -1,5 +1,5 @@
 ---
-// Footer.astro – chân trang: email, mạng xã hội, nút "Back to top".
+// Footer.astro – cụm Contact (tiêu đề, email, link mạng xã hội) nằm tách riêng phía trên, rồi tới thanh cuối trang (Back to top, bản quyền).
 
 // THAY: email thật của bạn
 const email = 'mvu2501@gmail.com';
@@ -13,74 +13,95 @@ const socials = [
 const year = new Date().getFullYear();
 ---
 
-<footer class="footer">
-  <div class="container footer__inner">
+<section class="contact" id="contact">
+  <div class="container contact__inner">
     <div>
-      <p class="eyebrow">Contact</p>
-      <a class="footer__email" href={`mailto:${email}`}>{email}</a>
-      <ul class="footer__socials">
+      <h2 class="contact__title">Say hello.</h2>
+      <a class="contact__email" href={`mailto:${email}`}>{email}<span aria-hidden="true"> ↗</span></a>
+    </div>
+
+    <div class="contact__elsewhere">
+      <p class="eyebrow">Elsewhere</p>
+      <ul class="contact__socials">
         {socials.map((s) => (
-          <li><a href={s.href} target="_blank" rel="noopener">{s.label}</a></li>
+          <li><a href={s.href} target="_blank" rel="noopener"><span>{s.label}</span><span aria-hidden="true">↗</span></a></li>
         ))}
       </ul>
     </div>
+  </div>
+</section>
 
-    <div class="footer__meta">
-      <a class="button button--ghost" href="#top">↑ Back to top</a>
-      <p class="footer__copy">© {year} vunguyen.me</p>
-    </div>
+<footer class="footer">
+  <div class="container footer__inner">
+    <p class="footer__copy">© {year} vunguyen.me</p>
+    <a class="button button--ghost" href="#top">↑ Back to top</a>
   </div>
 </footer>
 
 <style>
-  .footer {
+  .contact {
     padding-top: var(--space-5);
-    padding-bottom: 22px;
+    padding-bottom: var(--space-4);
   }
 
-  .footer__inner {
+  .contact__inner {
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
   }
 
-  .footer__email {
+  .contact__title {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-display);
+    line-height: 1.1;
+  }
+
+  .contact__email {
     font-family: 'Playfair Display', Georgia, serif;
     font-style: italic;
     font-size: var(--text-heading);
     letter-spacing: var(--tracking-display);
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 6px;
     word-break: break-all;
   }
 
-  .footer__email:hover {
-    text-decoration: underline;
-    text-underline-offset: 6px;
+  .contact__email:hover {
+    text-decoration-thickness: 2px;
   }
 
-  .footer__socials {
+  .contact__socials {
     list-style: none;
-    margin: var(--space-2) 0 0;
+    margin: var(--space-1) 0 0;
     padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
+    max-width: 18rem;
   }
 
-  .footer__socials a {
-    font-size: var(--text-sm);
+  .contact__socials a {
+    display: flex;
+    justify-content: space-between;
+    padding-block: var(--space-1);
+    border-bottom: 1px solid var(--color-tint-strong);
+    text-decoration: none;
+    font-size: var(--text-lg);
+  }
+
+  .contact__socials a:hover {
     color: var(--color-text-muted);
   }
 
-  .footer__socials a:hover {
-    color: var(--color-text);
+  .footer {
+    padding-block: var(--space-4) 22px;
   }
 
-  .footer__meta {
+  .footer__inner {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-2);
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--color-tint-strong);
   }
 
   .footer__copy {
@@ -90,18 +111,21 @@ const year = new Date().getFullYear();
   }
 
   @media (min-width: 48rem) {
-    .footer {
-      padding-top: 126px;
+    .contact__inner {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .contact__elsewhere {
+      min-width: 16rem;
+      padding-top: var(--space-2);
     }
 
     .footer__inner {
       flex-direction: row;
       justify-content: space-between;
-      align-items: flex-end;
-    }
-
-    .footer__meta {
-      align-items: flex-end;
+      align-items: center;
     }
   }
 </style>
