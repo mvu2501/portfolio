@@ -2,13 +2,12 @@
 // Footer.astro – chân trang: email, mạng xã hội, nút "Back to top".
 
 // THAY: email thật của bạn
-const email = 'hello@vunguyen.me';
+const email = 'mvu2501@gmail.com';
 
 // THAY: link mạng xã hội thật. Xóa dòng nào bạn không dùng, thêm dòng mới nếu cần.
 const socials = [
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/your-handle' },
-  { label: 'Behance', href: 'https://www.behance.net/your-handle' },
-  { label: 'Dribbble', href: 'https://dribbble.com/your-handle' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/vu-nguyen-7b291094' },
+  { label: 'Dribbble', href: 'https://dribbble.com/mvu2501' },
 ];
 
 const year = new Date().getFullYear();
@@ -46,6 +45,8 @@ const year = new Date().getFullYear();
   }
 
   .footer__email {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
     font-size: var(--text-heading);
     letter-spacing: var(--tracking-display);
     text-decoration: none;
