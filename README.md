@@ -20,7 +20,6 @@ Tắt server: `Ctrl + C`. Kiểm tra bản build: `npm run build` (kết quả n
 portfolio/
 ├── content/                  ← NỘI DUNG của bạn (Markdown) – sửa ở đây
 │   ├── work/spot-trading.md  ← case study Spot trading (mỗi file .md = một dự án + một trang)
-│   ├── work/demo-case-study.md ← case study DEMO để xem Up next / Previous (xóa hoặc thêm draft: true khi có dự án thật)
 │   ├── fun/sample-project.md ← dự án nhỏ (chỉ hiện thẻ ở trang chủ)
 │   └── pages/about.md        ← nội dung trang About (giới thiệu + 4 bước Process)
 ├── public/                   ← file giữ nguyên, truy cập thẳng bằng URL

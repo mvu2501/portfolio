@@ -126,7 +126,6 @@ I designed the full Spot trading feature: placing orders, open orders with pause
 
 The hard part was not adding five order types. It was keeping them simple enough for one phone screen. That is why the same layout can now grow into the desktop version.
 
-If I did it again, I would test the values with real clients earlier. We still have not agreed on the final % values for the limit price buttons. Two things made it hard:
+If I did it again, I would test the values with real clients earlier. We still have not agreed on the final % values for the limit price buttons. One thing made it hard:
 
-- **Different clients:** the trading team is used to large orders and wants bigger steps. RMs and clients usually prefer smaller, safer steps.
 - **Different pairs:** BTC and smaller coins move differently, so one set of numbers cannot fit all of them.

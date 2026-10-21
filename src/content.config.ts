@@ -33,13 +33,35 @@ const fun = defineCollection({
 });
 
 // Các trang văn bản thường (hiện tại: About).
-// Phần thông tin đầu file gồm tiêu đề và 4 bước Process; phần thân là đoạn giới thiệu.
+// Phần thông tin đầu file gồm tiêu đề và danh sách Experience; phần thân là đoạn giới thiệu.
 const pages = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './content/pages' }),
   schema: z.object({
     title: z.string(),
-    process: z
-      .array(z.object({ name: z.string(), text: z.string() }))
+    approach: z
+      .array(
+        z.object({
+          name: z.string(), // tên bước, ví dụ "Explore"
+          icon: z.enum(['compass', 'rocket', 'bulb', 'refresh']), // icon hiện cạnh tên
+        })
+      )
+      .default([]),
+    experience: z
+      .array(
+        z.object({
+          period: z.string(),   // ví dụ "2018 — 2026"
+          label: z.string(),    // ví dụ "Into Web3 and fintech"
+          items: z.array(
+            z.object({
+              dates: z.string(),            // ví dụ "05/2025 — 09/2026"
+              company: z.string(),
+              companyNote: z.string().optional(), // ví dụ "Contractor"
+              role: z.string(),
+              field: z.string().optional(), // ví dụ "Digital Asset Solutions"
+            })
+          ),
+        })
+      )
       .default([]),
   }),
 });

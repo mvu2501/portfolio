@@ -1,36 +1,58 @@
 ---
 // Trang About (/about). Nội dung lấy từ content/pages/about.md:
 //  - phần thân (đoạn giới thiệu)  → hiện ở khối đầu trang
-//  - process trong phần thông tin → hiện ở khối Process
+//  - experience trong phần thông tin → hiện ở khối Experience
+//  - approach trong phần thông tin → hiện ở khối Approach (4 bước, có dòng AI hỗ trợ)
 import { getEntry, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { resumeUrl } from '../config';
 
 const about = await getEntry('pages', 'about');
 if (!about) throw new Error('Thiếu file content/pages/about.md');
 const { Content } = await render(about);
-const { title, process } = about.data;
+const { title, approach, experience } = about.data;
+
+// Ảnh polaroid: đặt file public/images/about-photo.webp (tỉ lệ 3:4) thì ảnh tự hiện, chưa có thì hiện khung trống
+const photo = '/images/about-photo.webp';
+const hasPhoto = existsSync(join(process.cwd(), 'public', photo));
 ---
 
 <BaseLayout title={`${title} · vunguyen.me`}>
   <section class="section">
     <div class="container">
       <p class="eyebrow">{title}</p>
-      <div class="about__intro">
-        <Content />
+      <div class="about__top">
+        <figure class="polaroid">
+          <div class="polaroid__photo">
+            {hasPhoto ? (
+              <img src={photo} alt="Vu Nguyen standing in front of a snow-capped mountain at sunrise" width="1200" height="1600" />
+            ) : (
+              <span class="polaroid__ph">Your photo here</span>
+            )}
+          </div>
+        </figure>
+        <div class="about__intro">
+          <Content />
+        </div>
       </div>
     </div>
   </section>
 
   <section class="section section--tight">
     <div class="container">
-      <p class="eyebrow">Process</p>
-      <ol class="process">
-        {process.map((step, i) => (
-          <li class="process__step">
-            <span class="process__num">{String(i + 1).padStart(2, '0')}</span>
-            <h2 class="process__name">{step.name}</h2>
-            <p class="process__text">{step.text}</p>
+      <p class="eyebrow">Approach</p>
+      <ol class="approach">
+        {approach.map((step) => (
+          <li class="approach__step">
+            <svg class="approach__icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              {step.icon === 'compass' && (<><circle cx="12" cy="12" r="9" /><path d="M15.5 8.5l-2 5-5 2 2-5z" /></>)}
+              {step.icon === 'rocket' && (<><path d="M5 19c.5-2.5 1.5-3.5 3-4" /><path d="M9.5 14.5C8 11 9 6 15 4c2-.5 4-.5 5-.5-.2 1-.2 3-.5 5-2 6-7 7-10 5.5z" /><circle cx="15.5" cy="8.5" r="1.3" /><path d="M9.5 14.5L7 17M7 12.5L4.5 13M11.5 17L11 19.5" /></>)}
+              {step.icon === 'bulb' && (<><path d="M9 18h6M10 21h4" /><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" /></>)}
+              {step.icon === 'refresh' && (<><path d="M20 11a8 8 0 0 0-14-4.5L4 9" /><path d="M4 4v5h5" /><path d="M4 13a8 8 0 0 0 14 4.5L20 15" /><path d="M20 20v-5h-5" /></>)}
+            </svg>
+            <h2 class="approach__name">{step.name}</h2>
           </li>
         ))}
       </ol>
@@ -39,7 +61,36 @@ const { title, process } = about.data;
 
   <section class="section section--tight">
     <div class="container">
+      <p class="eyebrow">Experience</p>
+      {experience.map((group) => (
+        <div class="exp">
+          <p class="exp__group"><span class="exp__period">{group.period}</span> {group.label}</p>
+          <ul class="exp__list">
+            {group.items.map((it) => (
+              <li class="exp__row">
+                <span class="exp__dates">{it.dates}</span>
+                <span class="exp__company">{it.company}{it.companyNote && <span class="exp__note"> · {it.companyNote}</span>}</span>
+                <span class="exp__role">{it.role}</span>
+                <span class="exp__field">{it.field}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
       <a class="button" href={resumeUrl} target="_blank" rel="noopener">View Resume</a>
+    </div>
+  </section>
+
+  <section class="section quote">
+    <div class="container">
+      <blockquote class="quote__text">
+        “When everything falls apart, sometimes the greatest product you’ve ever designed is your own resilience.”
+      </blockquote>
     </div>
   </section>
 </BaseLayout>
@@ -49,12 +100,52 @@ const { title, process } = about.data;
     padding-top: 0;
   }
 
+  .about__top {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    align-items: start;
+  }
+
   .about__intro {
     max-width: var(--reading-width);
     font-size: var(--text-lg);
   }
 
-  .process {
+  /* Ảnh polaroid */
+  .polaroid {
+    margin: 0;
+    width: min(100%, 17rem);
+    padding: 12px 12px 44px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(31, 29, 26, 0.08), 0 10px 28px rgba(31, 29, 26, 0.1);
+    transform: rotate(-2.5deg);
+  }
+
+  .polaroid__photo {
+    aspect-ratio: 3 / 4;
+    background: var(--color-cover);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+
+  .polaroid__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .polaroid__ph {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  /* Approach */
+  .approach {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -63,37 +154,127 @@ const { title, process } = about.data;
     gap: var(--space-3);
   }
 
-  .process__step {
+  .approach__step {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
     padding-top: var(--space-2);
     border-top: 1px solid var(--color-hairline);
   }
 
-  .process__num {
-    font-family: var(--font-mono);
-    font-size: var(--text-mono);
-    letter-spacing: 0.14em;
-    color: var(--color-text-muted);
+  .approach__icon {
+    flex: none;
+    color: var(--color-accent);
   }
 
-  .process__name {
-    font-size: var(--text-heading);
-    margin: var(--spacing-xxs) 0 var(--space-1);
-  }
-
-  .process__text {
-    color: var(--color-text-muted);
+  .approach__name {
     margin: 0;
+    font-size: var(--text-lg);
+    font-weight: 500;
   }
 
   @media (min-width: 40rem) {
-    .process {
+    .approach {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
   @media (min-width: 64rem) {
-    .process {
+    .approach {
       grid-template-columns: repeat(4, 1fr);
     }
+  }
+
+  /* Experience */
+  .exp + .exp {
+    margin-top: var(--space-4);
+  }
+
+  .exp__group {
+    margin: 0 0 var(--space-1);
+    color: var(--color-text-muted);
+  }
+
+  .exp__period {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    margin-right: var(--space-1);
+    color: var(--color-accent);
+  }
+
+  .exp__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .exp__row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px;
+    padding-block: var(--space-2);
+    border-top: 1px solid var(--color-tint-strong);
+  }
+
+  .exp__dates {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+  }
+
+  .exp__company {
+    font-weight: 500;
+  }
+
+  .exp__role {
+    font-size: var(--text-lg);
+  }
+
+  .exp__field {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+  }
+
+  .exp__note {
+    font-size: var(--text-sm);
+    font-weight: 400;
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 48rem) {
+    .about__top {
+      grid-template-columns: 17rem minmax(0, 1fr);
+      gap: var(--space-5);
+    }
+
+    .exp__row {
+      grid-template-columns: 11rem 14rem 1fr auto;
+      gap: var(--space-3);
+      align-items: baseline;
+    }
+
+    .exp__field {
+      text-align: right;
+    }
+  }
+
+  /* Quote cuối trang */
+  .quote {
+    padding-top: var(--space-5);
+  }
+
+  .quote__text {
+    margin: 0;
+    max-width: 40rem;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: var(--text-display);
+    line-height: 1.2;
+    letter-spacing: var(--tracking-display);
+    color: var(--color-text);
   }
 </style>
