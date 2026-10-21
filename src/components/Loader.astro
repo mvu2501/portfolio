@@ -36,7 +36,7 @@ const words = text.split(' ').map((word) => ({
     --loader-stagger: 0.04s;    /* độ trễ giữa hai ký tự */
     --loader-leave: 2s;         /* thời điểm chữ bắt đầu bay lên */
     --loader-leave-duration: 0.4s;
-    --loader-font-size: 18px;   /* cỡ chữ của dòng chữ loading (mobile và desktop) */
+    --loader-font-size: 32px;   /* cỡ chữ của dòng chữ loading (font viết tay nhỏ hơn font thường nên lớn hơn 18px cũ) */
   }
 
   .loader {
@@ -62,11 +62,11 @@ const words = text.split(' ').map((word) => ({
 
   .loader__text {
     margin: 0;
-    max-width: 20ch;
     text-align: center;
+    white-space: nowrap;
+    font-family: 'Reenie Beanie', 'Segoe Script', cursive; /* cùng font với logo */
     font-size: var(--loader-font-size);
-    line-height: 1.22;
-    letter-spacing: var(--tracking-display);
+    line-height: 1.1;
     animation: loader-text-out var(--loader-leave-duration) cubic-bezier(0.6, 0, 0.9, 0.4)
       var(--loader-leave) forwards;
   }
