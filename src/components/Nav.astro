@@ -14,7 +14,7 @@ import { resumeUrl } from '../config';
 
 <header class="nav">
   <div class="container nav__inner">
-    <a class="nav__logo" href="/">vunguyen.me</a>
+    <a class="nav__logo" href="/" aria-label="Things designed by Vu. Home">Things designed by Vu.</a>
 
     <button
       class="nav__toggle"
@@ -56,9 +56,11 @@ import { resumeUrl } from '../config';
   }
 
   .nav__logo {
-    font-weight: 500;
-    font-size: var(--text-lg);
-    letter-spacing: -0.02em;
+    font-family: 'Reenie Beanie', 'Segoe Script', cursive;
+    font-weight: 400;
+    font-size: 2rem;
+    line-height: 1;
+    white-space: nowrap;
     text-decoration: none;
   }
 
