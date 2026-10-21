@@ -1,39 +1,72 @@
 ---
 // Trang About (/about). Nội dung lấy từ content/pages/about.md:
 //  - phần thân (đoạn giới thiệu)  → hiện ở khối đầu trang
-//  - process trong phần thông tin → hiện ở khối Process
+//  - experience trong phần thông tin → hiện ở khối Experience
+//  - khối Design process là sơ đồ Reverse Double Diamond (src/components/ReverseDoubleDiamond.astro)
 import { getEntry, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import ReverseDoubleDiamond from '../components/ReverseDoubleDiamond.astro';
 import { resumeUrl } from '../config';
 
 const about = await getEntry('pages', 'about');
 if (!about) throw new Error('Thiếu file content/pages/about.md');
 const { Content } = await render(about);
-const { title, process } = about.data;
+const { title, experience } = about.data;
+
+// Ảnh polaroid: đặt file public/images/about-photo.webp (tỉ lệ 4:5) thì ảnh tự hiện, chưa có thì hiện khung trống
+const photo = '/images/about-photo.webp';
+const hasPhoto = existsSync(join(process.cwd(), 'public', photo));
 ---
 
 <BaseLayout title={`${title} · vunguyen.me`}>
   <section class="section">
     <div class="container">
       <p class="eyebrow">{title}</p>
-      <div class="about__intro">
-        <Content />
+      <div class="about__top">
+        <figure class="polaroid">
+          <div class="polaroid__photo">
+            {hasPhoto ? (
+              <img src={photo} alt="Portrait of Vu Nguyen" width="800" height="1000" />
+            ) : (
+              <span class="polaroid__ph">Your photo here</span>
+            )}
+          </div>
+          <figcaption class="polaroid__cap">Vu, 2026</figcaption>
+        </figure>
+        <div class="about__intro">
+          <Content />
+        </div>
       </div>
     </div>
   </section>
 
   <section class="section section--tight">
     <div class="container">
-      <p class="eyebrow">Process</p>
-      <ol class="process">
-        {process.map((step, i) => (
-          <li class="process__step">
-            <span class="process__num">{String(i + 1).padStart(2, '0')}</span>
-            <h2 class="process__name">{step.name}</h2>
-            <p class="process__text">{step.text}</p>
-          </li>
-        ))}
-      </ol>
+      <p class="eyebrow">Design process</p>
+      <h2 class="about__h2">Reverse Double Diamond</h2>
+      <ReverseDoubleDiamond />
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <p class="eyebrow">Experience</p>
+      {experience.map((group) => (
+        <div class="exp">
+          <p class="exp__group"><span class="exp__period">{group.period}</span> {group.label}</p>
+          <ul class="exp__list">
+            {group.items.map((it) => (
+              <li class="exp__row">
+                <span class="exp__dates">{it.dates}</span>
+                <span class="exp__company">{it.company}{it.companyNote && <span class="exp__note"> · {it.companyNote}</span>}</span>
+                <span class="exp__role">{it.role}{it.field && <span class="exp__note"> · {it.field}</span>}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   </section>
 
@@ -49,51 +82,137 @@ const { title, process } = about.data;
     padding-top: 0;
   }
 
+  .about__top {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    align-items: start;
+  }
+
   .about__intro {
     max-width: var(--reading-width);
     font-size: var(--text-lg);
   }
 
-  .process {
-    list-style: none;
+  /* Tiêu đề nhỏ trong phần giới thiệu (Off the clock): kiểu nhãn mono như các eyebrow */
+  .about__intro :global(h2) {
+    margin: var(--space-4) 0 var(--space-1);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .about__h2 {
+    font-size: var(--text-heading);
+    margin: 0 0 var(--space-3);
+  }
+
+  /* Ảnh polaroid */
+  .polaroid {
     margin: 0;
-    padding: 0;
+    width: min(100%, 17rem);
+    padding: 12px 12px 14px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(31, 29, 26, 0.08), 0 10px 28px rgba(31, 29, 26, 0.1);
+    transform: rotate(-2.5deg);
+  }
+
+  .polaroid__photo {
+    aspect-ratio: 4 / 5;
+    background: var(--color-cover);
     display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-3);
+    place-items: center;
+    overflow: hidden;
   }
 
-  .process__step {
-    padding-top: var(--space-2);
-    border-top: 1px solid var(--color-hairline);
+  .polaroid__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
-  .process__num {
+  .polaroid__ph {
     font-family: var(--font-mono);
     font-size: var(--text-mono);
     letter-spacing: 0.14em;
+    text-transform: uppercase;
     color: var(--color-text-muted);
   }
 
-  .process__name {
-    font-size: var(--text-heading);
-    margin: var(--spacing-xxs) 0 var(--space-1);
+  .polaroid__cap {
+    margin-top: 12px;
+    text-align: center;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
+    font-size: 1.125rem;
+    color: var(--color-text-muted);
   }
 
-  .process__text {
+  /* Experience */
+  .exp + .exp {
+    margin-top: var(--space-4);
+  }
+
+  .exp__group {
+    margin: 0 0 var(--space-1);
     color: var(--color-text-muted);
+  }
+
+  .exp__period {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    margin-right: var(--space-1);
+    color: var(--color-accent);
+  }
+
+  .exp__list {
+    list-style: none;
     margin: 0;
+    padding: 0;
   }
 
-  @media (min-width: 40rem) {
-    .process {
-      grid-template-columns: repeat(2, 1fr);
+  .exp__row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px;
+    padding-block: var(--space-2);
+    border-top: 1px solid var(--color-tint-strong);
+  }
+
+  .exp__dates {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+  }
+
+  .exp__company {
+    font-weight: 500;
+  }
+
+  .exp__role {
+    font-size: var(--text-lg);
+  }
+
+  .exp__note {
+    font-size: var(--text-sm);
+    font-weight: 400;
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 48rem) {
+    .about__top {
+      grid-template-columns: 17rem minmax(0, 1fr);
+      gap: var(--space-5);
     }
-  }
 
-  @media (min-width: 64rem) {
-    .process {
-      grid-template-columns: repeat(4, 1fr);
+    .exp__row {
+      grid-template-columns: 11rem 14rem 1fr;
+      gap: var(--space-3);
+      align-items: baseline;
     }
   }
 </style>

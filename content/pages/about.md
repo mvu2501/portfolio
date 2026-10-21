@@ -2,22 +2,45 @@
 # THAY: các dòng có chữ THAY bên dưới.
 title: About
 
-# Khối Process: 4 bước. Sửa phần "text" của từng bước (giữ nguyên "name" nếu muốn).
-process:
-  - name: Shape
-    text: A short sentence describing the Shape step.     # THAY
-  - name: Move
-    text: A short sentence describing the Move step.      # THAY
-  - name: Dream
-    text: A short sentence describing the Dream step.     # THAY
-  - name: Draft
-    text: A short sentence describing the Draft step.     # THAY
+# Khối Experience: chia theo giai đoạn. Mỗi mục gồm thời gian, công ty, chức danh.
+experience:
+  - period: 2018 — 2026
+    label: Into Web3 and fintech
+    items:
+      - dates: 05/2025 — 09/2026
+        company: Hex Trust
+        role: Senior Designer
+        field: Digital Asset Solutions
+      - dates: 05/2024 — 05/2025
+        company: Wistek
+        companyNote: Contractor
+        role: Design Lead
+        field: Web3 Product Development
+      - dates: 09/2021 — 05/2024
+        company: Coinhako
+        role: Senior Product Designer
+        field: Cryptocurrency Exchange Platform
+      - dates: 06/2018 — 08/2021
+        company: Infinity Blockchain Labs
+        role: Mid-level Product Designer
+        field: Blockchain Solutions & Applications
+  - period: 2014 — 2018
+    label: Product foundations
+    items:
+      - dates: 03/2017 — 05/2018
+        company: VNG
+        role: UX/UI Designer
+        field: Zalo Messenger
+      - dates: 04/2014 — 03/2017
+        company: NAU Studio
+        role: Interactive Designer
+        field: Full-service design agency
 ---
 
-<!-- THAY: các đoạn giới thiệu bên dưới bằng nội dung thật của bạn (viết tiếng Anh). -->
+I’m Vu Nguyen, a Senior Product Designer with 10+ years of experience designing complex digital products.
 
-Hi, I'm Vu Nguyen, a Product Designer with 10+ years of experience building digital products, mostly in fintech and digital assets. *[Replace: a short introduction about you.]*
+I specialize in fintech and digital assets, turning complex financial systems into simple, secure, and trustworthy experiences. My work spans trading, custody, settlement, earn, cards, and other financial products across both consumer and institutional platforms.
 
-I've worked at Hex Trust and Aura, owning product design from direction to delivery. *[Replace: add your roles and standout achievements.]*
+## Off the clock
 
-I work closely with PMs and engineers: defining the problem together early, sharing work in progress, and weighing trade-offs to ship the best product within real-world constraints. *[Replace: how you actually work.]*
+Outside of work, I enjoy hiking, learning about history and human behavior, exploring systems thinking, and following how Web3 continues to evolve.
