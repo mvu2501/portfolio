@@ -25,6 +25,4 @@ A single-page prototype running entirely in the browser. Each form of money (bar
 - Hosting: static page, embedded via iframe
 - AI: prototyped with Claude (Anthropic)
 
-## Credit
-
-Concept, motion and interaction design by Vu. Built with Claude (Anthropic).
+Built with Claude.
