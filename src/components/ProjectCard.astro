@@ -2,8 +2,6 @@
 // ProjectCard.astro – thẻ dự án theo thiết kế Figma:
 // cover → tên dự án (+ mũi tên) → tag → mô tả ngắn.
 // Dùng cho cả Selected works (2 thẻ/hàng) và Fun projects (3 thẻ/hàng).
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
 
 interface Props {
   title: string;
@@ -16,8 +14,6 @@ interface Props {
 }
 
 const { title, tags, description, cover, coverAlt = '', href, external = false } = Astro.props;
-// Chưa có file ảnh cover trong public/ thì bỏ thẻ <img> (khung vẫn hiện nền be), tránh ảnh vỡ trên trang chủ.
-const hasCover = !!cover && existsSync(join(process.cwd(), 'public', cover));
 const Tag = href ? 'a' : 'div';
 const linkProps = href
   ? { href, ...(external ? { target: '_blank', rel: 'noopener' } : {}) }
@@ -26,7 +22,7 @@ const linkProps = href
 
 <Tag class:list={['card', { 'card--link': !!href }]} {...linkProps}>
   <div class="card__cover">
-    {hasCover && <img src={cover} alt={coverAlt} loading="lazy" decoding="async" />}
+    {cover && <img src={cover} alt={coverAlt} loading="lazy" decoding="async" />}
   </div>
   <div class="card__body">
     <h3 class="card__title">
