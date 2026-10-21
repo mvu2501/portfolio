@@ -108,8 +108,6 @@ I tested version 1 with the PM, RMs, the trading team and engineers. Their feedb
 </details>
 </figure>
 
-<!-- TO CONFIRM (decision 3): did the team consider the bottom sheet at that time? -->
-
 ---
 
 ### Solution
