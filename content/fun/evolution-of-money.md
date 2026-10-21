@@ -8,10 +8,7 @@ tags: [WebGL, three.js, Motion, Prototype, Built with Claude]
 description: 36,000 particles morph from barter to Bitcoin, driven by your swipe.
 order: 1
 demo: /fun/evolution-of-money/index.html#embed
+stack: three.js and WebGL, built with Claude.
 cover: /images/fun/evolution-of-money-cover.webp
 coverAlt: The Evolution of Money demo on a phone, with a cloud of golden particles
 ---
-
-## Tech stack
-
-three.js and WebGL, built with Claude.
