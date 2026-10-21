@@ -1,0 +1,129 @@
+---
+// Trang chi tiết dự án Fun (/fun-projects/<tên file>). Nội dung từ content/fun/<tên>.md:
+// tiêu đề + mô tả, demo nhúng bằng iframe (trường "demo"), rồi About / Tech stack / Credit từ phần thân.
+// Không đặt ở /fun/<tên> vì trùng đường dẫn với file demo trong public/fun/.
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const funs = await getCollection('fun', ({ data }) => !data.draft && !!data.demo);
+  return funs.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, description, demo } = entry.data;
+---
+
+<BaseLayout title={`${title} · Things designed by Vu.`} description={description}>
+  <header class="fun-header section">
+    <div class="container">
+      <a class="fun-header__back" href="/#work">← Work</a>
+      <h1 class="fun-header__title">{title}</h1>
+      <p class="fun-header__desc">{description}</p>
+    </div>
+  </header>
+
+  <section class="container fun-demo">
+    <div class="demo-stage">
+      <iframe
+        src={demo}
+        title="Evolution of Money - interactive particle onboarding"
+        loading="lazy"
+        allow="fullscreen"
+        style="width:100%;height:100%;border:0;"
+      ></iframe>
+    </div>
+    <p class="fun-demo__hint">Drag, swipe, or use the arrow keys.</p>
+  </section>
+
+  <section class="container fun-body">
+    <div class="fun-body__text">
+      <Content />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .fun-header {
+    padding-bottom: var(--space-4);
+  }
+
+  .fun-header__back {
+    display: inline-block;
+    margin-bottom: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .fun-header__back:hover {
+    color: var(--color-text);
+  }
+
+  .fun-header__title {
+    font-size: var(--text-display);
+    line-height: 1.22;
+    margin-bottom: var(--space-2);
+  }
+
+  .fun-header__desc {
+    font-size: var(--text-lg);
+    max-width: var(--reading-width);
+  }
+
+  .demo-stage {
+    width: 100%;
+    max-width: 640px; /* điện thoại luôn ở giữa, cùng tỉ lệ ở mọi kích thước */
+    height: clamp(560px, 80vh, 820px);
+    margin: 0 auto;
+    background: #0b0a0e; /* cùng màu nền với demo, không lộ viền */
+    border-radius: 24px;
+    overflow: hidden;
+  }
+
+  .fun-demo__hint {
+    margin: var(--space-2) 0 0;
+    text-align: center;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .fun-body {
+    padding-block: var(--space-5);
+  }
+
+  .fun-body__text {
+    max-width: var(--reading-width);
+  }
+
+  .fun-body__text :global(h2) {
+    margin: var(--space-4) 0 var(--space-1);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .fun-body__text :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .fun-body__text :global(p) {
+    margin: 0 0 var(--space-2);
+  }
+
+  .fun-body__text :global(ul) {
+    margin: 0;
+    padding-left: var(--space-3);
+  }
+
+  .fun-body__text :global(li) {
+    margin-bottom: var(--spacing-xs);
+  }
+</style>
