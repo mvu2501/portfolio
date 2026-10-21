@@ -2,6 +2,21 @@
 # THAY: các dòng có chữ THAY bên dưới.
 title: About
 
+# Khối Approach: 4 bước (Explore, Deliver, Insight, Improve). "text" là việc làm, "ai" là AI hỗ trợ gì.
+approach:
+  - name: Explore
+    text: Frame the problem, map the user flow and look at how others solved it.     # THAY nếu cần
+    ai: Summarise research and competitors, and sketch ideas in minutes.
+  - name: Deliver
+    text: Design the flows and components, then hand off with clear specs.
+    ai: Prototype in HTML to feel the interaction before engineering starts.
+  - name: Insight
+    text: Test with real people and read what the numbers and feedback say.
+    ai: Cluster feedback and spot patterns faster.
+  - name: Improve
+    text: Fix what did not work, then ship the next version.
+    ai: Try variations quickly and compare them side by side.
+
 # Khối Experience: chia theo giai đoạn. Mỗi mục gồm thời gian, công ty, chức danh.
 experience:
   - period: 2018 — 2026

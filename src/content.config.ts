@@ -38,6 +38,15 @@ const pages = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './content/pages' }),
   schema: z.object({
     title: z.string(),
+    approach: z
+      .array(
+        z.object({
+          name: z.string(),  // tên bước, ví dụ "Explore"
+          text: z.string(),  // việc làm ở bước này
+          ai: z.string(),    // AI hỗ trợ gì ở bước này
+        })
+      )
+      .default([]),
     experience: z
       .array(
         z.object({
