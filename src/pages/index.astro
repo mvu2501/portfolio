@@ -19,8 +19,8 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
     <div class="container">
       <!-- THAY: câu định vị của bạn. Avatar nằm ngay sau chữ "Vu"; rê chuột vào (hoặc chạm) để avatar nảy lên và có ánh sáng quét qua -->
       <h1 class="hero__title">
-        <span class="hero__line">Hey, it’s Vu<span class="avatar" data-avatar aria-hidden="true"><span class="avatar__clip"><img class="avatar__img avatar__img--anim" src="/images/avatar-vu.gif" width="220" height="220" alt="" decoding="async" draggable="false" /><img class="avatar__img avatar__img--still" src="/images/avatar-vu-still.webp" width="220" height="220" alt="" decoding="async" draggable="false" /><span class="avatar__shine"></span></span></span>, a senior product designer for Web3 and fintech.</span>{' '}
-        <span class="hero__line">I turn complex money movement into clear, trustworthy products.</span>
+        <span class="hero__line">Hey, it’s Vu<span class="avatar" data-avatar aria-hidden="true"><span class="avatar__clip"><img class="avatar__img avatar__img--anim" src="/images/avatar-vu.gif" width="220" height="220" alt="" decoding="async" draggable="false" /><img class="avatar__img avatar__img--still" src="/images/avatar-vu-still.webp" width="220" height="220" alt="" decoding="async" draggable="false" /><span class="avatar__shine"></span></span></span>, <span class="nobr-lg"><span class="nobr">a senior</span> <span class="nobr">product designer</span></span> <span class="nobr-lg"><span class="nobr">for Web3</span> <span class="nobr">and fintech.</span></span></span>{' '}
+        <span class="hero__line"><span class="nobr-lg"><span class="nobr">I turn complex</span> <span class="nobr">money movement</span></span> <span class="nobr-lg"><span class="nobr">into clear,</span> <span class="nobr">trustworthy products.</span></span></span>
       </h1>
       <a class="button" href="#work">View work</a>
     </div>
@@ -149,8 +149,20 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
   .hero__title {
     font-size: var(--text-display);
     line-height: 1.22;
-    max-width: 26ch;
+    max-width: 34ch;
     margin-bottom: var(--space-3);
+  }
+
+  /* Cụm từ không bị ngắt giữa chừng: khi hết chỗ thì cả cụm xuống dòng */
+  .nobr {
+    white-space: nowrap;
+  }
+
+  /* Từ màn hình rộng, cả cụm lớn nằm trên một dòng; màn hình hẹp thì được tách thành các cụm nhỏ */
+  @media (min-width: 48rem) {
+    .nobr-lg {
+      white-space: nowrap;
+    }
   }
 
   /* Hai câu, mỗi câu bắt đầu một dòng mới */
@@ -161,11 +173,11 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
   /* Avatar tròn nằm trong dòng chữ; nảy lên + ánh sáng quét qua khi rê chuột (hoặc chạm) */
   .avatar {
     position: relative;
-    top: -0.06em;
+    top: -0.04em;
     display: inline-block;
-    width: 0.92em;
-    height: 0.92em;
-    margin: 0 0.1em;
+    width: 1.56em; /* 0.92em × 1.7 */
+    height: 1.56em;
+    margin: 0 0.08em;
     vertical-align: middle;
     cursor: pointer;
     transform-origin: 50% 90%;
