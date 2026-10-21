@@ -41,9 +41,8 @@ const pages = defineCollection({
     approach: z
       .array(
         z.object({
-          name: z.string(),  // tên bước, ví dụ "Explore"
-          text: z.string(),  // việc làm ở bước này
-          ai: z.string(),    // AI hỗ trợ gì ở bước này
+          name: z.string(), // tên bước, ví dụ "Explore"
+          icon: z.enum(['compass', 'rocket', 'bulb', 'refresh']), // icon hiện cạnh tên
         })
       )
       .default([]),

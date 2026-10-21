@@ -2,20 +2,16 @@
 # THAY: các dòng có chữ THAY bên dưới.
 title: About
 
-# Khối Approach: 4 bước (Explore, Deliver, Insight, Improve). "text" là việc làm, "ai" là AI hỗ trợ gì.
+# Khối Approach: 4 bước, mỗi bước một icon (compass, rocket, bulb, refresh).
 approach:
   - name: Explore
-    text: Frame the problem, map the user flow and look at how others solved it.     # THAY nếu cần
-    ai: Summarise research and competitors, and sketch ideas in minutes.
+    icon: compass
   - name: Deliver
-    text: Design the flows and components, then hand off with clear specs.
-    ai: Prototype in HTML to feel the interaction before engineering starts.
+    icon: rocket
   - name: Insight
-    text: Test with real people and read what the numbers and feedback say.
-    ai: Cluster feedback and spot patterns faster.
+    icon: bulb
   - name: Improve
-    text: Fix what did not work, then ship the next version.
-    ai: Try variations quickly and compare them side by side.
+    icon: refresh
 
 # Khối Experience: chia theo giai đoạn. Mỗi mục gồm thời gian, công ty, chức danh.
 experience:
@@ -55,7 +51,5 @@ experience:
 I’m Vu Nguyen, a Senior Product Designer with 10+ years of experience designing complex digital products.
 
 I specialize in fintech and digital assets, turning complex financial systems into simple, secure, and trustworthy experiences. My work spans trading, custody, settlement, earn, cards, and other financial products across both consumer and institutional platforms.
-
-## Off the clock
 
 Outside of work, I enjoy hiking, learning about history and human behavior, exploring systems thinking, and following how Web3 continues to evolve.
