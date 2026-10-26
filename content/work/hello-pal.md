@@ -1,5 +1,5 @@
 ---
-title: "hello PAL — Mint your PAL ID, unlock your epic stickers"
+title: "hello PAL: Mint your PAL ID, unlock your epic stickers"
 slug: hello-pal
 role: Visual / Campaign Site Designer (Freelance)
 year: 2024
@@ -16,7 +16,7 @@ coverAlt: hello PAL campaign site
 
 A campaign site where PAL owners mint their PAL ID and turn it into epic stickers.
 
-<!-- IMAGE: cover.png — hero screen of the hello PAL campaign site -->
+<!-- IMAGE: cover.png: hero screen of the hello PAL campaign site -->
 ![hello PAL campaign site](/images/work/hello-pal/cover.webp)
 
 ---
@@ -38,9 +38,9 @@ I designed the **campaign site** where users mint their PAL ID the way they want
 
 I worked with **developers** and a **product manager**, so the visuals were designed to ship, not just to look good in a file.
 
-- **With the PM** — aligned on the goal of the campaign, what the user should do, and how the experience should feel before opening Figma.
-- **With developers** — agreed early on how the PAL ID card, stickers and screens would be built, so the design stayed faithful once it went live.
-- **Visual first** — the PAL character and its customization led the look of the site. The mint experience then followed it.
+- **With the PM:** aligned on the goal of the campaign, what the user should do, and how the experience should feel before opening Figma.
+- **With developers:** agreed early on how the PAL ID card, stickers and screens would be built, so the design stayed faithful once it went live.
+- **Visual first:** the PAL character and its customization led the look of the site. The mint experience then followed it.
 
 ---
 
@@ -75,50 +75,50 @@ The hello PAL campaign site, from first impression to stickers.
 
 ### Mint
 
-<!-- IMAGE: hello-pal-01.png — landing / hero -->
-![hello PAL — landing](/images/work/hello-pal/hello-pal-01.webp)
+<!-- IMAGE: hello-pal-01.png: landing / hero -->
+![hello PAL: landing](/images/work/hello-pal/hello-pal-01.webp)
 
 <!-- Mint flow, in order: your PAL, mint your OCCs, loading, then the PAL ID card -->
-<!-- IMAGE: hello-pal-02.png — mint your PAL ID / customize -->
-![hello PAL — mint your PAL ID](/images/work/hello-pal/hello-pal-02.webp)
+<!-- IMAGE: hello-pal-02.png: mint your PAL ID / customize -->
+![hello PAL: mint your PAL ID](/images/work/hello-pal/hello-pal-02.webp)
 
-<!-- IMAGE: hello-pal-mint-modal.png — mint your OCCs (added: screen between 02 and 03) -->
-![hello PAL — mint your OCCs](/images/work/hello-pal/hello-pal-mint-modal.webp)
+<!-- IMAGE: hello-pal-mint-modal.png: mint your OCCs (added: screen between 02 and 03) -->
+![hello PAL: mint your OCCs](/images/work/hello-pal/hello-pal-mint-modal.webp)
 
-<!-- IMAGE: hello-pal-mint-loading.png — mint loading (added) -->
-![hello PAL — minting, loading](/images/work/hello-pal/hello-pal-mint-loading.webp)
+<!-- IMAGE: hello-pal-mint-loading.png: mint loading (added) -->
+![hello PAL: minting, loading](/images/work/hello-pal/hello-pal-mint-loading.webp)
 
-<!-- IMAGE: hello-pal-03.png — PAL ID card result -->
-![hello PAL — PAL ID card](/images/work/hello-pal/hello-pal-03.webp)
+<!-- IMAGE: hello-pal-03.png: PAL ID card result -->
+![hello PAL: PAL ID card](/images/work/hello-pal/hello-pal-03.webp)
 
 ### Create
 
-<!-- IMAGE: hello-pal-create.png — choose your style and create stickers (added) -->
-![hello PAL — create stickers](/images/work/hello-pal/hello-pal-create.webp)
+<!-- IMAGE: hello-pal-create.png: choose your style and create stickers (added) -->
+![hello PAL: create stickers](/images/work/hello-pal/hello-pal-create.webp)
 
-<!-- IMAGE: hello-pal-buy-pepic.png — buy pEPIC (added) -->
-![hello PAL — buy pEPIC](/images/work/hello-pal/hello-pal-buy-pepic.webp)
+<!-- IMAGE: hello-pal-buy-pepic.png: buy pEPIC (added) -->
+![hello PAL: buy pEPIC](/images/work/hello-pal/hello-pal-buy-pepic.webp)
 
-<!-- IMAGE: hello-pal-04.png — epic stickers: my sticker pack -->
-![hello PAL — epic stickers](/images/work/hello-pal/hello-pal-04.webp)
+<!-- IMAGE: hello-pal-04.png: epic stickers: my sticker pack -->
+![hello PAL: epic stickers](/images/work/hello-pal/hello-pal-04.webp)
 
 ### Sync
 
-<!-- IMAGE: hello-pal-sync-telegram.png — sync stickers to Telegram (added) -->
-![hello PAL — sync to Telegram](/images/work/hello-pal/hello-pal-sync-telegram.webp)
+<!-- IMAGE: hello-pal-sync-telegram.png: sync stickers to Telegram (added) -->
+![hello PAL: sync to Telegram](/images/work/hello-pal/hello-pal-sync-telegram.webp)
 
 ### Telegram
 
-<!-- IMAGE: hello-pal-telegram-app.png — Epic app in Telegram on mobile (added) -->
-![hello PAL — Telegram miniapp](/images/work/hello-pal/hello-pal-telegram-app.webp)
+<!-- IMAGE: hello-pal-telegram-app.png: Epic app in Telegram on mobile (added) -->
+![hello PAL: Telegram miniapp](/images/work/hello-pal/hello-pal-telegram-app.webp)
 
-<!-- IMAGE: hello-pal-telegram-sticker.png — My sticker in Telegram on mobile (added) -->
-![hello PAL — my sticker in Telegram](/images/work/hello-pal/hello-pal-telegram-sticker.webp)
+<!-- IMAGE: hello-pal-telegram-sticker.png: My sticker in Telegram on mobile (added) -->
+![hello PAL: my sticker in Telegram](/images/work/hello-pal/hello-pal-telegram-sticker.webp)
 
 ### Reward
 
-<!-- IMAGE: hello-pal-05.png — share / reward -->
-![hello PAL — share and rewards](/images/work/hello-pal/hello-pal-05.webp)
+<!-- IMAGE: hello-pal-05.png: share / reward -->
+![hello PAL: share and rewards](/images/work/hello-pal/hello-pal-05.webp)
 
 ---
 
@@ -134,20 +134,23 @@ hello PAL also became the starting point for my continued work with Gall3ry on m
 
 ### StepN
 
-![StepN — select an asset to generate](/images/work/hello-pal/stepn-01.webp)
+[Read the post on X](https://x.com/yawn_rong/status/1781239567141794221?s=20)
 
-![StepN — OCC result](/images/work/hello-pal/stepn-02.webp)
+![StepN: select an asset to generate](/images/work/hello-pal/stepn-01.webp)
+
+![StepN: OCC result](/images/work/hello-pal/stepn-02.webp)
 
 ### Marblex
 
-![Marblex — Lunar Animals campaign site](/images/work/hello-pal/marblex-01.webp)
+[Read the post on X](https://x.com/MARBLEXofficial/status/1833452560650510783?s=20)
 
-![Marblex — Lunar Animals OCC certificate](/images/work/hello-pal/marblex-02.webp)
+![Marblex: Lunar Animals campaign site](/images/work/hello-pal/marblex-01.webp)
+
+![Marblex: Lunar Animals OCC certificate](/images/work/hello-pal/marblex-02.webp)
 
 ---
 
 ## Credit
 
 Client: Gall3ry, in partnership with XPLA
-Design: Vu Nguyen
 Worked with: Gall3ry developers and product manager
