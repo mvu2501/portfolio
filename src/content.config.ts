@@ -19,6 +19,7 @@ const projectSchema = z.object({
   draft: z.boolean().default(false),  // true = ẩn khỏi trang
   link: z.string().optional(),        // (chỉ dành cho fun) link ngoài nếu có
   demo: z.string().optional(),        // (chỉ dành cho fun) file demo tĩnh trong public/; có thì thẻ mở trang /fun-projects/<tên file>
+  layout: z.enum(['visual']).optional(), // 'visual': trang thiên về hình ảnh (xem src/plugins/rehype-outcome.mjs)
   stack: z.string().optional(),       // (chỉ dành cho fun) một dòng công nghệ, hiện dưới mô tả ở trang chi tiết
   cover: z.string().optional(),       // ảnh cover, ví dụ /images/work/spot-trading-cover.webp (file đặt trong public/)
   coverAlt: z.string().default(''),   // mô tả ảnh cho người dùng đọc màn hình

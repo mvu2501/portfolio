@@ -11,6 +11,7 @@ import OrderTypesMockup from '../../components/order-types/OrderTypesMockup.astr
 import AmountInput from '../../components/trading/AmountInput.astro';
 import LimitPrice from '../../components/trading/LimitPrice.astro';
 import PriceCanMove from '../../components/trading/PriceCanMove.astro';
+import HelloPalFlow from '../../components/HelloPalFlow.astro';
 
 export async function getStaticPaths() {
   // Xếp theo "order" để biết case study nào đứng trước/sau (dùng cho Up next / Previous)
@@ -37,6 +38,7 @@ const DEMOS: Record<string, any> = {
   'amount-input': AmountInput,
   'limit-price': LimitPrice,
   'price-can-move': PriceCanMove,
+  'hello-pal-flow': HelloPalFlow,
 };
 // Ghi chú nội bộ trong file .md (<!-- ... -->, ví dụ nhắc NDA hoặc chỗ đặt ảnh) không đưa ra trang công khai; chỉ giữ dấu <!-- demo:... -->.
 // Tiêu đề ### chưa có nội dung (ví dụ "Supporting artifacts" mới chỉ có ghi chú) cũng được ẩn cho tới khi có nội dung.
@@ -513,6 +515,135 @@ const info = [
       display: block;
       position: sticky;
       top: calc(var(--nav-height) + var(--space-4));
+    }
+  }
+  /* ---- Trang thiên về hình ảnh (frontmatter layout: visual), dùng cho OCC Card Tokenization.
+     Cấu trúc HTML do src/plugins/rehype-outcome.mjs tạo ra. Ảnh chưa có file vẫn hiện khung nền be. ---- */
+  .case-body > :global(.occ-cover),
+  .case-body > :global(.occ-shots),
+  .case-body > :global(.occ-project) {
+    max-width: none;
+  }
+
+  .case-body :global(.occ-cover) {
+    margin: 0 0 var(--space-4);
+  }
+
+  .case-body :global(.occ-cover img),
+  .case-body :global(.occ-shots img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    border-radius: 14px;
+    background: var(--color-cover);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .case-body :global(.occ-cover img) {
+    aspect-ratio: auto 16 / 9;
+  }
+
+  .case-body :global(.occ-shots img) {
+    aspect-ratio: auto 3 / 4;
+    object-fit: cover;
+  }
+
+  /* Khối thông tin nhỏ: Role, Client, Scope, Worked with */
+  .case-body :global(.occ-meta) {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2) var(--space-3);
+    margin: var(--space-3) 0;
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--color-tint-strong);
+  }
+
+  .case-body :global(.occ-meta dt) {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .case-body :global(.occ-meta dd) {
+    margin: 2px 0 0;
+  }
+
+  /* Bảng "Projects in this case study" */
+  .case-body :global(table.occ-table) {
+    width: 100%;
+    margin: var(--space-2) 0 var(--space-3);
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+  }
+
+  .case-body :global(.occ-table th),
+  .case-body :global(.occ-table td) {
+    padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) 0;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--color-tint-strong);
+  }
+
+  .case-body :global(.occ-table th) {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono);
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .case-body :global(.occ-table td:first-child) {
+    font-weight: 500;
+  }
+
+  /* Khối dự án trong Outcome: tiêu đề, dòng mô tả, hàng ảnh lớn */
+  .case-body :global(.occ-project) {
+    margin-top: var(--space-5);
+  }
+
+  .case-body :global(.occ-project h3) {
+    margin-top: 0;
+  }
+
+  .case-body :global(.occ-project > p) {
+    color: var(--color-text-muted);
+  }
+
+  .case-body :global(.occ-shots) {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+
+  .case-body :global(.occ-shots figure) {
+    margin: 0;
+  }
+
+  @media (min-width: 40rem) {
+    .case-body :global(.occ-meta) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .case-body :global(.occ-shots) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .case-body :global(.occ-shots) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-3);
+    }
+
+    /* Dự án chỉ có 2 ảnh: 2 cột cho ảnh to hơn */
+    .case-body :global(.occ-shots:has(> figure:nth-child(2):last-child)) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 </style>
