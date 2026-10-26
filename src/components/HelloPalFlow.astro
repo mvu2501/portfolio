@@ -43,7 +43,7 @@
     --green: #a9f2cb; --green-ink: #0e7a44;
     --purple: #ebd2ff; --purple-ink: #7a1fd1;
     --yellow: #f6fbc8;
-    --arrow: #e5484d; --focus: #6d5ef5; --panel: #ffffff; --panel-line: #e4e2de;
+    --arrow: #e5484d; --focus: #0080FF; --panel: #ffffff; --panel-line: #e4e2de;
     max-width: 1240px; margin: 0 auto; color: var(--ink);
     font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   }
@@ -54,7 +54,7 @@
       --green: #1e5a41; --green-ink: #7df0b2;
       --purple: #43285f; --purple-ink: #d6a8ff;
       --yellow: #4a4b27;
-      --arrow: #ff6b6f; --focus: #9b90ff; --panel: #1a1a20; --panel-line: #2c2c35;
+      --arrow: #ff6b6f; --focus: #0080FF; --panel: #1a1a20; --panel-line: #2c2c35;
     }
   }
   .occ-flow[data-theme="dark"] {
@@ -63,7 +63,7 @@
     --green: #1e5a41; --green-ink: #7df0b2;
     --purple: #43285f; --purple-ink: #d6a8ff;
     --yellow: #4a4b27;
-    --arrow: #ff6b6f; --focus: #9b90ff; --panel: #1a1a20; --panel-line: #2c2c35;
+    --arrow: #ff6b6f; --focus: #0080FF; --panel: #1a1a20; --panel-line: #2c2c35;
   }
 
   .occ-flow * { box-sizing: border-box; }
@@ -81,7 +81,7 @@
   .occ-flow .chip[aria-pressed="true"] { background: var(--focus); border-color: var(--focus); color: #fff; }
   .occ-flow .chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
   .occ-flow .chip .n { opacity: .65; margin-right: 5px; font-variant-numeric: tabular-nums; }
-  .occ-flow .play { margin-left: auto; font-weight: 600; }
+  .occ-flow .play { font-weight: 600; }
 
   .occ-flow .caption {
     position: relative; overflow: hidden; background: var(--panel); border: 1px solid var(--panel-line);
@@ -130,7 +130,7 @@
   .occ-flow svg.focus .node:not(.on), .occ-flow svg.focus .arrow:not(.on) { opacity: .22; }
   .occ-flow svg .node.on { transform: translateY(-2px); }
   .occ-flow svg .node.on rect { stroke: var(--focus); stroke-width: 2.6; }
-  .occ-flow svg .node.on:not(.c) rect { filter: drop-shadow(0 6px 10px rgba(109, 94, 245, .35)); }
+  .occ-flow svg .node.on:not(.c) rect { filter: drop-shadow(0 6px 10px rgba(0, 128, 255, .35)); }
 
   .occ-flow svg .arrow path.line { fill: none; stroke: var(--arrow); stroke-width: 1.6; stroke-dasharray: 5 5; marker-end: url(#occ-head); animation: occ-dash 1.3s linear infinite; }
   .occ-flow svg .arrow.on path.line { stroke-width: 2.4; animation-duration: .7s; }
@@ -157,6 +157,25 @@
   @media (min-width: 48rem) {
     .occ-flow .stage svg { min-width: 0; }
     .occ-flow .hint { display: none; }
+  }
+  /* Thêm: nút gọn hơn một chút để cả hàng (Play + All + 8 bước) nằm trên một dòng ở cột bài rộng 816px */
+  .occ-flow .controls { gap: 6px; }
+  .occ-flow .chip { padding: 7px 10px; }
+
+  /* Thêm: nút Play / Pause là nút chữ + icon (không viền, không nền), màu #0080FF, nằm đầu hàng nút nên không bao giờ rớt dòng */
+  .occ-flow .chip.play {
+    order: -1; margin-left: 0; margin-right: 2px; padding: 7px 4px; white-space: nowrap;
+    background: none; border-color: transparent; color: var(--focus); display: inline-flex; align-items: center; gap: 6px;
+  }
+  .occ-flow .chip.play:hover { border-color: transparent; transform: none; text-decoration: underline; }
+  .occ-flow .chip.play[aria-pressed="true"] { background: none; border-color: transparent; color: var(--focus); }
+  .occ-flow .chip.play::before {
+    content: ""; width: 12px; height: 12px; background: currentColor;
+    -webkit-mask: var(--ico) center / contain no-repeat; mask: var(--ico) center / contain no-repeat;
+    --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 1l9 5-9 5z'/%3E%3C/svg%3E");
+  }
+  .occ-flow .chip.play[aria-pressed="true"]::before {
+    --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 1h3v10H2zM7 1h3v10H7z'/%3E%3C/svg%3E");
   }
 </style>
 

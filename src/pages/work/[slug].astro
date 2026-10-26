@@ -545,6 +545,13 @@ const info = [
     aspect-ratio: auto 16 / 9;
   }
 
+  /* Trang rất dài (ảnh cao) được cắt ở đáy để không chiếm cả bài */
+  .case-body :global(.occ-shots img) {
+    max-height: 1200px;
+    object-fit: cover;
+    object-position: top;
+  }
+
 
   /* Khối thông tin nhỏ: Role, Client, Scope, Worked with */
   .case-body :global(.occ-meta) {

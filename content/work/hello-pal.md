@@ -58,16 +58,6 @@ Before designing screens, I mapped how the whole campaign fits together: from co
 
 <!-- demo:hello-pal-flow -->
 
-### What the flow tells us
-
-- **Minting opens everything.** The PAL ID Card is the entry point. Sticker creation is token-gated, and only users who minted a sticker pack can share.
-- **The character is the product.** The PAL NFT and its wearables sit on the card, and updating wearables updates the sticker pack.
-- **Sharing happens in two places.** The web dapp and X.com on one side, the Telegram miniapp on the other, linked by a sticker pack sync.
-- **Rarity drives rewards.** The reward drop is created based on the rarity of the PAL, and both sharer and receiver are rewarded.
-- **Leaderboards keep people coming back.** One ranks XPLA points for referral, the other ranks referral sticker downloads.
-
-### Where the visuals live
-
 | Moment in the flow | What the user sees |
 | --- | --- |
 | Mint | PAL ID Card with the PAL NFT and wearables |
@@ -110,6 +100,9 @@ The hello PAL campaign site, from first impression to stickers.
 <!-- IMAGE: hello-pal-sync-telegram.png — sync stickers to Telegram (added) -->
 ![hello PAL — sync to Telegram](/images/work/hello-pal/hello-pal-sync-telegram.webp)
 
+<!-- IMAGE: hello-pal-telegram-app.png — Epic app in Telegram on mobile (added) -->
+![hello PAL — Telegram miniapp](/images/work/hello-pal/hello-pal-telegram-app.webp)
+
 <!-- NOT YET PLACED (no screen yet): remove the comment markers below once hello-pal-04.webp and hello-pal-05.webp exist
 ![hello PAL — epic stickers](/images/work/hello-pal/hello-pal-04.webp)
 ![hello PAL — share and rewards](/images/work/hello-pal/hello-pal-05.webp)
@@ -127,7 +120,6 @@ It also gave me a closer view of **meme NFT culture**: how communities express t
 
 hello PAL also became the starting point for my continued work with Gall3ry on more projects, such as StepN and Marblex.
 
-<!-- NOT YET PLACED (images not received yet): uncomment and add the files to public/images/work/hello-pal/
 ### StepN
 
 ![StepN — select an asset to generate](/images/work/hello-pal/stepn-01.webp)
@@ -139,7 +131,6 @@ hello PAL also became the starting point for my continued work with Gall3ry on m
 ![Marblex — Lunar Animals campaign site](/images/work/hello-pal/marblex-01.webp)
 
 ![Marblex — Lunar Animals OCC certificate](/images/work/hello-pal/marblex-02.webp)
--->
 
 ---
 
