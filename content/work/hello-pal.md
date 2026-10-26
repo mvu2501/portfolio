@@ -89,14 +89,16 @@ The hello PAL campaign site, from first impression to stickers.
 <!-- IMAGE: hello-pal-02.png — mint your PAL ID / customize -->
 ![hello PAL — mint your PAL ID](/images/work/hello-pal/hello-pal-02.webp)
 
+<!-- IMAGE: hello-pal-mint-modal.png — mint your OCCs (added: screen between 02 and 03) -->
+![hello PAL — mint your OCCs](/images/work/hello-pal/hello-pal-mint-modal.webp)
+
 <!-- IMAGE: hello-pal-03.png — PAL ID card result -->
 ![hello PAL — PAL ID card](/images/work/hello-pal/hello-pal-03.webp)
 
-<!-- IMAGE: hello-pal-04.png — epic stickers -->
+<!-- NOT YET PLACED (no screen yet): remove the comment markers below once hello-pal-04.webp and hello-pal-05.webp exist
 ![hello PAL — epic stickers](/images/work/hello-pal/hello-pal-04.webp)
-
-<!-- IMAGE: hello-pal-05.png — share / reward (optional) -->
 ![hello PAL — share and rewards](/images/work/hello-pal/hello-pal-05.webp)
+-->
 
 ---
 

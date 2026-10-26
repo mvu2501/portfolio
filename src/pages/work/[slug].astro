@@ -545,10 +545,6 @@ const info = [
     aspect-ratio: auto 16 / 9;
   }
 
-  .case-body :global(.occ-shots img) {
-    aspect-ratio: auto 3 / 4;
-    object-fit: cover;
-  }
 
   /* Khối thông tin nhỏ: Role, Client, Scope, Worked with */
   .case-body :global(.occ-meta) {
@@ -614,15 +610,16 @@ const info = [
     color: var(--color-text-muted);
   }
 
+  /* Hàng ảnh: hai cột kiểu "gạch xếp" để ảnh cao (trang mobile) và ảnh ngang (desktop) đứng cạnh nhau mà không bị cắt */
   .case-body :global(.occ-shots) {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-2);
+    column-count: 1;
+    column-gap: var(--space-3);
     margin-top: var(--space-3);
   }
 
   .case-body :global(.occ-shots figure) {
-    margin: 0;
+    margin: 0 0 var(--space-3);
+    break-inside: avoid;
   }
 
   @media (min-width: 40rem) {
@@ -631,19 +628,8 @@ const info = [
     }
 
     .case-body :global(.occ-shots) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-count: 2;
     }
   }
 
-  @media (min-width: 64rem) {
-    .case-body :global(.occ-shots) {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: var(--space-3);
-    }
-
-    /* Dự án chỉ có 2 ảnh: 2 cột cho ảnh to hơn */
-    .case-body :global(.occ-shots:has(> figure:nth-child(2):last-child)) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
 </style>
