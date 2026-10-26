@@ -78,11 +78,15 @@ The hello PAL campaign site, from first impression to stickers.
 <!-- IMAGE: hello-pal-01.png — landing / hero -->
 ![hello PAL — landing](/images/work/hello-pal/hello-pal-01.webp)
 
+<!-- Mint flow, in order: your PAL, mint your OCCs, loading, then the PAL ID card -->
 <!-- IMAGE: hello-pal-02.png — mint your PAL ID / customize -->
 ![hello PAL — mint your PAL ID](/images/work/hello-pal/hello-pal-02.webp)
 
 <!-- IMAGE: hello-pal-mint-modal.png — mint your OCCs (added: screen between 02 and 03) -->
 ![hello PAL — mint your OCCs](/images/work/hello-pal/hello-pal-mint-modal.webp)
+
+<!-- IMAGE: hello-pal-mint-loading.png — mint loading (added) -->
+![hello PAL — minting, loading](/images/work/hello-pal/hello-pal-mint-loading.webp)
 
 <!-- IMAGE: hello-pal-03.png — PAL ID card result -->
 ![hello PAL — PAL ID card](/images/work/hello-pal/hello-pal-03.webp)
@@ -95,18 +99,26 @@ The hello PAL campaign site, from first impression to stickers.
 <!-- IMAGE: hello-pal-buy-pepic.png — buy pEPIC (added) -->
 ![hello PAL — buy pEPIC](/images/work/hello-pal/hello-pal-buy-pepic.webp)
 
+<!-- IMAGE: hello-pal-04.png — epic stickers: my sticker pack -->
+![hello PAL — epic stickers](/images/work/hello-pal/hello-pal-04.webp)
+
 ### Sync
 
 <!-- IMAGE: hello-pal-sync-telegram.png — sync stickers to Telegram (added) -->
 ![hello PAL — sync to Telegram](/images/work/hello-pal/hello-pal-sync-telegram.webp)
 
+### Telegram
+
 <!-- IMAGE: hello-pal-telegram-app.png — Epic app in Telegram on mobile (added) -->
 ![hello PAL — Telegram miniapp](/images/work/hello-pal/hello-pal-telegram-app.webp)
 
-<!-- NOT YET PLACED (no screen yet): remove the comment markers below once hello-pal-04.webp and hello-pal-05.webp exist
-![hello PAL — epic stickers](/images/work/hello-pal/hello-pal-04.webp)
+<!-- IMAGE: hello-pal-telegram-sticker.png — My sticker in Telegram on mobile (added) -->
+![hello PAL — my sticker in Telegram](/images/work/hello-pal/hello-pal-telegram-sticker.webp)
+
+### Reward
+
+<!-- IMAGE: hello-pal-05.png — share / reward -->
 ![hello PAL — share and rewards](/images/work/hello-pal/hello-pal-05.webp)
--->
 
 ---
 
