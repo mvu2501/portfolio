@@ -63,8 +63,9 @@ function visual(tree) {
   const meta = nodes.findIndex((n) => isEl(n, 'p') && isEl(n.children[0], 'strong') && /^Role/.test(textOf(n.children[0])));
   if (meta !== -1) nodes[meta] = metaList(nodes[meta]);
 
-  // 3. Outcome: mỗi ### thành một khối dự án
-  const start = nodes.findIndex((n) => isEl(n, 'h2') && textOf(n).trim().toLowerCase() === 'outcome');
+  // 3. Outcome và Reflection: mỗi ### thành một khối (tiêu đề, mô tả, ảnh)
+  for (const sectionName of ['outcome', 'reflection']) {
+  const start = nodes.findIndex((n) => isEl(n, 'h2') && textOf(n).trim().toLowerCase() === sectionName);
   if (start !== -1) {
     let end = nodes.findIndex((n, i) => i > start && isEl(n, 'h2'));
     if (end === -1) end = nodes.length;
@@ -101,6 +102,7 @@ function visual(tree) {
         : o
     );
     nodes.splice(start + 1, end - start - 1, ...built);
+  }
   }
 
   // 4. mọi ảnh (trừ cover) tải trễ; bảng được gắn class để có kiểu riêng

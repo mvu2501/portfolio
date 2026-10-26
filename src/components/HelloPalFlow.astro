@@ -8,7 +8,6 @@
 <section class="occ-flow wide" data-occ-flow data-theme="light">
   <p class="eyebrow">Research · Flow architecture</p>
   <h3>hello PAL: how minting, sharing and referral connect</h3>
-  <p class="lede">The campaign flow behind the site, from minting a PAL ID Card to sharing stickers and earning rewards. Pick a step, or let it play.</p>
 
   <div class="controls" role="group" aria-label="Flow steps"></div>
   <div class="caption" aria-live="polite">
@@ -154,8 +153,11 @@
     .occ-flow svg .arrow .dot { display: none !important; }
   }
 
-  /* Thêm: cột bài hẹp hơn sơ đồ (min-width 920px) từ màn hình dưới 1360px nên cần gợi ý cuộn ngang */
-  @media (max-width: 1360px) { .occ-flow .hint { display: block; } }
+  /* Thêm: từ 768px trở lên sơ đồ co vừa khung bài (không cuộn ngang); điện thoại vẫn cuộn ngang trong khung */
+  @media (min-width: 48rem) {
+    .occ-flow .stage svg { min-width: 0; }
+    .occ-flow .hint { display: none; }
+  }
 </style>
 
 <script is:inline>

@@ -83,6 +83,8 @@ Before designing screens, I mapped how the whole campaign fits together: from co
 
 The hello PAL campaign site, from first impression to stickers.
 
+### Mint
+
 <!-- IMAGE: hello-pal-01.png — landing / hero -->
 ![hello PAL — landing](/images/work/hello-pal/hello-pal-01.webp)
 
@@ -94,6 +96,19 @@ The hello PAL campaign site, from first impression to stickers.
 
 <!-- IMAGE: hello-pal-03.png — PAL ID card result -->
 ![hello PAL — PAL ID card](/images/work/hello-pal/hello-pal-03.webp)
+
+### Create
+
+<!-- IMAGE: hello-pal-create.png — choose your style and create stickers (added) -->
+![hello PAL — create stickers](/images/work/hello-pal/hello-pal-create.webp)
+
+<!-- IMAGE: hello-pal-buy-pepic.png — buy pEPIC (added) -->
+![hello PAL — buy pEPIC](/images/work/hello-pal/hello-pal-buy-pepic.webp)
+
+### Sync
+
+<!-- IMAGE: hello-pal-sync-telegram.png — sync stickers to Telegram (added) -->
+![hello PAL — sync to Telegram](/images/work/hello-pal/hello-pal-sync-telegram.webp)
 
 <!-- NOT YET PLACED (no screen yet): remove the comment markers below once hello-pal-04.webp and hello-pal-05.webp exist
 ![hello PAL — epic stickers](/images/work/hello-pal/hello-pal-04.webp)
@@ -109,6 +124,22 @@ hello PAL taught me a lot about designing experiences in Web3, especially for co
 When content becomes a token, it is no longer just something to look at. It is something people own, show off and share. Here, a character became an ID card and then a sticker, so the design had to work as an object to own and as a way to talk to friends.
 
 It also gave me a closer view of **meme NFT culture**: how communities express themselves through playful, recognizable visuals, and how much people care about making something feel like theirs. That pushed me to treat personality, humor and community identity as real design inputs, and to balance a fun, expressive look with a clear, simple mint experience.
+
+hello PAL also became the starting point for my continued work with Gall3ry on more projects, such as StepN and Marblex.
+
+<!-- NOT YET PLACED (images not received yet): uncomment and add the files to public/images/work/hello-pal/
+### StepN
+
+![StepN — select an asset to generate](/images/work/hello-pal/stepn-01.webp)
+
+![StepN — OCC result](/images/work/hello-pal/stepn-02.webp)
+
+### Marblex
+
+![Marblex — Lunar Animals campaign site](/images/work/hello-pal/marblex-01.webp)
+
+![Marblex — Lunar Animals OCC certificate](/images/work/hello-pal/marblex-02.webp)
+-->
 
 ---
 

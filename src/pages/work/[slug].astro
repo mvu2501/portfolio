@@ -622,6 +622,11 @@ const info = [
     break-inside: avoid;
   }
 
+  /* Nhóm chỉ có một ảnh: ảnh rộng hết cột */
+  .case-body :global(.occ-shots:has(> figure:only-child)) {
+    column-count: 1;
+  }
+
   @media (min-width: 40rem) {
     .case-body :global(.occ-meta) {
       grid-template-columns: repeat(2, minmax(0, 1fr));
