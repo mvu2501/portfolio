@@ -423,18 +423,20 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
     .demo-modal[open] { animation: none; }
   }
 
+  /* Không thanh tiêu đề, không hiện tên: chỉ có nút đóng nổi ở góc (tên vẫn có cho trình đọc màn hình) */
   .demo-modal__bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
   }
 
   .demo-modal__title {
-    margin: 0;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    color: #fff;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
   }
 
   .demo-modal__close {
@@ -465,23 +467,6 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
 
   .demo-modal--wide .demo-modal__stage {
     height: clamp(380px, 62vh, 540px);
-  }
-
-  /* Không thanh đen, không tên: chỉ còn nút đóng nổi ở góc (tên vẫn có cho trình đọc màn hình) */
-  .demo-modal--wide .demo-modal__bar {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    z-index: 10;
-    padding: 0;
-  }
-
-  .demo-modal--wide .demo-modal__title {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
   }
 
   .demo-modal--wide .demo-modal__close {
