@@ -12,25 +12,27 @@ interface Props {
   href?: string;       // nếu có: cả thẻ bấm được
   external?: boolean;  // true: mở link ở tab mới
   demo?: string;       // có: thẻ là nút, bấm mở popup chứa demo này (xem index.astro)
+  component?: string;  // có: thẻ là nút, bấm mở popup chứa component này (vd boarding-pass)
 }
 
-const { title, tags, description, cover, coverAlt = '', href, external = false, demo } = Astro.props;
-const Tag = demo ? 'button' : href ? 'a' : 'div';
-const linkProps = demo
-  ? { type: 'button', 'data-demo': demo, 'data-title': title }
+const { title, tags, description, cover, coverAlt = '', href, external = false, demo, component } = Astro.props;
+const popup = !!(demo || component);
+const Tag = popup ? 'button' : href ? 'a' : 'div';
+const linkProps = popup
+  ? { type: 'button', 'data-title': title, ...(demo ? { 'data-demo': demo } : { 'data-component': component }) }
   : href
   ? { href, ...(external ? { target: '_blank', rel: 'noopener' } : {}) }
   : {};
 ---
 
-<Tag class:list={['card', { 'card--link': !!(href || demo), 'card--button': !!demo }]} {...linkProps}>
+<Tag class:list={['card', { 'card--link': !!(href || popup), 'card--button': popup }]} {...linkProps}>
   <div class="card__cover">
     {cover && <img src={cover} alt={coverAlt} loading="lazy" decoding="async" />}
   </div>
   <div class="card__body">
     <h3 class="card__title">
       {title}
-      {(href || demo) && <span class="card__arrow" aria-hidden="true">→</span>}
+      {(href || popup) && <span class="card__arrow" aria-hidden="true">→</span>}
     </h3>
     {tags.length > 0 && (
       <ul class="card__tags">

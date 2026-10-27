@@ -5,6 +5,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import DuckFootball from '../components/DuckFootball.astro';
+import BoardingPass from '../components/BoardingPass.astro';
 
 // Lấy các file .md trong content/work và content/fun, bỏ dự án draft, xếp theo "order".
 const byOrder = (a: { data: { order: number } }, b: { data: { order: number } }) =>
@@ -70,8 +71,9 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
                 cover={f.data.cover}
                 coverAlt={f.data.coverAlt}
                 demo={f.data.demo}
-                href={f.data.demo ? undefined : f.data.link}
-                external={!f.data.demo && !!f.data.link}
+                component={f.data.component}
+                href={f.data.demo || f.data.component ? undefined : f.data.link}
+                external={!f.data.demo && !f.data.component && !!f.data.link}
               />
             ))}
           </div>
@@ -82,8 +84,12 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
               <h2 class="demo-modal__title" id="demo-modal-title" data-demo-title></h2>
               <button class="demo-modal__close" type="button" aria-label="Close" data-demo-close>×</button>
             </div>
-            <div class="demo-modal__stage">
+            <div class="demo-modal__stage" data-demo-iframe-stage>
               <iframe data-demo-frame title="" allow="fullscreen" style="width:100%;height:100%;border:0;"></iframe>
+            </div>
+            <!-- Component thật (không iframe): chỉ hiện và chạy khi popup mở, dọn sạch khi đóng -->
+            <div class="demo-modal__stage" data-demo-component="boarding-pass" hidden>
+              <BoardingPass />
             </div>
           </dialog>
         </div>
@@ -107,17 +113,41 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
 </script>
 
 <script>
-  // Playaround: bấm thẻ thì mở popup chứa demo (iframe chỉ nạp lúc mở, xoá lúc đóng).
+  // Playaround: bấm thẻ thì mở popup. Thẻ có "demo" nạp iframe (nạp lúc mở, xoá lúc đóng);
+  // thẻ có "component" hiện component tương ứng, khởi tạo lúc mở và destroy() lúc đóng.
+  import { initBoardingPass } from '../lib/boarding-pass';
+
+  const components: Record<string, (root: HTMLElement) => () => void> = {
+    'boarding-pass': initBoardingPass,
+  };
+
   const modal = document.querySelector<HTMLDialogElement>('[data-demo-modal]');
   if (modal) {
     const frame = modal.querySelector<HTMLIFrameElement>('[data-demo-frame]')!;
+    const frameStage = modal.querySelector<HTMLElement>('[data-demo-iframe-stage]')!;
     const heading = modal.querySelector<HTMLElement>('[data-demo-title]')!;
-    document.querySelectorAll<HTMLElement>('[data-demo]').forEach((card) => {
+    let activeStage: HTMLElement | null = null;
+    let destroy: (() => void) | null = null;
+
+    document.querySelectorAll<HTMLElement>('[data-demo], [data-component]').forEach((card) => {
       card.addEventListener('click', () => {
         heading.textContent = card.dataset.title ?? '';
-        frame.title = card.dataset.title ?? '';
-        frame.src = card.dataset.demo ?? '';
-        modal.showModal();
+        const name = card.dataset.component;
+        const stage = name ? modal.querySelector<HTMLElement>(`[data-demo-component="${name}"]`) : null;
+        if (stage && name) {
+          frameStage.hidden = true;
+          stage.hidden = false;
+          activeStage = stage;
+          modal.classList.add('demo-modal--wide');
+          modal.showModal();
+          // Khởi tạo sau khi popup hiện để đo đúng kích thước khung
+          destroy = components[name](stage.querySelector<HTMLElement>('[data-boarding-pass]')!);
+        } else {
+          frameStage.hidden = false;
+          frame.title = card.dataset.title ?? '';
+          frame.src = card.dataset.demo ?? '';
+          modal.showModal();
+        }
       });
     });
     modal.querySelector('[data-demo-close]')?.addEventListener('click', () => modal.close());
@@ -125,7 +155,15 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
     modal.addEventListener('click', (e) => {
       if (e.target === modal) modal.close();
     });
-    modal.addEventListener('close', () => frame.removeAttribute('src'));
+    modal.addEventListener('close', () => {
+      frame.removeAttribute('src');
+      destroy?.();
+      destroy = null;
+      if (activeStage) activeStage.hidden = true;
+      activeStage = null;
+      frameStage.hidden = false;
+      modal.classList.remove('demo-modal--wide');
+    });
   }
 </script>
 
@@ -417,5 +455,18 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
 
   .demo-modal__stage {
     height: clamp(480px, 74vh, 760px);
+  }
+
+  /* Popup rộng cho component ngang (vé boarding pass) */
+  .demo-modal--wide {
+    width: min(1100px, calc(100vw - 2rem));
+  }
+
+  .demo-modal--wide .demo-modal__stage {
+    height: clamp(420px, 70vh, 640px);
+  }
+
+  .demo-modal__stage[hidden] {
+    display: none;
   }
 </style>
