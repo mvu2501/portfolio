@@ -5,6 +5,7 @@
 
 export function initBoardingPass(root: HTMLElement): () => void {
   const W = 1040, H = 380, PERF = 760, SW = 280, R = 28, NR = 18, OX = 4, RIP = 24; // NR = bán kính chỗ khuyết nửa tròn ở đầu/cuối đường xé
+  const MAX_SCALE = 0.5; // vé hiển thị tối đa 50% kích thước gốc (thu nhỏ lại ở khung hẹp)
   const K = 14, SEGPX = 12, SNAP_AT = 0.75; // số đoạn răng cưa, px kéo cho mỗi đoạn, độ căng mà đoạn đó "tách"
   const $ = <T extends Element = HTMLElement>(name: string) => root.querySelector<T>(`[data-bp="${name}"]`)!;
   const ticket = $('ticket'), fit = $('fit');
@@ -438,7 +439,7 @@ export function initBoardingPass(root: HTMLElement): () => void {
   /* ---------- co giãn theo khung ---------- */
   function resize() {
     boxW = root.clientWidth; boxH = root.clientHeight;
-    scale = Math.max(0.3, Math.min(1, (boxW - 48) / W));
+    scale = Math.max(0.3, Math.min(MAX_SCALE, (boxW - 48) / W));
     fit.style.width = W * scale + 'px';
     fit.style.height = H * scale + 'px';
     ticket.style.transform = `scale(${scale})`;

@@ -459,11 +459,37 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
 
   /* Popup rộng cho component ngang (vé boarding pass) */
   .demo-modal--wide {
-    width: min(1100px, calc(100vw - 2rem));
+    width: min(760px, calc(100vw - 2rem));
+    background: transparent;
   }
 
   .demo-modal--wide .demo-modal__stage {
-    height: clamp(420px, 70vh, 640px);
+    height: clamp(380px, 62vh, 540px);
+  }
+
+  /* Không thanh đen, không tên: chỉ còn nút đóng nổi ở góc (tên vẫn có cho trình đọc màn hình) */
+  .demo-modal--wide .demo-modal__bar {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    padding: 0;
+  }
+
+  .demo-modal--wide .demo-modal__title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .demo-modal--wide .demo-modal__close {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .demo-modal--wide .demo-modal__close:hover {
+    background: rgba(0, 0, 0, 0.32);
   }
 
   .demo-modal__stage[hidden] {
