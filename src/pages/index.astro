@@ -1,5 +1,5 @@
 ---
-// Trang chủ. Thứ tự từ trên xuống: Hero → Duck Football → Selected works → Fun projects.
+// Trang chủ. Thứ tự từ trên xuống: Hero → Duck Football → Selected works → Playaround.
 // (Nav và Footer đã có sẵn trong BaseLayout.)
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -31,7 +31,7 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
     <DuckFootball />
   </section>
 
-  <!-- 2. SELECTED WORKS / FUN PROJECTS: hai tab cạnh nhau -->
+  <!-- 2. SELECTED WORKS / PLAYAROUND: hai tab cạnh nhau -->
   <section id="work" class="section">
     <div class="container" data-tabs>
       <div class="tabs__list" role="tablist" aria-label="Projects">
@@ -40,7 +40,7 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
         </button>
         {funs.length > 0 && (
           <button class="tabs__tab" role="tab" id="tab-fun" aria-controls="panel-fun" aria-selected="false">
-            Fun projects
+            Playaround
           </button>
         )}
       </div>
@@ -67,14 +67,25 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
               <ProjectCard
                 title={f.data.title}
                 tags={f.data.tags}
-                description={f.data.description}
                 cover={f.data.cover}
                 coverAlt={f.data.coverAlt}
-                href={f.data.demo ? `/fun-projects/${f.id}` : f.data.link}
+                demo={f.data.demo}
+                href={f.data.demo ? undefined : f.data.link}
                 external={!f.data.demo && !!f.data.link}
               />
             ))}
           </div>
+
+          <!-- Popup demo: iframe chỉ được nạp khi bấm thẻ -->
+          <dialog class="demo-modal" data-demo-modal aria-labelledby="demo-modal-title">
+            <div class="demo-modal__bar">
+              <h2 class="demo-modal__title" id="demo-modal-title" data-demo-title></h2>
+              <button class="demo-modal__close" type="button" aria-label="Close" data-demo-close>×</button>
+            </div>
+            <div class="demo-modal__stage">
+              <iframe data-demo-frame title="" allow="fullscreen" style="width:100%;height:100%;border:0;"></iframe>
+            </div>
+          </dialog>
         </div>
       )}
     </div>
@@ -96,7 +107,30 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
 </script>
 
 <script>
-  // Tab Selected works / Fun projects. Không có JavaScript thì hai khối cùng hiện, xếp dọc.
+  // Playaround: bấm thẻ thì mở popup chứa demo (iframe chỉ nạp lúc mở, xoá lúc đóng).
+  const modal = document.querySelector<HTMLDialogElement>('[data-demo-modal]');
+  if (modal) {
+    const frame = modal.querySelector<HTMLIFrameElement>('[data-demo-frame]')!;
+    const heading = modal.querySelector<HTMLElement>('[data-demo-title]')!;
+    document.querySelectorAll<HTMLElement>('[data-demo]').forEach((card) => {
+      card.addEventListener('click', () => {
+        heading.textContent = card.dataset.title ?? '';
+        frame.title = card.dataset.title ?? '';
+        frame.src = card.dataset.demo ?? '';
+        modal.showModal();
+      });
+    });
+    modal.querySelector('[data-demo-close]')?.addEventListener('click', () => modal.close());
+    // Bấm ra ngoài khung (vào lớp nền tối) thì đóng
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.close();
+    });
+    modal.addEventListener('close', () => frame.removeAttribute('src'));
+  }
+</script>
+
+<script>
+  // Tab Selected works / Playaround. Không có JavaScript thì hai khối cùng hiện, xếp dọc.
   const root = document.querySelector<HTMLElement>('[data-tabs]');
   if (root) {
     const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
@@ -130,7 +164,7 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
       });
     });
 
-    // Link /#work (Nav) mở tab Selected works; link /#fun mở tab Fun projects.
+    // Link /#work (Nav) mở tab Selected works; link /#fun mở tab Playaround.
     function fromHash() {
       const index = location.hash === '#fun' && tabs.length > 1 ? 1 : 0;
       select(index);
@@ -311,20 +345,77 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
     gap: var(--space-4) var(--space-3);
   }
 
-  /* Selected works: tối đa 2 thẻ/hàng. Fun projects: 3 thẻ/hàng. */
+  /* Selected works và Playaround: tối đa 2 thẻ/hàng */
   @media (min-width: 40rem) {
-    .grid--work {
+    .grid--work,
+    .grid--fun {
       grid-template-columns: repeat(2, 1fr);
       gap: var(--space-5) var(--space-4);
     }
 
   }
 
-  /* Fun projects: 3 thẻ/hàng từ màn hình tablet trở lên */
-  @media (min-width: 48rem) {
-    .grid--fun {
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--space-5) var(--space-3);
-    }
+  /* Popup demo */
+  .demo-modal {
+    width: min(640px, calc(100vw - 2rem));
+    max-width: none;
+    max-height: calc(100vh - 2rem);
+    padding: 0;
+    border: 0;
+    border-radius: 24px;
+    background: #0b0a0e;
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .demo-modal::backdrop {
+    background: rgba(31, 29, 26, 0.6);
+  }
+
+  .demo-modal[open] {
+    animation: demo-in 0.2s ease-out;
+  }
+
+  @keyframes demo-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .demo-modal[open] { animation: none; }
+  }
+
+  .demo-modal__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+  }
+
+  .demo-modal__title {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  .demo-modal__close {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .demo-modal__close:hover {
+    background: rgba(255, 255, 255, 0.22);
+  }
+
+  .demo-modal__stage {
+    height: clamp(480px, 74vh, 760px);
   }
 </style>
