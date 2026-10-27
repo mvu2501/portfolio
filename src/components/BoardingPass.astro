@@ -1,0 +1,213 @@
+---
+// BoardingPass.astro – vé boarding pass tương tác: kéo cuống ghế sang phải để xé theo từng răng cưa.
+// Dữ liệu vé ở đây (TICKET), logic xé ở src/lib/boarding-pass.ts, style ở cuối file.
+// Mọi thứ nằm trong khung của component (không đụng body); khung do trang chứa quyết định kích thước.
+// Hành vi được gắn bởi initBoardingPass(root) khi popup mở (xem src/pages/index.astro).
+
+interface Props {
+  ticket?: Partial<typeof defaults>;
+}
+
+const defaults = {
+  fromCode: 'SGN',
+  fromCity: 'HO CHI MINH CITY',
+  toCode: 'SIN',
+  toCity: 'SINGAPORE',
+  passenger: 'Vu Nguyen Minh',
+  flight: 'SQ185',
+  date: '2 November',
+  boarding: '7:20 PM',
+  terminal: 'T2',
+  gate: 'TBA',
+  travelClass: 'Economy',
+  seat: '33A',
+};
+const t = { ...defaults, ...Astro.props.ticket };
+
+// Thanh mã vạch lấy từ khung Figma: [trái, rộng]
+const BARS = [[0,3],[6,3],[14,4],[22,6],[33,2],[40,2],[44,6],[52,2],[56,2],[62,6],[73,4],[79,4],[86,2],[93,2],[100,2],
+  [104,4],[112,6],[123,6],[133,2],[138,2],[144,2],[149,4],[156,6],[166,2],[171,3],[177,2],[184,4],[191,4]];
+---
+
+<div class="bp" data-boarding-pass>
+  <div class="sky" aria-hidden="true"><div class="cloud"></div><div class="cloud"></div><div class="cloud"></div><div class="cloud"></div><div class="cloud"></div></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <button class="sound" data-bp="sound" type="button" aria-pressed="true">Sound: on</button>
+  <div class="stage">
+    <div class="fit" data-bp="fit">
+      <div class="ticket" data-bp="ticket">
+
+        <div class="piece" data-bp="main-wrap" style="left:0;width:760px;">
+          <div class="shape" data-bp="main-shape" style="left:0;width:760px;">
+            <div class="main-content">
+              <div class="route">
+                <div class="city"><p class="code">{t.fromCode}</p><p class="name">{t.fromCity}</p></div>
+                <div class="plane" aria-hidden="true">
+                  <span class="plane-icon"><svg class="plane-glyph" aria-hidden="true" preserveAspectRatio="none" overflow="visible" style="display: block;" width="22.1667" height="23.3333" viewBox="0 0 22.1667 23.3333" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g>
+<path d="M22.1667 16.3333V14L12.8333 8.16667V1.75C12.8333 0.781667 12.0517 0 11.0833 0C10.115 0 9.33333 0.781667 9.33333 1.75V8.16667L0 14V16.3333L9.33333 13.4167V19.8333L7 21.5833V23.3333L11.0833 22.1667L15.1667 23.3333V21.5833L12.8333 19.8333V13.4167L22.1667 16.3333Z" fill="#151515"/>
+</g>
+</svg></span>
+                </div>
+                <div class="city"><p class="code">{t.toCode}</p><p class="name">{t.toCity}</p></div>
+              </div>
+              <div class="divider"><svg class="divider-line" aria-hidden="true" preserveAspectRatio="none" overflow="visible" style="display: block;" width="681.5" height="1.5" viewBox="0 0 681.5 1.5" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M0.75 0.75H4.21939M680.75 0.75H677.281M11.1582 0.75H18.0969M25.0357 0.75H31.9745M38.9133 0.75H45.852M52.7908 0.75H59.7296M66.6684 0.75H73.6071M80.5459 0.75H87.4847M94.4235 0.75H101.362M108.301 0.75H115.24M122.179 0.75H129.117M136.056 0.75H142.995M149.934 0.75H156.872M163.811 0.75H170.75M177.689 0.75H184.628M191.566 0.75H198.505M205.444 0.75H212.383M219.322 0.75H226.26M233.199 0.75H240.138M247.077 0.75H254.015M260.954 0.75H267.893M274.832 0.75H281.771M288.709 0.75H295.648M302.587 0.75H309.526M316.464 0.75H323.403M330.342 0.75H337.281M344.22 0.75H351.158M358.097 0.75H365.036M371.975 0.75H378.913M385.852 0.75H392.791M399.73 0.75H406.669M413.607 0.75H420.546M427.485 0.75H434.424M441.363 0.75H448.301M455.24 0.75H462.179M469.118 0.75H476.056M482.995 0.75H489.934M496.873 0.75H503.812M510.75 0.75H517.689M524.628 0.75H531.567M538.505 0.75H545.444M552.383 0.75H559.322M566.261 0.75H573.199M580.138 0.75H587.077M594.016 0.75H600.954M607.893 0.75H614.832M621.771 0.75H628.71M635.648 0.75H642.587M649.526 0.75H656.465M663.404 0.75H670.342" stroke-width="1.5" stroke-linecap="round" stroke="#E3E3E3"/>
+</svg></div>
+              <div class="details">
+                <div class="row">
+                  <div class="cell wide"><small>Passenger Name</small><b>{t.passenger}</b></div>
+                  <div class="cell"><small>Flight</small><b>{t.flight}</b></div>
+                  <div class="cell"><small>Date</small><b>{t.date}</b></div>
+                </div>
+                <div class="row">
+                  <div class="cell"><small>Boarding Time</small><b>{t.boarding}</b></div>
+                  <div class="cell"><small>Terminal</small><b>{t.terminal}</b></div>
+                  <div class="cell"><small>Gate</small><b>{t.gate}</b></div>
+                  <div class="cell"><small>Class</small><b>{t.travelClass}</b></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="perf" data-bp="perf"></div>
+        <svg class="goo" width="1040" height="380" aria-hidden="true"><path data-bp="goo-path" fill="#fff"></path></svg>
+        <div class="stub-clip" data-bp="stub-clip"><div class="piece" data-bp="stub-wrap" id="bp-stub" tabindex="0" role="button"
+             aria-label={`Seat ${t.seat} stub. Drag to tear it off, or press Enter.`}>
+          <div class="shape" data-bp="stub-shape" style="left:-4px;width:284px;">
+            <div class="stub-content">
+              <div class="seat"><small>Seats</small><b>{t.seat}</b></div>
+              <svg class="barcode" viewBox="0 0 200 96" aria-hidden="true">
+                {BARS.map(([x, w]) => <rect x={x} y="0" width={w} height="96" fill="#151515" />)}
+              </svg>
+            </div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="ui">
+      <p class="hint" data-bp="hint">Drag the seat stub to tear it off</p>
+      <button class="again" data-bp="again" type="button">Print another ticket</button>
+    </div>
+    <div class="sr" data-bp="status" role="status" aria-live="polite"></div>
+  </div>
+</div>
+
+<style>
+  /* Khung của component: lấp đầy phần tử cha, mọi thứ (mây, nút Sound, cuống vé rơi) bị giữ trong khung */
+  .bp {
+    --paper: #fff;
+    --ink: #151515;
+    --muted: #8b8b8b;
+    --dot: #e3e3e3;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    container-type: size;
+    background: radial-gradient(120% 90% at 50% 0%, #f9f8f6 0%, #f4f4f4 60%, #ecebea 100%);
+    color: var(--ink);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-align: left;
+  }
+
+  .bp, .bp * { box-sizing: border-box; }
+  .bp p { margin: 0; }
+
+  /* mây trôi chậm (kích thước theo khung: cqw/cqh) */
+  .sky { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+  .cloud {
+    position: absolute; border-radius: 50%; will-change: transform;
+    background: radial-gradient(closest-side, var(--c) 0%, transparent 100%);
+    animation: drift var(--t) ease-in-out infinite alternate;
+  }
+  .cloud:nth-child(1) { --c: rgba(220,217,240,.95); --t: 46s; width: 54cqw; height: 40cqw; left: -10cqw; top: -14cqw; --x: 14cqw; --y: 6cqw; --s: 1.15; }
+  .cloud:nth-child(2) { --c: rgba(240,214,224,.85); --t: 58s; width: 46cqw; height: 38cqw; left: 2cqw;  top: 8cqh;  --x: 10cqw; --y: -4cqw; --s: 1.2; animation-delay: -12s; }
+  .cloud:nth-child(3) { --c: rgba(236,224,206,.9);  --t: 64s; width: 56cqw; height: 34cqw; right: -14cqw; top: -8cqw; --x: -12cqw; --y: 8cqw; --s: 1.1; animation-delay: -20s; }
+  .cloud:nth-child(4) { --c: rgba(205,210,216,.9);  --t: 52s; width: 60cqw; height: 28cqw; right: -8cqw; bottom: -10cqw; --x: -14cqw; --y: -5cqw; --s: 1.18; animation-delay: -8s; }
+  .cloud:nth-child(5) { --c: rgba(226,230,240,.9);  --t: 70s; width: 50cqw; height: 30cqw; left: -12cqw; bottom: -8cqw; --x: 16cqw; --y: -3cqw; --s: 1.12; animation-delay: -30s; }
+  @keyframes drift { from { transform: translate3d(0,0,0) scale(1); } to { transform: translate3d(var(--x), var(--y), 0) scale(var(--s)); } }
+  @media (prefers-reduced-motion: reduce) { .cloud { animation: none; } }
+  .grain { position: absolute; inset: 0; pointer-events: none; opacity: .05; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  .stage {
+    position: relative;
+    height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 56px;
+    user-select: none; -webkit-user-select: none;
+  }
+
+  /* hộp bố cục do JS đặt kích thước để vé thu nhỏ theo bề rộng khung */
+  .fit { position: relative; flex: none; }
+  .ticket { position: absolute; left: 0; top: 0; width: 1040px; height: 380px; transform-origin: 0 0; }
+
+  .piece { position: absolute; top: 0; height: 380px; will-change: transform, filter; }
+  .piece .shape { position: absolute; top: 0; height: 380px; background: var(--paper); }
+
+  /* Khi cuống còn dính, nó chỉ được nằm bên phải đường đục lỗ: phần giấy dưới chỗ rách không đè lên vé chính.
+     Gỡ clip-path này khi cuống đã đứt hẳn. */
+  .stub-clip { position: absolute; left: 760px; top: -3000px; width: 6000px; height: 6000px; pointer-events: none; }
+  .stub-clip > .piece { pointer-events: auto; }
+  [data-bp='stub-wrap'] { left: 0; top: 3000px; width: 280px; cursor: grab; touch-action: none; outline: none; }
+  [data-bp='stub-wrap'].dragging { cursor: grabbing; }
+  [data-bp='stub-wrap']:focus-visible [data-bp='stub-shape'] { box-shadow: inset 0 0 0 2px #6b7cff; }
+  [data-bp='stub-shape'].reprint { animation: reprint .35s ease-out; }
+  @keyframes reprint { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
+
+  .goo { position: absolute; left: 0; top: 0; width: 1040px; height: 380px; overflow: visible; pointer-events: none; z-index: 3;
+    filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.06)); }
+  .perf { position: absolute; pointer-events: none; z-index: 2; }
+
+  /* vé chính */
+  .main-content { position: absolute; inset: 0; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; }
+  .route { display: flex; gap: 40px; align-items: flex-start; }
+  .city { display: flex; flex-direction: column; gap: 6px; white-space: nowrap; }
+  .code { font-size: 64px; line-height: 64px; letter-spacing: -1.28px; color: var(--ink); }
+  .name { font-size: 15px; line-height: 18px; color: var(--muted); }
+  .plane { width: 28px; height: 64px; display: flex; align-items: center; justify-content: center; flex: none; }
+  .plane-icon { position: relative; display: block; width: 28px; height: 28px; overflow: hidden; }
+  .plane-icon svg { position: absolute; left: 2.333px; top: 2.333px; width: 22.1667px; height: 23.3333px; max-width: none; display: block;
+    transform: translate(.583px, -.583px) rotate(90deg); }   /* glyph 22.17×23.33 xoay 90° trong ô 23.33×22.17 */
+  .divider { position: relative; width: 680px; height: 0; }
+  .divider svg { position: absolute; left: -.75px; top: -.75px; width: 681.5px; height: 1.5px; max-width: none; display: block; }
+  .details { display: flex; flex-direction: column; gap: 24px; white-space: nowrap; }
+  .row { display: flex; gap: 20px; }
+  .cell { display: flex; flex-direction: column; gap: 6px; width: 155px; }
+  .cell.wide { width: 330px; }
+  .cell small { font-size: 15px; line-height: 18px; color: var(--muted); }
+  .cell b { font-size: 20px; line-height: 24px; font-weight: 400; color: var(--ink); }
+
+  /* cuống vé */
+  .stub-content { position: absolute; left: 4px; top: 0; width: 280px; height: 380px; padding: 40px;
+    display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
+  .seat { display: flex; flex-direction: column; gap: 4px; }
+  .seat small { font-size: 15px; line-height: 18px; color: var(--muted); }
+  .seat b { font-size: 64px; line-height: 64px; font-weight: 500; letter-spacing: -1.28px; color: var(--ink); }
+  .barcode { display: block; width: 200px; height: 96px; }
+
+  .ui { height: 44px; display: flex; align-items: center; justify-content: center; }
+  .hint { font-size: 15px; color: var(--muted); letter-spacing: .01em; transition: opacity .3s; }
+  .again {
+    appearance: none; border: 0; background: #151515; color: #fff; font: inherit; font-size: 15px;
+    padding: 11px 20px; border-radius: 999px; cursor: pointer;
+    opacity: 0; transform: translateY(6px); pointer-events: none;
+    transition: opacity .3s, transform .3s;
+    position: absolute;
+  }
+  .again.show { opacity: 1; transform: none; pointer-events: auto; }
+  .again:focus-visible { outline: 2px solid #6b7cff; outline-offset: 3px; }
+  .hint.hide { opacity: 0; }
+  .sound {
+    position: absolute; top: 16px; left: 16px; z-index: 5; appearance: none; border: 0; cursor: pointer;
+    background: rgba(255,255,255,.7); color: var(--ink); font: inherit; font-size: 13px;
+    padding: 8px 14px; border-radius: 999px; backdrop-filter: blur(8px);
+  }
+  .sound:focus-visible { outline: 2px solid #6b7cff; outline-offset: 2px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+</style>

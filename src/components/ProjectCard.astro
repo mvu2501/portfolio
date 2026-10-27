@@ -1,40 +1,45 @@
 ---
 // ProjectCard.astro – thẻ dự án theo thiết kế Figma:
 // cover → tên dự án (+ mũi tên) → tag → mô tả ngắn.
-// Dùng cho cả Selected works (2 thẻ/hàng) và Fun projects (3 thẻ/hàng).
+// Dùng cho cả Selected works (2 thẻ/hàng) và Playaround (2 thẻ/hàng).
 
 interface Props {
   title: string;
   tags: string[];
-  description: string;
+  description?: string; // không có thì không hiện mô tả (Playaround)
   cover?: string;      // đường dẫn ảnh trong public/, ví dụ /images/work/spot-trading-cover.webp
   coverAlt?: string;
   href?: string;       // nếu có: cả thẻ bấm được
   external?: boolean;  // true: mở link ở tab mới
+  demo?: string;       // có: thẻ là nút, bấm mở popup chứa demo này (xem index.astro)
+  component?: string;  // có: thẻ là nút, bấm mở popup chứa component này (vd boarding-pass)
 }
 
-const { title, tags, description, cover, coverAlt = '', href, external = false } = Astro.props;
-const Tag = href ? 'a' : 'div';
-const linkProps = href
+const { title, tags, description, cover, coverAlt = '', href, external = false, demo, component } = Astro.props;
+const popup = !!(demo || component);
+const Tag = popup ? 'button' : href ? 'a' : 'div';
+const linkProps = popup
+  ? { type: 'button', 'data-title': title, ...(demo ? { 'data-demo': demo } : { 'data-component': component }) }
+  : href
   ? { href, ...(external ? { target: '_blank', rel: 'noopener' } : {}) }
   : {};
 ---
 
-<Tag class:list={['card', { 'card--link': !!href }]} {...linkProps}>
+<Tag class:list={['card', { 'card--link': !!(href || popup), 'card--button': popup }]} {...linkProps}>
   <div class="card__cover">
     {cover && <img src={cover} alt={coverAlt} loading="lazy" decoding="async" />}
   </div>
   <div class="card__body">
     <h3 class="card__title">
       {title}
-      {href && <span class="card__arrow" aria-hidden="true">→</span>}
+      {(href || popup) && <span class="card__arrow" aria-hidden="true">→</span>}
     </h3>
     {tags.length > 0 && (
       <ul class="card__tags">
         {tags.map((tag) => <li>{tag}</li>)}
       </ul>
     )}
-    <p class="card__desc">{description}</p>
+    {description && <p class="card__desc">{description}</p>}
   </div>
 </Tag>
 
@@ -46,6 +51,16 @@ const linkProps = href
   }
 
   /* Cover: tỉ lệ 487 : 314, bo 14px, viền mảnh bên trong (theo Figma) */
+  .card--button {
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
   .card__cover {
     position: relative;
     aspect-ratio: 487 / 314;
