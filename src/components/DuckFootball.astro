@@ -42,7 +42,7 @@ function initDuckFootball(root: HTMLElement) {
   // ----- Setup -----
   const W = 1000, H = 600;                 // drawing space; the canvas scales to fit
   const PHI = (1 + Math.sqrt(5)) / 2;
-  const BALL_R = 18;
+  const BALL_R = 14.4;                     // 80% of the original size
   const GRAVITY = 1400;                    // px/s²
   const TAU = Math.PI * 2;
   const ROLL_K = 1.9;                      // how fast a ball slows down on the water
@@ -166,6 +166,10 @@ function initDuckFootball(root: HTMLElement) {
   let C = {};
   let NET = null;
   let bgLayer = null, fogLayer = null, goalLayer = null, mistSprite = null;
+  let sheenA = null, sheenB = null;       // soft swell on the water
+  let grainTile = null;                   // film grain for the goals
+  let streaks = null;                     // very thin, blurred wave lines
+  let reeds = [];                         // blurred reed blades that sway at the bank
 
   function parseHex(hex) {
     let h = hex.replace("#", "");
@@ -184,7 +188,8 @@ function initDuckFootball(root: HTMLElement) {
     C = {
       fog: g("--fog"), waterMid: g("--water-mid"), waterDeep: g("--water-deep"),
       waterLight: g("--water-light"), sun: g("--sun"), ink: g("--ink"),
-      duckBlack: g("--duck-black"), duckWhite: g("--duck-white"), beak: g("--beak")
+      duckBlack: g("--duck-black"), duckWhite: g("--duck-white"), beak: g("--beak"),
+      reedBase: g("--reed-base"), reedTip: g("--reed-tip"), reedPlume: g("--reed-plume")
     };
     NET = makeNetPattern(C.ink);
   }
@@ -235,6 +240,7 @@ function initDuckFootball(root: HTMLElement) {
     // Below the ducks: water, depth, pitch lines, shore objects
     bgLayer = makeLayer();
     drawWater(bgLayer.g, M);
+    drawGrain(bgLayer.g, M);
     drawPitchLines(bgLayer.g);
     drawShoreObjects(bgLayer.g);
 
@@ -248,6 +254,12 @@ function initDuckFootball(root: HTMLElement) {
     drawGoal(goalLayer.g, PITCH.x1);
 
     mistSprite = makeMistSprite();
+    sheenA = makeSheen(M, 41);
+    sheenB = makeSheen(M, 67);
+    streaks = makeStreaks(M, 83);
+    grainTile = makeGrainTile();
+    addGrainToGoals(goalLayer.g);
+    buildReeds();
   }
 
   // ----- Vector and rotation helpers (for the 3D ball) -----
@@ -428,7 +440,7 @@ function initDuckFootball(root: HTMLElement) {
   // ----- Water rings -----
   // age < 0 means the ring has not started yet (used for a second, smaller ring after a splash)
   function addRipple(x, y, maxR, life, width, delay) {
-    ripples.push({ x, y, age: -(delay || 0), life, maxR, width, top: false, k: 1 });
+    ripples.push({ x, y, age: -(delay || 0), life, maxR, width, top: false, k: 1, ph: Math.random() * TAU });
   }
   function splash(x, y, impact) {
     const s = Math.min(1, impact / 520);
@@ -695,7 +707,9 @@ function initDuckFootball(root: HTMLElement) {
       if (d.spd > 12) {
         d.emit -= dt;
         if (d.emit <= 0) {
-          addRipple(d.x, d.y + 12, 20 + d.spd * 0.3, 1.5 + Math.random() * 0.4, 1.2, 0);
+          // a gentle wake: faint, and it spreads slowly
+          addRipple(d.x, d.y + 12, 16 + d.spd * 0.22, 2.0 + Math.random() * 0.5, 1.1, 0);
+          ripples[ripples.length - 1].k = 0.5;
           d.emit = Math.max(0.2, 1.4 - d.spd / 90);
         }
       }
@@ -971,6 +985,242 @@ function initDuckFootball(root: HTMLElement) {
     g.restore();
   }
 
+  // ----- Drawing: swell on the water (painted once, drifts slowly) -----
+  // Wide, soft patches that are lighter or darker than the water, like a gentle swell. There are no lines:
+  // two layers drift in different directions and fade in and out, so the surface slowly rises and falls.
+  function makeSheen(M, seed) {
+    const n1 = makeNoise(150, seed), n2 = makeNoise(80, seed + 3);
+    let S = new Float32Array(LW * LH);
+    for (let y = 0; y < LH; y++) {
+      const Y = (y + 0.5) * 2;
+      for (let x = 0; x < LW; x++) {
+        const X = (x + 0.5) * 2;
+        const v = n1(X, Y) * 0.7 + n2(X, Y) * 0.3;
+        S[y * LW + x] = (v - 0.5) * 2 * smooth(0.4, 0.7, M[y * LW + x]);   // -1 (trough) ... 1 (crest)
+      }
+    }
+    for (let pass = 0; pass < 2; pass++) S = boxBlur(S, LW, LH, 6);
+    const dark = parseHex(C.waterDeep);
+    const img = new ImageData(LW, LH);
+    const px = img.data;
+    for (let i = 0; i < S.length; i++) {
+      const v = S[i] * 2.2;                                 // the blur flattens the noise, so stretch it back
+      const crest = v > 0;
+      const c = crest ? [255, 255, 255] : dark;
+      px[i * 4] = c[0]; px[i * 4 + 1] = c[1]; px[i * 4 + 2] = c[2];
+      px[i * 4 + 3] = Math.min(1, Math.abs(v)) * (crest ? 0.2 : 0.26) * 255;
+    }
+    const tmp = document.createElement("canvas");
+    tmp.width = LW; tmp.height = LH;
+    tmp.getContext("2d").putImageData(img, 0, 0);
+    const layer = makeLayer();
+    layer.g.imageSmoothingEnabled = true;
+    layer.g.imageSmoothingQuality = "high";
+    layer.g.drawImage(tmp, 0, 0, W, H);
+    return layer;
+  }
+  // Fine film grain over the water, so the surface is never perfectly flat. It is painted at the real pixel
+  // size of the canvas and fades out toward the bank with the pond.
+  function drawGrain(g, M) {
+    const gw = W * dpr, gh = H * dpr;
+    const img = new ImageData(gw, gh);
+    const px = img.data;
+    const rnd = mulberry32(909);
+    const dark = parseHex(C.waterDeep);
+    for (let y = 0; y < gh; y++) {
+      const my = Math.min(LH - 1, Math.floor(y / dpr / 2)) * LW;
+      for (let x = 0; x < gw; x++) {
+        const m = M[my + Math.min(LW - 1, Math.floor(x / dpr / 2))];
+        const wa = smooth(0.3, 0.55, m);
+        if (wa <= 0.01) continue;
+        const v = rnd() * 2 - 1;
+        const i = (y * gw + x) * 4;
+        const light = v > 0;
+        px[i] = light ? 255 : dark[0]; px[i + 1] = light ? 255 : dark[1]; px[i + 2] = light ? 255 : dark[2];
+        px[i + 3] = Math.abs(v) * 0.11 * wa * 255;
+      }
+    }
+    const tmp = document.createElement("canvas");
+    tmp.width = gw; tmp.height = gh;
+    tmp.getContext("2d").putImageData(img, 0, 0);
+    g.drawImage(tmp, 0, 0, W, H);
+  }
+
+  // A small tile of random light and dark specks. Painted over the goals it makes them
+  // look like they belong to the same photo as the water.
+  function makeGrainTile() {
+    const n = 128;
+    const c = document.createElement("canvas");
+    c.width = n; c.height = n;
+    const g = c.getContext("2d");
+    const img = g.createImageData(n, n);
+    const rnd = mulberry32(313);
+    const dark = parseHex(C.ink);
+    for (let i = 0; i < n * n; i++) {
+      const v = rnd() * 2 - 1;
+      const light = v > 0;
+      img.data[i * 4] = light ? 255 : dark[0];
+      img.data[i * 4 + 1] = light ? 255 : dark[1];
+      img.data[i * 4 + 2] = light ? 255 : dark[2];
+      img.data[i * 4 + 3] = Math.abs(v) * 0.2 * 255;
+    }
+    g.putImageData(img, 0, 0);
+    return c;
+  }
+  // The goal layer holds nothing but the goals, so 'source-atop' puts grain on them and nowhere else
+  function addGrainToGoals(g) {
+    const pat = g.createPattern(grainTile, "repeat");
+    pat.setTransform(new DOMMatrix().scale(1 / dpr));
+    g.save();
+    g.globalCompositeOperation = "source-atop";
+    g.fillStyle = pat;
+    g.fillRect(0, 0, W, H);
+    g.restore();
+  }
+
+  // Thin lines of light, stretched sideways like small waves, then blurred a little
+  function makeStreaks(M, seed) {
+    const n1 = makeNoise(70, seed), n2 = makeNoise(150, seed + 3);
+    let A = new Float32Array(LW * LH);
+    for (let y = 0; y < LH; y++) {
+      const Y = (y + 0.5) * 2;
+      for (let x = 0; x < LW; x++) {
+        const X = (x + 0.5) * 2;
+        const v = n1(X * 0.4, Y * 1.2) * 0.65 + n2(X * 0.5, Y * 1.2) * 0.35;
+        const ridge = 1 - Math.abs(v * 2 - 1);
+        A[y * LW + x] = smooth(0.93, 0.998, ridge) * smooth(0.45, 0.72, M[y * LW + x]);
+      }
+    }
+    A = boxBlur(A, LW, LH, 2);
+    const img = new ImageData(LW, LH);
+    const px = img.data;
+    for (let i = 0; i < A.length; i++) {
+      px[i * 4] = 255; px[i * 4 + 1] = 255; px[i * 4 + 2] = 255;
+      px[i * 4 + 3] = Math.min(1, A[i] * 0.9) * 0.17 * 255;
+    }
+    const tmp = document.createElement("canvas");
+    tmp.width = LW; tmp.height = LH;
+    tmp.getContext("2d").putImageData(img, 0, 0);
+    const layer = makeLayer();
+    layer.g.imageSmoothingEnabled = true;
+    layer.g.imageSmoothingQuality = "high";
+    layer.g.drawImage(tmp, 0, 0, W, H);
+    return layer;
+  }
+
+  function drawSheen(t) {
+    ctx.globalAlpha = 0.65 + 0.35 * Math.sin(t * 0.27 + 0.6);
+    ctx.drawImage(streaks.c, Math.sin(t * 0.14) * 10, Math.sin(t * 0.1 + 2) * 3, W, H);
+    ctx.globalAlpha = 0.6 + 0.4 * Math.sin(t * 0.23);
+    ctx.drawImage(sheenA.c, Math.sin(t * 0.19) * 22, Math.sin(t * 0.13) * 8, W, H);
+    ctx.globalAlpha = 0.6 + 0.4 * Math.sin(t * 0.19 + 2.4);
+    ctx.drawImage(sheenB.c, Math.sin(t * 0.15 + 1.8) * -26, Math.sin(t * 0.11 + 1) * 9, W, H);
+    ctx.globalAlpha = 1;
+  }
+
+  // ----- Drawing: reeds around the pond -----
+  // Each blade is painted once into a small sprite and shrunk, so scaling it back up makes it soft (a cheap
+  // blur that works in every browser). Per frame a blade is only rotated a few degrees around its root.
+  const REED_CLUMPS = [
+    // behind the ducks, faint and very soft
+    { x: 150, y: 104, n: 6, h0: 55, h1: 85,  lean: -0.10, front: false },
+    { x: 500, y: 80,  n: 5, h0: 45, h1: 75,  lean: 0.04,  front: false },
+    { x: 790, y: 98,  n: 6, h0: 55, h1: 85,  lean: 0.10,  front: false },
+    { x: 92,  y: 542, n: 6, h0: 55, h1: 85,  lean: -0.12, front: false },
+    { x: 906, y: 542, n: 6, h0: 55, h1: 85,  lean: 0.12,  front: false },
+    // in front of the fog at the banks
+    { x: 330, y: 560, n: 5, h0: 45, h1: 72,  lean: -0.05, front: true },
+    { x: 686, y: 556, n: 5, h0: 45, h1: 72,  lean: 0.05,  front: true }
+  ];
+
+  function makeReedSprite(h, bend, bw, plume, k) {
+    const padX = Math.abs(bend) * h + 20;
+    const w = Math.ceil(padX * 2), hh = Math.ceil(h + 24);
+    const c = document.createElement("canvas");
+    c.width = Math.max(2, Math.ceil(w * k));
+    c.height = Math.max(2, Math.ceil(hh * k));
+    const g = c.getContext("2d");
+    g.scale(k, k);
+    g.translate(w / 2, hh - 2);
+    const tx = bend * h, ty = -h;
+
+    const grad = g.createLinearGradient(0, 0, 0, ty);
+    grad.addColorStop(0, hexToRgba(C.reedBase, 0.95));
+    grad.addColorStop(1, hexToRgba(C.reedTip, 0.8));
+    if (plume) {
+      // a thin stalk with a feathery head
+      g.strokeStyle = grad;
+      g.lineWidth = 1.6;
+      g.lineCap = "round";
+      g.beginPath();
+      g.moveTo(0, 0);
+      g.quadraticCurveTo(bend * h * 0.2, -h * 0.55, tx, ty);
+      g.stroke();
+      g.save();
+      g.translate(tx, ty);
+      g.rotate(bend * 0.8);
+      for (let i = 0; i < 7; i++) {
+        const t = i / 6;
+        g.fillStyle = hexToRgba(C.reedPlume, 0.62 - t * 0.28);
+        g.beginPath();
+        g.ellipse((i % 2 ? 1 : -1) * 1.4 * (1 - t), 10 - i * 3.6, 2 + 3.4 * Math.sin(Math.PI * (0.12 + 0.76 * t)), 4.6, 0, 0, TAU);
+        g.fill();
+      }
+      g.restore();
+    } else {
+      // a long arching leaf
+      g.fillStyle = grad;
+      g.beginPath();
+      g.moveTo(-bw, 0);
+      g.quadraticCurveTo(bend * h * 0.35 - bw * 0.4, -h * 0.55, tx, ty);
+      g.quadraticCurveTo(bend * h * 0.35 + bw * 0.4, -h * 0.55, bw, 0);
+      g.closePath();
+      g.fill();
+    }
+    return { c, w, hh };
+  }
+
+  function buildReeds() {
+    const rnd = mulberry32(2024);
+    reeds = [];
+    for (const cl of REED_CLUMPS) {
+      for (let i = 0; i < cl.n; i++) {
+        const fan = cl.n > 1 ? i / (cl.n - 1) - 0.5 : 0;
+        const h = cl.h0 + rnd() * (cl.h1 - cl.h0);
+        const lean = cl.lean + fan * 0.45 + (rnd() - 0.5) * 0.12;
+        const bend = cl.lean * 0.8 + fan * 0.3 + (rnd() - 0.5) * 0.3;
+        const plume = rnd() < 0.45;
+        reeds.push({
+          x: cl.x + fan * 26 + (rnd() - 0.5) * 6,
+          y: cl.y + (rnd() - 0.5) * 6,
+          s: makeReedSprite(h, bend, 2.2 + rnd() * 1.6, plume, cl.front ? 0.5 : 0.33),
+          lean,
+          amp: 0.035 + 0.03 * (h / 110),         // taller blades sway a little more
+          spd: 0.7 + rnd() * 0.6,
+          ph: rnd() * TAU,
+          a: cl.front ? 0.8 : 0.5,
+          front: cl.front
+        });
+      }
+    }
+  }
+
+  // A slow gust that travels across the pond, so neighbouring clumps sway together
+  const wind = (t, x) => Math.sin(t * 0.55 + x * 0.006) * 0.6 + Math.sin(t * 1.1 + x * 0.013) * 0.25;
+  function drawReeds(t, front) {
+    for (const b of reeds) {
+      if (b.front !== front) continue;
+      const ang = b.lean + wind(t, b.x) * b.amp + Math.sin(t * b.spd + b.ph) * b.amp * 0.5;
+      ctx.save();
+      ctx.translate(b.x, b.y);
+      ctx.rotate(ang);
+      ctx.globalAlpha = b.a;
+      ctx.drawImage(b.s.c, -b.s.w / 2, -(b.s.hh - 2), b.s.w, b.s.hh);
+      ctx.restore();
+    }
+    ctx.globalAlpha = 1;
+  }
+
   // ----- Drawing: fog and goals (painted once, above the ducks) -----
   // Fog thickness follows the blurred pond silhouette: thick outside and at the bank, thinning toward the middle.
   // A little noise bends the edge of the thinning, and a few faint wisps drift inside, so there is no visible ring or band.
@@ -1064,18 +1314,47 @@ function initDuckFootball(root: HTMLElement) {
   }
 
   // ----- Drawing: things that move -----
+  // A ring on real water is a little squashed (we look at it from an angle), slightly uneven, and fades in
+  // and out gently. Each ring is a wide soft glow, a thin bright crest and a faint dark trough just below it.
+  const RING_SQUASH = 0.8;
+  function ringPath(x, y, rad, ph) {
+    const path = new Path2D();
+    const N = 36;
+    for (let i = 0; i <= N; i++) {
+      const a = (i / N) * TAU;
+      const k = 1 + 0.035 * Math.sin(3 * a + ph) + 0.02 * Math.sin(5 * a + ph * 1.7);
+      const px = x + Math.cos(a) * rad * k, py = y + Math.sin(a) * rad * k * RING_SQUASH;
+      if (i === 0) path.moveTo(px, py); else path.lineTo(px, py);
+    }
+    path.closePath();
+    return path;
+  }
   function drawRipples(top) {
+    ctx.lineJoin = "round";
     for (const r of ripples) {
       if (r.age < 0 || r.top !== top) continue;
       const p = r.age / r.life;
-      const eased = 1 - Math.pow(1 - p, 2);
+      const eased = 1 - Math.pow(1 - p, 2.2);          // spreads fast, then slows
       const rad = 6 + (r.maxR - 6) * eased;
-      const al = (1 - p) * 0.30 * r.k;       // soft rings, not sharp lines
-      ctx.beginPath();
-      ctx.arc(r.x, r.y, rad, 0, TAU);
-      ctx.strokeStyle = "rgba(255,255,255," + al.toFixed(3) + ")";
-      ctx.lineWidth = r.width * (0.5 + (1 - p) * 0.5);
-      ctx.stroke();
+      const al = smooth(0, 0.18, p) * Math.pow(1 - p, 1.8) * 0.26 * r.k;
+      const path = ringPath(r.x, r.y, rad, r.ph);
+      const wd = r.width * (0.5 + (1 - p) * 0.5);
+
+      // all three strokes are wide and faint, so the ring reads as a soft swell and not a line
+      ctx.strokeStyle = "rgba(255,255,255," + (al * 0.3).toFixed(3) + ")";
+      ctx.lineWidth = wd * 5;
+      ctx.stroke(path);
+
+      ctx.save();
+      ctx.translate(0, wd * 1.4);
+      ctx.strokeStyle = hexToRgba(C.waterDeep, al * 0.4);
+      ctx.lineWidth = wd * 2.2;
+      ctx.stroke(path);
+      ctx.restore();
+
+      ctx.strokeStyle = "rgba(255,255,255," + (al * 0.7).toFixed(3) + ")";
+      ctx.lineWidth = wd * 1.5;
+      ctx.stroke(path);
     }
   }
 
@@ -1088,6 +1367,19 @@ function initDuckFootball(root: HTMLElement) {
     const bob = Math.sin(d.bp) * (0.5 + Math.min(1, d.spd / 60) * 0.8);
     const sc = DS * (1 + bob * 0.012 + d.lift * 0.004);
     const lunge = d.kick > 0 ? Math.sin(Math.PI * (1 - d.kick / 0.26)) * 4 : 0;
+
+    // Two faint rings that always lie around a floating duck, breathing slowly with its bobbing
+    ctx.save();
+    ctx.translate(d.x, d.y + 6 * DS);
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 2; i++) {
+      const rr = (38 + i * 9) * DS * (1 + 0.03 * Math.sin(d.bp * 0.5 + i));
+      ctx.beginPath();
+      ctx.ellipse(0, 0, rr, rr * RING_SQUASH, 0, 0, TAU);
+      ctx.strokeStyle = "rgba(255,255,255," + (0.09 - i * 0.04).toFixed(3) + ")";
+      ctx.stroke();
+    }
+    ctx.restore();
 
     // Soft shadow on the water, offset away from the light; it stays on the water when the duck hops
     ctx.save();
@@ -1121,15 +1413,21 @@ function initDuckFootball(root: HTMLElement) {
       }
       return gr;
     }
-    const edge = isBlack ? "rgba(0,0,0,0.30)" : "rgba(60,90,90,0.35)";
+    const edge = isBlack ? "rgba(0,0,0,0.14)" : "rgba(60,90,90,0.16)";
     ctx.lineWidth = 1 / DS;
     ctx.strokeStyle = edge;
 
-    // Tail
+    // Tail: it always wags gently from its root, a little more when the duck swims faster
+    const wag = Math.sin(d.bp * 1.7) * (0.1 + 0.12 * smooth(6, 60, d.spd));
+    ctx.save();
+    ctx.translate(-24, 0);
+    ctx.rotate(wag);
+    ctx.translate(24, 0);
     ctx.beginPath();
     ctx.moveTo(-24, -7); ctx.lineTo(-41, 0); ctx.lineTo(-24, 7); ctx.closePath();
     ctx.fillStyle = shade(-30, 0, 14);
     ctx.fill(); ctx.stroke();
+    ctx.restore();
 
     // Body
     ctx.beginPath();
@@ -1180,6 +1478,7 @@ function initDuckFootball(root: HTMLElement) {
         ctx.beginPath(); ctx.arc(ex + 0.6, ey - 0.6, 0.7, 0, TAU); ctx.fillStyle = "#ffffff"; ctx.fill();
       }
     }
+
     ctx.restore();
   }
 
@@ -1250,14 +1549,17 @@ function initDuckFootball(root: HTMLElement) {
 
   function render() {
     ctx.drawImage(bgLayer.c, 0, 0, W, H);   // water, depth, pitch lines, shore objects
-    drawRipples(false);
     const mt = reduce ? 0 : physTime;
+    drawSheen(mt);                          // light drifting on the water
+    drawRipples(false);
+    drawReeds(mt, false);                   // far reeds, soft and faint
     drawMist(mt, true);                     // thin mist behind the ducks
 
     const order = ducks.slice().sort((a, b) => a.y - b.y);
     for (const d of order) drawDuck(d);
 
     ctx.drawImage(fogLayer.c, 0, 0, W, H);  // fog over the water and ducks
+    drawReeds(mt, true);                    // near reeds at the banks
     drawMist(mt, false);                    // mist drifting in front of the ducks
     drawRipples(true);                      // celebration rings, seen through the mist
     ctx.drawImage(goalLayer.c, 0, 0, W, H); // goals stay clear
@@ -1343,6 +1645,9 @@ if (frame) {
   --duck-black: #14181b;
   --duck-white: #fbf8f0;
   --beak: #f08a3c;
+  --reed-base: #7f9a6a;
+  --reed-tip: #c9be8e;
+  --reed-plume: #e4d9bc;
   width: 100%;
   max-width: 60rem;
   margin-inline: auto;
