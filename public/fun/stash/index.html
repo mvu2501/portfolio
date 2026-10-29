@@ -222,9 +222,6 @@ dd i{width:12px;height:12px;border-radius:50%}
   font-weight:700;font-size:14px;text-decoration:none;transition:background .2s,transform .3s cubic-bezier(.3,1.6,.5,1)}
 .onchain:hover{background:#fff;transform:translateY(-2px)}
 .demo{margin-top:12px;font-size:11.5px;color:#7f7d77;font-weight:500}
-.x{position:absolute;top:26px;right:30px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.1);
-  color:#f2f0eb;font-size:22px;line-height:1;opacity:0;transition:opacity .4s,background .2s}
-.modal.in .x{opacity:1}.x:hover{background:rgba(255,255,255,.2)}
 @media (max-width:900px){
   .modal{overflow-y:auto;touch-action:pan-y;overscroll-behavior:contain}
   .detail{margin:auto;padding:64px 20px 28px;gap:28px;max-width:100%}
@@ -235,7 +232,6 @@ dd i{width:12px;height:12px;border-radius:50%}
   dl>div{padding:8px 0}
   .traits{margin-top:14px}
   .onchain{margin-top:16px}
-  .x{top:12px;right:64px;width:36px;height:36px;font-size:20px}
 }
 @media (max-width:560px){
   .detail{flex-direction:column;align-items:center;gap:20px}
@@ -317,7 +313,6 @@ dd i{width:12px;height:12px;border-radius:50%}
 
 <div class="modal" id="modal" aria-hidden="true">
   <div class="backdrop" id="backdrop"></div>
-  <button class="x" id="x" aria-label="Close">×</button>
   <div class="detail">
     <div class="big" id="big"></div>
     <div class="info" id="info"></div>
@@ -745,8 +740,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') go(state + 1);
   if (e.key === 'ArrowLeft' && state > 1) go(state - 1);
 });
-$('#backdrop').addEventListener('click', () => closeCard());
-$('#x').addEventListener('click', () => closeCard());
+modal.addEventListener('click', e => { if (!e.target.closest('.big, .info')) closeCard(); });
 
 /* ---------- Fit the scene to the window ---------- */
 const scene = $('#scene');
