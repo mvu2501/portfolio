@@ -661,10 +661,7 @@ edgeL.addEventListener('pointerdown', e => { const s = leftSheet();  if (e.butto
 const hintText = $('#hintText'), prevBtn = $('#prev'), nextBtn = $('#next');
 function updateUI(){
   book.dataset.s = state;
-  const empty = CAPACITY - TOTAL;
-  hintText.textContent = state === 0 ? 'Click or drag the cover to open'
-    : state === 1 ? 'Drag a page edge to turn · click a card to inspect'
-    : `Pages 2–3 · ${empty} empty slots · drag an edge to turn back`;
+  hintText.textContent = state === 0 ? 'Click or drag the cover to open' : 'Drag a page edge to turn';
   prevBtn.hidden = nextBtn.hidden = state === 0;
   prevBtn.disabled = state <= 1;
   nextBtn.disabled = state >= 2;
