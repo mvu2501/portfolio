@@ -313,7 +313,6 @@ dd i{width:12px;height:12px;border-radius:50%}
   <button class="nav" id="prev" aria-label="Previous page" hidden>‹</button>
   <span id="hintText">Click or drag the cover to open</span>
   <button class="nav" id="next" aria-label="Next page" hidden>›</button>
-  <button class="pill" id="closeBook" hidden>Close binder</button>
 </div>
 
 <div class="modal" id="modal" aria-hidden="true">
@@ -664,14 +663,14 @@ edgeL.addEventListener('pointerdown', e => { const s = leftSheet();  if (e.butto
   el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); fn(); } }));
 
 /* Buttons + hint bar */
-const hintText = $('#hintText'), closeBtn = $('#closeBook'), prevBtn = $('#prev'), nextBtn = $('#next');
+const hintText = $('#hintText'), prevBtn = $('#prev'), nextBtn = $('#next');
 function updateUI(){
   book.dataset.s = state;
   const empty = CAPACITY - TOTAL;
   hintText.textContent = state === 0 ? 'Click or drag the cover to open'
     : state === 1 ? 'Drag a page edge to turn · click a card to inspect'
     : `Pages 2–3 · ${empty} empty slots · drag an edge to turn back`;
-  prevBtn.hidden = nextBtn.hidden = closeBtn.hidden = state === 0;
+  prevBtn.hidden = nextBtn.hidden = state === 0;
   prevBtn.disabled = state <= 1;
   nextBtn.disabled = state >= 2;
   edgeR.hidden = !(S.cover.rest === 180 && S.leaf.rest === 0);
@@ -679,7 +678,6 @@ function updateUI(){
 }
 nextBtn.addEventListener('click', () => go(state + 1));
 prevBtn.addEventListener('click', () => go(Math.max(1, state - 1)));
-closeBtn.addEventListener('click', () => { if (current) closeCard(true); setFilter(null); go(0); });
 
 /* ---------- Popup (card grows from its own position) ---------- */
 const modal = $('#modal'), big = $('#big'), info = $('#info');
