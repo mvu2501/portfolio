@@ -11,9 +11,9 @@ facts:
   - label: Role
     value: Solo designer, art direction and prototype
   - label: Output
-    value: 4 warriors, 11 symbols, 5 enemies, VFX, UI kit, 31 audio files, playable prototype
+    value: Playable prototype
   - label: Timeline
-    value: 2 days
+    value: 3 days
   - label: Format
     value: Desktop and Mobile
   - label: Tools
@@ -23,7 +23,7 @@ facts:
 # Trong các khối HTML bên dưới không được có dòng trống (Markdown sẽ cắt khối).
 ---
 
-<div class="ml-hero wide"><div class="ml-phone ml-phone--hero"><img src="/images/work/mecha-legion/splash_bg.webp" alt="" decoding="async"><img class="ml-hero__logo" src="/images/work/mecha-legion/logo_game.webp" alt="Mecha Legion logo" decoding="async"></div></div>
+<div class="ml-hero wide"><img src="/images/work/mecha-legion/cover.webp" alt="Mecha Legion logo over a neon city street, with the four warrior portraits Long, Lân, Quy and Phụng" width="1948" height="1256" decoding="async"></div>
 
 ## 01 · Overview
 
@@ -206,7 +206,7 @@ AI supported the environment and the game elements: the city background loop, sy
 
 <div class="ml-env wide">
   <div class="ml-env__row ml-env__row--2">
-    <div class="ml-video" style="background-image:url(/images/work/mecha-legion/env_video.webp)"><video autoplay muted loop playsinline preload="metadata" poster="/images/work/mecha-legion/env_video.webp" aria-label="Looping city battle background"><source src="/mecha-legion/game/assets/bg_battle.mp4" type="video/mp4"></video></div>
+    <div class="ml-video"><video autoplay muted loop playsinline preload="metadata" poster="/images/work/mecha-legion/env_video.webp" aria-label="Looping city battle background"><source src="/mecha-legion/game/assets/bg_battle.mp4" type="video/mp4"></video></div>
     <div class="ml-shot"><img src="/images/work/mecha-legion/shot_battle.webp" alt="Battle strip from the game, with the warrior fully visible" loading="lazy" decoding="async"></div>
   </div>
   <div class="ml-env__row ml-env__row--3">
@@ -245,5 +245,4 @@ This project taught me to run a design from the first idea to a playable build: 
 
 - Prototyping showed problems static screens hide, such as timing, loudness and how a miss feels.
 - Naming, frame sizes, muzzle points and sound events were written down so an engineer can pick the build up without guessing.
-- Free Game and Jackpot are demo flows, not tied to real probability yet. Audio and touch still need a real-device test.
 - This is art direction and a playable prototype, not the final game. Engineers would refine it to fit the production build.
