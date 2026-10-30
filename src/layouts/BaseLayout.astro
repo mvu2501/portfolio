@@ -10,17 +10,19 @@ import Loader from '../components/Loader.astro';
 interface Props {
   title?: string;
   description?: string;
+  theme?: 'dark'; // 'dark': nền tối (case study game visual); bỏ trống = nền kem như cũ
 }
 
 const {
   title = 'Things designed by Vu.',
+  theme,
   // THAY: mô tả ngắn hiện trên Google khi ai đó tìm tên bạn
   description = 'Hey, it’s Vu, a senior product designer for Web3 and fintech. I turn complex money movement into clear, trustworthy products.',
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme={theme}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -64,6 +66,12 @@ const {
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500&family=JetBrains+Mono:wght@400&family=Cormorant+Garamond:ital,wght@1,400&family=Reenie+Beanie&display=swap"
       rel="stylesheet"
     />
+    {theme === 'dark' && (
+      <link
+        href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Hanken+Grotesk:wght@400;500;700&display=swap"
+        rel="stylesheet"
+      />
+    )}
   </head>
   <body id="top">
     <Loader />

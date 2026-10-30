@@ -1,0 +1,937 @@
+/* mecha-legion.css – các khối riêng của case study Mecha Legion (tiền tố .ml-).
+   Dùng token của site (global.css). Màu chiến binh và nền tối của game là màu riêng của case study. */
+
+.ml-red { --ml-accent: #b7372b; }
+.ml-purple { --ml-accent: #7a4fb5; }
+.ml-green { --ml-accent: #2f8a4b; }
+.ml-orange { --ml-accent: #d9741f; }
+.ml-light-blue { --ml-dot: #47d6ff; }
+.ml-light-purple { --ml-dot: #7a4fb5; }
+.ml-light-green { --ml-dot: #2f8a4b; }
+.ml-light-red { --ml-dot: #b7372b; }
+
+.case-body .ml-dark-card,
+.ml-card,
+.ml-video,
+.ml-shot,
+.ml-phone {
+  background: #0e1118;
+}
+
+.ml-hero,
+.ml-warriors,
+.ml-tiers,
+.ml-enemies,
+.ml-spin,
+.ml-prompt,
+.ml-proj,
+.ml-rows,
+.ml-env,
+.ml-comp,
+.ml-play {
+  margin-block: var(--space-3) var(--space-4);
+}
+
+.case-body figure {
+  margin: 0;
+}
+
+/* ảnh trong các khối .ml-*: bỏ lề dọc mặc định của ảnh trong bài (global ở [slug].astro) */
+html .case-body [class*='ml-'] img,
+html .case-body .ml-hero img {
+  margin: 0;
+}
+
+.case-body figcaption {
+  font-size: var(--text-sm);
+}
+
+/* ---------- Khung điện thoại 9:16 ---------- */
+.ml-phone {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  aspect-ratio: 9 / 16;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 6px solid #1b2030;
+  box-shadow: 0 0 40px rgba(60, 220, 255, 0.28), 0 0 0 1px rgba(120, 230, 255, 0.35);
+}
+
+.ml-phone iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.ml-hero img {
+  width: 100%;
+  height: auto;
+  border: 1px solid #243140;
+  border-radius: 14px;
+}
+
+/* ---------- Thẻ chiến binh ---------- */
+.ml-warriors {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+}
+
+.ml-warrior {
+  background: var(--color-surface);
+  border-radius: var(--radius-xs, 4px);
+  border-top: 3px solid var(--ml-accent);
+  overflow: hidden;
+}
+
+/* cả bốn chân dung cùng một kích thước hiển thị */
+.ml-warrior__img {
+  position: relative;
+  aspect-ratio: 1 / 1.05;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 70%, var(--ml-accent) -80%, transparent 70%), #161e28;
+}
+
+/* chân dung đặt sát đáy, cao 80% khung, cùng kích thước hiển thị cho cả bốn */
+html .case-body .ml-warrior__img img {
+  position: absolute;
+  inset: 14px 10px 0;
+  width: calc(100% - 20px);
+  height: calc(100% - 14px);
+  border-radius: 0;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+.ml-warrior figcaption {
+  padding: var(--space-2);
+}
+
+.ml-warrior strong {
+  display: block;
+  font-weight: 500;
+}
+
+.ml-beast {
+  display: block;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-1);
+}
+
+.ml-warrior dl {
+  margin: 0;
+  display: grid;
+  gap: var(--spacing-xxs);
+}
+
+.ml-warrior dl div {
+  display: flex;
+  gap: var(--space-1);
+  align-items: center;
+}
+
+.ml-warrior dt,
+.ml-tier__label span {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.ml-warrior dt {
+  min-width: 4.5em;
+}
+
+.ml-warrior dd {
+  margin: 0;
+}
+
+.ml-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--ml-dot);
+  margin-right: 6px;
+}
+
+/* ---------- Tầng symbol ---------- */
+.ml-tiers {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.ml-tier {
+  display: grid;
+  gap: var(--space-1) var(--space-3);
+}
+
+@media (min-width: 48rem) {
+  .ml-tier {
+    grid-template-columns: 10rem 1fr;
+    align-items: center;
+  }
+
+  .ml-tier__label {
+    flex-direction: column;
+    gap: var(--spacing-xxs);
+    margin: 0;
+  }
+}
+
+.ml-tier__label {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  align-items: baseline;
+  margin-bottom: var(--space-1);
+}
+
+.ml-tiles {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.ml-tiles--5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+/* High pay và Special: cùng một lưới 4 cột nên ô cùng kích thước */
+.ml-tiles--4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.ml-tile {
+  background: #0e1118;
+  border: 2px solid #243140;
+  border-radius: var(--radius-xs, 4px);
+  padding: var(--space-1);
+  text-align: center;
+}
+
+.ml-tile.ml-red,
+.ml-tile.ml-purple,
+.ml-tile.ml-green,
+.ml-tile.ml-orange {
+  border-color: var(--ml-accent);
+}
+
+.ml-tile img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+}
+
+.ml-tile figcaption {
+  color: #e8e4dc;
+  padding-top: var(--spacing-xxs);
+}
+
+/* ---------- Kẻ địch ---------- */
+.ml-enemies {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-1);
+}
+
+.ml-enemy {
+  background: var(--color-surface);
+  border-bottom: 3px solid #d9741f;
+  border-radius: var(--radius-xs, 4px) var(--radius-xs, 4px) 0 0;
+}
+
+.ml-enemy__img {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: #0e1118;
+}
+
+html .case-body .ml-enemy__img img {
+  position: absolute;
+  inset: 12%;
+  width: 76%;
+  height: 76%;
+  margin: 0;
+  object-fit: contain;
+  object-position: center;
+}
+
+.ml-enemy figcaption {
+  padding: var(--space-1);
+}
+
+.ml-enemy strong {
+  display: block;
+  font-weight: 500;
+}
+
+.ml-enemy span {
+  color: var(--color-text-muted);
+}
+
+/* ---------- Nút Spin, 3 trạng thái ---------- */
+.ml-spin {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  max-width: 34rem;
+}
+
+.ml-spin figure {
+  text-align: center;
+}
+
+.ml-spin img {
+  width: 100%;
+  background: #0e1118;
+  border-radius: var(--radius-xs, 4px);
+}
+
+.ml-spin figcaption {
+  margin-top: var(--space-1);
+}
+
+/* ---------- Prompt: hai cột ---------- */
+.ml-prompt {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: var(--space-3);
+  align-items: start;
+}
+
+.ml-prompt__text {
+  margin: 0;
+}
+
+.ml-prompt__card {
+  background: var(--color-surface);
+  border-radius: var(--radius-xs, 4px);
+  padding: var(--space-2);
+  min-width: 0;
+}
+
+.ml-prompt__title,
+html[data-theme='dark'] .case-body .ml-prompt__title {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  line-height: 1.3;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.ml-prompt pre {
+  margin: 0;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Thẻ projectile 2x2 ---------- */
+.ml-proj {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+}
+
+.ml-projcard {
+  background: var(--color-surface);
+  border-radius: var(--radius-xs, 4px);
+  border-top: 3px solid var(--ml-accent);
+  padding: var(--space-2);
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.ml-projcard h5 {
+  margin: 0;
+  font-weight: 500;
+  font-size: var(--text-base);
+}
+
+.ml-raw img {
+  width: auto;
+  max-width: 100%;
+  max-height: 240px;
+  height: auto;
+  margin-inline: auto;
+  border-radius: var(--radius-xs, 4px);
+}
+
+.ml-strip img {
+  width: 100%;
+  height: auto;
+}
+
+.ml-red { --ml-raw: #01f901; }
+.ml-purple { --ml-raw: #03f803; }
+.ml-green { --ml-raw: #02f702; }
+.ml-orange { --ml-raw: #03f003; }
+
+/* nền xanh lấy đúng màu nền của từng sprite sheet gốc */
+.ml-raw {
+  background: var(--ml-raw, #02f702);
+  border-radius: var(--radius-xs, 4px);
+}
+
+.ml-strip {
+  background: #0e1118;
+  border-radius: var(--radius-xs, 4px);
+  overflow: hidden;
+}
+
+/* thanh chia đoạn phía trên dải 17 khung: flex 3 : 8 : 6 */
+.ml-seg {
+  display: flex;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #e8e4dc;
+}
+
+.ml-seg span {
+  min-width: 0;
+  padding: 3px 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  border-right: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.ml-seg span:nth-child(1) { background: rgba(71, 214, 255, 0.16); color: #47d6ff; }
+.ml-seg span:nth-child(2) { background: rgba(236, 187, 75, 0.16); color: #ecbb4b; }
+.ml-seg span:nth-child(3) { background: rgba(255, 107, 61, 0.18); color: #ff6b3d; border-right: 0; }
+
+.ml-anim {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0e1118;
+  border-radius: var(--radius-xs, 4px);
+  padding: var(--space-1);
+}
+
+/* ---------- Sprite CSS thuần ---------- */
+.ml-sprite {
+  display: block;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  animation-iteration-count: infinite;
+  animation-timing-function: steps(6, jump-none);
+}
+
+@keyframes ml-frames {
+  from { background-position: 0 0; }
+  to { background-position: 100% 0; }
+}
+
+/* 6 khung, 0.9s */
+.ml-sprite--warrior {
+  width: 130px;
+  background-size: 600% 100%;
+  animation: ml-frames 0.9s steps(6, jump-none) infinite;
+}
+
+/* 17 khung, 1.2s, ô 130 x 130 */
+.ml-sprite--proj {
+  width: 130px;
+  height: 130px;
+  background-size: 1700% 100%;
+  animation: ml-frames 1.2s steps(17, jump-none) infinite;
+}
+
+/* ---------- Hàng sprite: sheet cạnh animation ---------- */
+.ml-rows {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ml-row {
+  display: grid;
+  grid-template-columns: 9rem 1fr 160px;
+  gap: var(--space-2);
+  align-items: center;
+  background: var(--color-surface);
+  border-left: 3px solid var(--ml-accent);
+  border-radius: var(--radius-xs, 4px);
+  padding: var(--space-2);
+}
+
+.ml-row__name strong {
+  display: block;
+  font-weight: 500;
+}
+
+.ml-row__name span {
+  color: var(--color-text-muted);
+}
+
+.ml-row__sheet {
+  background: #0e1118;
+  border-radius: var(--radius-xs, 4px);
+  min-width: 0;
+}
+
+.ml-row__sheet img {
+  width: 100%;
+  height: auto;
+}
+
+/* ---------- Môi trường (không chú thích) ---------- */
+.ml-env {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ml-env__row {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ml-env__row--2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.ml-env__row--3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.ml-video,
+.ml-shot {
+  border-radius: var(--radius-xs, 4px);
+  overflow: hidden;
+  aspect-ratio: 10 / 3;
+}
+
+/* ảnh poster nằm dưới video: hiện khi giảm chuyển động (video bị ẩn) */
+.ml-video {
+  background: url('/images/work/mecha-legion/env_video.webp') center / cover no-repeat;
+}
+
+/* video và ảnh strip cắt cùng tỉ lệ 10:3 nên hai khung bằng nhau */
+.ml-video video,
+.ml-shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ml-card {
+  aspect-ratio: 3 / 4;
+  padding: var(--space-1);
+  overflow: hidden;
+  border-radius: var(--radius-xs, 4px);
+}
+
+/* ba khung dọc cùng tỉ lệ 3:4 để chú thích bên dưới thẳng hàng */
+.ml-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.ml-card--cover {
+  padding: 0;
+}
+
+.ml-card--cover img {
+  object-fit: cover;
+}
+
+/* ---------- Lưới composition: 5 ảnh mỗi hàng ---------- */
+.ml-comp {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-2) var(--space-1);
+}
+
+.ml-comp img {
+  width: 100%;
+  height: auto;
+  background: #0e1118;
+  border: 1px solid #243140;
+  border-radius: 10px;
+}
+
+.ml-comp figcaption {
+  margin-top: var(--spacing-xxs);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Play the build ---------- */
+.ml-play {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #0a0d14;
+  padding: 44px var(--space-2);
+}
+
+/* nền mờ, đen trắng, phía sau khung điện thoại */
+.ml-play__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: url('/images/work/mecha-legion/play_bg.webp') center / cover no-repeat;
+  filter: grayscale(1) brightness(0.38);
+}
+
+.ml-play__inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 9rem;
+  justify-self: end;
+}
+
+.side button.is-gold {
+  margin-top: 10px;
+}
+
+.side button {
+  min-height: 40px;
+  padding: 8px 14px;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  background: rgba(14, 17, 24, 0.7);
+  color: #f2efe8;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.side button:hover {
+  background: rgba(60, 220, 255, 0.18);
+  border-color: rgba(120, 230, 255, 0.7);
+}
+
+.side button.is-gold {
+  border-color: #e6b84a;
+  color: #f4d27a;
+}
+
+.side button.is-orange {
+  border-color: #e8772e;
+  color: #f5a066;
+}
+
+.side button.is-gold:hover { background: rgba(230, 184, 74, 0.2); }
+.side button.is-orange:hover { background: rgba(232, 119, 46, 0.2); }
+
+.side button:focus-visible {
+  outline: 2px solid #f2efe8;
+}
+
+.ml-phone--play {
+  width: min(100%, 380px);
+}
+
+/* ---------- Màn hình hẹp ---------- */
+@media (max-width: 63.99rem) {
+  .ml-proj,
+  .ml-prompt {
+    grid-template-columns: 1fr;
+  }
+
+  .ml-comp {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .ml-warriors {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ml-enemies {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .ml-tiles--5 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .ml-comp {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ml-row {
+    grid-template-columns: 1fr 130px;
+  }
+
+  .ml-row__name {
+    grid-column: 1 / -1;
+  }
+
+  .ml-env__row--2 {
+    grid-template-columns: 1fr;
+  }
+
+  .ml-play {
+    padding: var(--space-3) var(--space-2);
+  }
+
+  /* sáu nút thành một hàng phía trên khung điện thoại */
+  .ml-play__inner {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: var(--space-2);
+  }
+
+  .side {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    justify-self: center;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .side button.is-gold {
+    margin-top: 0;
+  }
+
+  .side button {
+    flex: 1 1 28%;
+    text-align: center;
+    padding-inline: 8px;
+  }
+
+  .ml-play__inner > div:empty {
+    display: none;
+  }
+}
+
+@media (max-width: 29.99rem) {
+  .ml-spin {
+    gap: var(--space-1);
+  }
+
+  .ml-seg {
+    font-size: 0.5rem;
+  }
+}
+
+/* ---------- Giảm chuyển động ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .ml-sprite--warrior,
+  .ml-sprite--proj {
+    animation: none;
+  }
+
+  /* video dừng: ẩn video, chỉ còn ảnh poster làm nền */
+  .ml-video video {
+    visibility: hidden;
+  }
+
+}
+
+
+/* =====================================================================
+   Nền tối kiểu Mecha Legion (bản tham chiếu v11): chỉ áp khi trang có data-theme="dark".
+   Token màu nằm ở global.css; ở đây là chữ (Big Shoulders Display, Hanken Grotesk, JetBrains Mono)
+   và các đường kẻ. */
+html[data-theme='dark'] {
+  --ml-line: #243140;
+  --ml-gold: #ecbb4b;
+  --f-display: 'Big Shoulders Display', 'Arial Narrow', Impact, sans-serif;
+  --f-body: 'Hanken Grotesk', var(--font-sans);
+}
+
+html[data-theme='dark'] body {
+  font-family: var(--f-body);
+}
+
+html[data-theme='dark'] .case-header .case-header__title {
+  font-family: var(--f-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+  line-height: 0.95;
+  font-size: clamp(3.5rem, 9vw, 7rem);
+}
+
+html[data-theme='dark'] .case-header .case-header__desc {
+  font-size: 1.3125rem;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+html[data-theme='dark'] .case-info {
+  border-top: 1px solid var(--ml-line);
+  padding-top: var(--space-2);
+}
+
+html[data-theme='dark'] .case-body p,
+html[data-theme='dark'] .case-body li {
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+/* "01 · Overview": nhãn mono màu cyan, mỗi mục cách nhau bằng một đường kẻ */
+html[data-theme='dark'] .case-body h2 {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-top: 72px;
+  padding-top: 48px;
+  border-top: 1px solid var(--ml-line);
+}
+
+html[data-theme='dark'] .case-body h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* Tiêu đề lớn ngay sau nhãn mục */
+html[data-theme='dark'] .case-body h2 + h3 {
+  font-family: var(--f-display);
+  font-size: clamp(2.125rem, 5vw, 3.375rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin-top: var(--space-2);
+}
+
+html[data-theme='dark'] .case-body h3,
+html[data-theme='dark'] .case-body h4 {
+  font-family: var(--f-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+html[data-theme='dark'] .case-body h3 {
+  margin-top: 56px;
+}
+
+html[data-theme='dark'] .case-body h4 {
+  margin-top: 40px;
+}
+
+html[data-theme='dark'] .case-body h2 + h3 {
+  margin-top: var(--space-2);
+}
+
+/* Khối nền tối của v11: viền xanh thép thay cho nền kem */
+html[data-theme='dark'] .ml-warrior,
+html[data-theme='dark'] .ml-projcard,
+html[data-theme='dark'] .ml-row,
+html[data-theme='dark'] .ml-prompt__card,
+html[data-theme='dark'] .ml-enemy {
+  background: var(--color-surface);
+  border-color: var(--ml-line);
+  border-style: solid;
+  border-width: 1px;
+}
+
+html[data-theme='dark'] .ml-warrior,
+html[data-theme='dark'] .ml-projcard {
+  border-top: 3px solid var(--ml-accent);
+}
+
+html[data-theme='dark'] .ml-row {
+  border-left: 3px solid var(--ml-accent);
+}
+
+html[data-theme='dark'] .ml-enemy {
+  border-bottom: 3px solid #ff6b3d;
+}
+
+html[data-theme='dark'] .ml-tier__label strong {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 1.625rem;
+  text-transform: uppercase;
+}
+
+html[data-theme='dark'] .ml-phone--play {
+  border-color: var(--ml-line);
+}
+
+/* Khối thông tin dưới tiêu đề: lưới 3 cột đều nhau để hàng trên và hàng dưới thẳng cột */
+html[data-theme='dark'] .case-info {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3) var(--space-4);
+}
+
+@media (min-width: 40rem) {
+  html[data-theme='dark'] .case-info {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Phụng Kiếm là ảnh dọc nên thấp hơn một chút để cả bốn chiến binh trông cùng cỡ */
+html .case-body .ml-orange .ml-warrior__img img {
+  top: auto;
+  height: 72%;
+}
+
+/* Tên item: một kiểu chữ chung (mono, in hoa, cách chữ), lấy theo chú thích của "Game composition" */
+html .case-body .ml-warrior strong,
+html .case-body .ml-enemy strong,
+html .case-body .ml-row__name strong,
+html .case-body .ml-projcard h5,
+html .case-body .ml-tile figcaption,
+html .case-body .ml-spin figcaption,
+html .case-body .ml-env figcaption,
+html .case-body .ml-comp figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+
+html .case-body .ml-warrior strong,
+html .case-body .ml-enemy strong,
+html .case-body .ml-row__name strong,
+html .case-body .ml-projcard h5 {
+  color: var(--color-text);
+  margin-bottom: var(--spacing-xxs);
+}
+
+html .case-body .ml-tile figcaption,
+html .case-body .ml-spin figcaption,
+html .case-body .ml-env figcaption,
+html .case-body .ml-comp figcaption {
+  color: var(--color-text-muted);
+}
+
+html .case-body .ml-env figcaption {
+  margin-top: var(--spacing-xs);
+}
