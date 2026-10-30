@@ -61,6 +61,23 @@
 
 }
 
+/* ---------- Nền tối (case study game visual): chỉ đổi giá trị token, Nav/Footer/Mục lục tự theo ---------- */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-bg: #0a0e13;
+  --color-surface: #10161d;
+  --color-surface-raised: #161e28;
+  --color-text: #e4ebf1;
+  --color-info: #c9d4de;
+  --color-text-muted: #8799aa;
+  --color-accent: #47d6ff;
+  --color-hairline: #ecbb4b;
+  --color-tint: rgba(228, 235, 241, 0.08);
+  --color-tint-strong: rgba(228, 235, 241, 0.16);
+  --color-tag: rgba(228, 235, 241, 0.08);
+  --color-cover: #10161d;
+}
+
 @media (min-width: 48rem) {
   :root {
     --text-display: 2.875rem;  /* 46px */

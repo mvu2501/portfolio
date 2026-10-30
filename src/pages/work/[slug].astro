@@ -15,19 +15,27 @@ import HelloPalFlow from '../../components/HelloPalFlow.astro';
 import MechaPlay from '../../components/MechaPlay.astro';
 
 export async function getStaticPaths() {
-  // Xếp theo "order" để biết case study nào đứng trước/sau (dùng cho Up next / Previous)
+  // Xếp theo "order" để biết case study nào đứng trước/sau (dùng cho Up next / Previous).
+  // Chỉ so trong cùng nhóm: Selected works (không có group) và Game visual (group: game) có Previous/Next riêng.
   const works = (await getCollection('work', ({ data }) => !data.draft)).sort(
     (a, b) => a.data.order - b.data.order
   );
   const brief = (e?: (typeof works)[number]) => (e ? { id: e.id, title: e.data.title } : undefined);
-  return works.map((entry, i) => ({
-    params: { slug: entry.id },
-    props: { entry, prev: brief(works[i - 1]), next: brief(works[i + 1]) },
-  }));
+  return works.map((entry) => {
+    const same = works.filter((w) => w.data.group === entry.data.group);
+    const i = same.indexOf(entry);
+    return {
+      params: { slug: entry.id },
+      props: { entry, prev: brief(same[i - 1]), next: brief(same[i + 1]) },
+    };
+  });
 }
 
 const { entry, prev, next } = Astro.props;
 const { Content, headings } = await render(entry);
+// Nút quay lại về đúng tab trên trang chủ
+const backHref = entry.data.group === 'game' ? '/#game' : '/#work';
+const backLabel = entry.data.group === 'game' ? '← Game visual' : '← Work';
 // Mục lục = các tiêu đề ## của bài (ví dụ Spot Trading kết thúc bằng Reflections, Onchain Trading kết thúc bằng Credit)
 const tocSections = headings.filter((h) => h.depth === 2).map((h) => ({ id: h.slug, label: h.text }));
 // Chèn component tương tác vào giữa bài: trong .md ghi <!-- demo:tên --> trên một dòng riêng,
@@ -57,10 +65,10 @@ const info = (facts ?? [
 ]).filter((item) => item.value);
 ---
 
-<BaseLayout title={`${title}`} description={description}>
+<BaseLayout title={`${title}`} description={description} theme={entry.data.group === 'game' ? 'dark' : undefined}>
   <header class="case-header section">
     <div class="container">
-      <a class="case-header__back" href="/#work">← Work</a>
+      <a class="case-header__back" href={backHref}>{backLabel}</a>
       <h1 class="case-header__title">{title}</h1>
       <p class="case-header__desc">{description}</p>
       {/* Tag chỉ hiện ở thẻ dự án trên trang chủ; không hiện dưới tiêu đề case study (theo yêu cầu: bỏ "• Fintech …") */}
@@ -83,7 +91,7 @@ const info = (facts ?? [
     <!-- Sidebar mục lục cho desktop (ẩn trên mobile) -->
     <aside class="case-layout__side">
       <!-- Nút quay lại: ẩn lúc đầu trang (đã có nút ở phần tiêu đề), hiện ra khi cuộn qua nó -->
-      <a class="case-layout__back" href="/#work" tabindex="-1" aria-hidden="true">← Work</a>
+      <a class="case-layout__back" href={backHref} tabindex="-1" aria-hidden="true">{backLabel}</a>
       <CaseToc variant="sidebar" sections={tocSections} />
     </aside>
 

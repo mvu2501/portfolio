@@ -1,5 +1,5 @@
 ---
-// Trang chủ. Thứ tự từ trên xuống: Hero → Duck Football → Selected works → Playaround.
+// Trang chủ. Thứ tự từ trên xuống: Hero → Duck Football → Selected works / Game visual / Playaround (ba tab).
 // (Nav và Footer đã có sẵn trong BaseLayout.)
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -10,7 +10,9 @@ import BoardingPass from '../components/BoardingPass.astro';
 // Lấy các file .md trong content/work và content/fun, bỏ dự án draft, xếp theo "order".
 const byOrder = (a: { data: { order: number } }, b: { data: { order: number } }) =>
   a.data.order - b.data.order;
-const works = (await getCollection('work', ({ data }) => !data.draft)).sort(byOrder);
+const allWorks = (await getCollection('work', ({ data }) => !data.draft)).sort(byOrder);
+const works = allWorks.filter((w) => w.data.group !== 'game');
+const games = allWorks.filter((w) => w.data.group === 'game');
 const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrder);
 ---
 
@@ -39,6 +41,11 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
         <button class="tabs__tab" role="tab" id="tab-work" aria-controls="panel-work" aria-selected="true">
           Selected works
         </button>
+        {games.length > 0 && (
+          <button class="tabs__tab" role="tab" id="tab-game" aria-controls="panel-game" aria-selected="false">
+            Game visual
+          </button>
+        )}
         {funs.length > 0 && (
           <button class="tabs__tab" role="tab" id="tab-fun" aria-controls="panel-fun" aria-selected="false">
             Playaround
@@ -60,6 +67,23 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
           ))}
         </div>
       </div>
+
+      {games.length > 0 && (
+        <div class="tabs__panel" role="tabpanel" id="panel-game" aria-labelledby="tab-game">
+          <div class="grid grid--work">
+            {games.map((w) => (
+              <ProjectCard
+                title={w.data.title}
+                tags={w.data.tags}
+                description={w.data.description}
+                cover={w.data.cover}
+                coverAlt={w.data.coverAlt}
+                href={`/work/${w.id}`}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       {funs.length > 0 && (
         <div class="tabs__panel" role="tabpanel" id="panel-fun" aria-labelledby="tab-fun">
@@ -202,11 +226,11 @@ const funs = (await getCollection('fun', ({ data }) => !data.draft)).sort(byOrde
       });
     });
 
-    // Link /#work (Nav) mở tab Selected works; link /#fun mở tab Playaround.
+    // Link /#work (Nav) mở tab Selected works; /#game mở Game visual; /#fun mở Playaround.
     function fromHash() {
-      const index = location.hash === '#fun' && tabs.length > 1 ? 1 : 0;
-      select(index);
-      if (location.hash === '#fun') document.getElementById('work')?.scrollIntoView();
+      const found = tabs.findIndex((t) => t.id === `tab-${location.hash.slice(1)}`);
+      select(found >= 0 ? found : 0);
+      if (found > 0) document.getElementById('work')?.scrollIntoView();
     }
     window.addEventListener('hashchange', fromHash);
     fromHash();
