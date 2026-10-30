@@ -1,0 +1,43 @@
+---
+// MechaPlay.astro – khối "Play the build" của case study Mecha Legion: khung điện thoại 9:16 chứa game (iframe)
+// và sáu nút tắt bên trái. Chèn vào bài bằng dòng <!-- demo:mecha-play --> trong content/work/mecha-legion.md.
+// Component này cũng nạp file CSS riêng của case study (mọi khối .ml-* trong bài); nên chỉ trang dùng nó mới tải CSS đó.
+import '../styles/mecha-legion.css';
+
+// Mỗi nút bấm vào một phần tử bên trong game (cùng origin nên truy cập được). Selector nằm ở data-t.
+const buttons = [
+  { label: '1 · Intro', t: '.rail [data-go=intro]' },
+  { label: '2 · Select', t: '.rail [data-go=select]' },
+  { label: '3 · Gameplay', t: '.rail [data-go=play]' },
+  { label: '4 · Scatter', t: '#demoSC' },
+  { label: '5 · Big Win', t: '#demoBW', tone: 'gold' },
+  { label: '6 · Jackpot', t: '#demoJP', tone: 'orange' },
+];
+---
+
+<div class="ml-play wide">
+  <div class="ml-play__bg" aria-hidden="true"></div>
+  <div class="ml-play__inner">
+    <div class="side" role="group" aria-label="Jump to a game screen">
+      {buttons.map((b) => (
+        <button type="button" data-t={b.t} class:list={[b.tone && `is-${b.tone}`]}>{b.label}</button>
+      ))}
+    </div>
+    <div class="ml-phone ml-phone--play">
+      <iframe id="gf" src="/mecha-legion/game/index.html" allow="autoplay" loading="lazy" title="Mecha Legion playable prototype"></iframe>
+    </div>
+    <div></div>
+  </div>
+</div>
+
+<script>
+  // Nút tắt: bấm đúng phần tử trong iframe. try/catch vì chỉ chạy được khi iframe cùng origin.
+  const f = document.getElementById('gf') as HTMLIFrameElement | null;
+  document.querySelectorAll<HTMLButtonElement>('.side button').forEach((b) =>
+    b.addEventListener('click', () => {
+      try {
+        (f!.contentWindow!.document.querySelector(b.dataset.t!) as HTMLElement | null)?.click();
+      } catch (e) {}
+    })
+  );
+</script>
