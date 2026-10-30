@@ -110,13 +110,7 @@ Each asset type got its own small workflow. The prompt decides how much cleanup 
 #### 3.1 Prompts
 
 <div class="ml-prompt wide">
-  <dl class="ml-prompt__defs">
-    <div><dt>Language</dt><dd>English</dd></div>
-    <div><dt>Style block</dt><dd>One shared block for palette, materials and lighting, reused in every prompt so assets look like one game.</dd></div>
-    <div><dt>Asset block</dt><dd>Subject, pose, camera, and for sprites the frame count.</dd></div>
-    <div><dt>Sheet layout</dt><dd>For animation, I asked for a sheet with labelled rows (spawn, flight loop, impact) and exact frame counts.</dd></div>
-    <div><dt>Background</dt><dd>Flat solid #00FF00, so the cutout is clean.</dd></div>
-  </dl>
+  <p class="ml-prompt__text">I used prompts to create and edit the sprite sheets.</p>
   <div class="ml-prompt__card">
     <p class="ml-prompt__title">Prompt example</p>
 <pre><code>Game VFX sprite sheet, 17 frames, ONE blue-cyan plasma
