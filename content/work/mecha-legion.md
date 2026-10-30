@@ -10,10 +10,12 @@ coverAlt: Mecha Legion logo over a neon city street, with the four mecha warrior
 facts:
   - label: Role
     value: Solo designer, art direction and prototype
+  - label: Year
+    value: "2026"
   - label: Output
     value: Playable prototype
   - label: Timeline
-    value: 3 days
+    value: 2 days
   - label: Format
     value: Desktop and Mobile
   - label: Tools
@@ -206,13 +208,13 @@ AI supported the environment and the game elements: the city background loop, sy
 
 <div class="ml-env wide">
   <div class="ml-env__row ml-env__row--2">
-    <div class="ml-video"><video autoplay muted loop playsinline preload="metadata" poster="/images/work/mecha-legion/env_video.webp" aria-label="Looping city battle background"><source src="/mecha-legion/game/assets/bg_battle.mp4" type="video/mp4"></video></div>
-    <div class="ml-shot"><img src="/images/work/mecha-legion/shot_battle.webp" alt="Battle strip from the game, with the warrior fully visible" loading="lazy" decoding="async"></div>
+    <figure class="ml-env__item"><div class="ml-video"><video autoplay muted loop playsinline preload="metadata" poster="/images/work/mecha-legion/env_video.webp" aria-label="Looping city battle background"><source src="/mecha-legion/game/assets/bg_battle.mp4" type="video/mp4"></video></div><figcaption>Battle loop</figcaption></figure>
+    <figure class="ml-env__item"><div class="ml-shot"><img src="/images/work/mecha-legion/shot_battle.webp" alt="Battle strip from the game, with the warrior fully visible" loading="lazy" decoding="async"></div><figcaption>Battle strip</figcaption></figure>
   </div>
   <div class="ml-env__row ml-env__row--3">
-    <div class="ml-card ml-card--cover"><img src="/mecha-legion/game/assets/splash_bg.webp" alt="Splash background, portrait" loading="lazy" decoding="async"></div>
-    <div class="ml-card ml-card--cover"><img src="/mecha-legion/game/assets/bg_maingame.webp" alt="Main game background, portrait" loading="lazy" decoding="async"></div>
-    <div class="ml-card"><img src="/mecha-legion/game/assets/bg_board_normal.webp" alt="Game board background, portrait" loading="lazy" decoding="async"></div>
+    <figure class="ml-env__item"><div class="ml-card ml-card--cover"><img src="/mecha-legion/game/assets/splash_bg.webp" alt="Splash background, portrait" loading="lazy" decoding="async"></div><figcaption>Intro background</figcaption></figure>
+    <figure class="ml-env__item"><div class="ml-card ml-card--cover"><img src="/mecha-legion/game/assets/bg_maingame.webp" alt="Main game background, portrait" loading="lazy" decoding="async"></div><figcaption>Main game background</figcaption></figure>
+    <figure class="ml-env__item"><div class="ml-card"><img src="/mecha-legion/game/assets/bg_board_normal.webp" alt="Game board background, portrait" loading="lazy" decoding="async"></div><figcaption>Reel board frame</figcaption></figure>
   </div>
 </div>
 
@@ -238,8 +240,6 @@ Click to experience the prototype.
 <!-- demo:mecha-play -->
 
 ## 05 · Reflection
-
-### One designer, start to finish
 
 This project taught me to run a design from the first idea to a playable build: art direction, a repeatable asset workflow, a prototype, audio and video.
 
