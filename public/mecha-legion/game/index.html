@@ -333,6 +333,9 @@ canvas.fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 svg.lu{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;color:var(--cyan);filter:drop-shadow(0 0 .7cqw var(--cyan)) drop-shadow(0 0 1.6cqw #35e9ff99)}
 .cb:active svg{filter:drop-shadow(0 0 1.6cqw #fff)}
 .cb[aria-pressed="true"] svg.lu{color:#fff}
+.sndbtn{position:absolute;translate:-50% -50%;width:8cqw;aspect-ratio:1;padding:0;border-radius:50%;border:.35cqw solid #1d4a63;background:#06121dcc;display:grid;place-items:center;cursor:pointer;z-index:20;transition:scale .1s,border-color .2s}
+.sndbtn svg{width:56%}.sndbtn:active{scale:.92}.sndbtn:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.sndbtn .v0{display:none}.sndbtn.off .v0{display:block}.sndbtn.off .v1{display:none}.sndbtn.off{border-color:#6b3a2e}.sndbtn.off svg.lu{color:#ff8a6a;filter:none}
 .coinfx{position:absolute;inset:0;z-index:25;pointer-events:none;overflow:hidden}
 .coin{position:absolute;left:0;top:0;width:var(--s,5cqw);aspect-ratio:1;border-radius:50%;pointer-events:none;
   background:radial-gradient(circle at 35% 30%,#fff7cf 0,#ffd66b 30%,#e0a22c 62%,#8a5412 100%);box-shadow:inset 0 0 0 .3cqw #7a4a10,0 0 1.4cqw #ffb83c}
@@ -573,6 +576,7 @@ svg.lu{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-
     <img class="seal" src="assets/door_seal.webp" alt=""><i class="lktick"></i><i class="lkring"></i>
     <div class="dtxt"><small>Chiến binh</small><b id="dname"></b><span>Đã khóa · Vào trận</span></div>
   </div>
+  <button class="sndbtn" id="snd" type="button" aria-label="Bật hoặc tắt âm thanh" aria-pressed="true" title="Âm thanh" style="left:7%;top:97%"><svg class="lu" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z" /><path class="v1" d="M16 9a5 5 0 0 1 0 6" /><path class="v1" d="M19.364 18.364a9 9 0 0 0 0-12.728" /><g class="v0"><line x1="22" x2="16" y1="9" y2="15" /><line x1="16" x2="22" y1="9" y2="15" /></g></svg></button>
 </main>
 
 <script>
@@ -1080,7 +1084,9 @@ async function spin(forced,script){
     AUD.sfx('sfx_stop',.45);for(var row=0;row<3;row++){var i=row*5+r;setCell(i,final[i]);cells[i].classList.remove('spinning');void cells[i].offsetWidth;cells[i].classList.add('land')}
   }
   clearInterval(iv);S.grid=final;await sleep(320);
-  final.forEach(function(k){if(S.collect[k]!==undefined&&S.collect[k]<12&&Math.random()<.5)S.collect[k]++});
+  var jpK=null;   /* chiến binh nào thu thập đủ 12/12 thì trúng JACKPOT (không tính ở lượt demo có kịch bản) */
+  if(!script)final.forEach(function(k){if(S.collect[k]!==undefined&&S.collect[k]<12&&Math.random()<.5){S.collect[k]++;if(S.collect[k]>=12&&!jpK)jpK=k}});
+  updHud();
   var ev=evaluate(final),cr={links:0,total:0};
   if(ev.total>0){
     cr=await runCascade(script);
@@ -1096,6 +1102,10 @@ async function spin(forced,script){
     await popup('FREE GAME','×10 vòng quay');
     var bonus=S.bet*Math.round(15+Math.random()*30);S.paying=true;S.win+=bonus;S.bal+=bonus;banner('Free game thắng '+fmt(bonus),true);await payout(bonus);
     setTimeout(function(){$('#boss').classList.remove('on')},3500);
+  }
+  if(jpK){
+    banner('Đủ 12/12 '+CHARS[jpK].name+' · TRÚNG JACKPOT!',true);AUD.sfx('sfx_scatter');await sleep(900);
+    await jackpotSeq(true);S.collect[jpK]=0;
   }
   HIST.unshift({t:Date.now(),bet:betNow,win:Math.round(S.win)});
   updHud();
@@ -1118,6 +1128,13 @@ $('#betbtn').addEventListener('click',function(){if(S.spinning)return;pickBet=S.
 $('#betok').addEventListener('click',function(){S.bet=pickBet;S.unit=pickBet;updHud();ov('#betsheet',false)});
 $('#betsheet .bk').addEventListener('click',function(){ov('#betsheet',false)});
 /* ---- menu ---- */
+/* bật/tắt âm thanh: nút nhỏ ở góc dưới và nút trong menu dùng chung một trạng thái */
+function toggleMute(){
+  S.mute=!S.mute;AUD.setMute();
+  $('#snd').classList.toggle('off',S.mute);$('#snd').setAttribute('aria-pressed',String(!S.mute));
+  var mv=document.querySelector('.mi[data-m=vol]');if(mv){mv.classList.toggle('off',S.mute);mv.querySelector('.ml').textContent=S.mute?'Âm thanh tắt':'Âm thanh'}
+}
+$('#snd').addEventListener('click',toggleMute);
 $('#menuBtn').addEventListener('click',function(){ov('#menu',true)});
 $('#menu .bk').addEventListener('click',function(){ov('#menu',false)});
 var HIST=(function(){var a=[],t=Date.now()-60000;for(var i=0;i<34;i++){t-=3000+Math.random()*9000;var w=Math.random()<.22?Math.round((.2+Math.random()*6)*1000/10)*10:0;a.push({t:t,bet:1000,win:w})}return a})();
@@ -1162,7 +1179,7 @@ document.querySelectorAll('.mi').forEach(function(b){b.addEventListener('click',
   var m=b.dataset.m;
   if(m==='close'){ov('#menu',false)}
   else if(m==='exit'){ov('#menu',false);S.auto=false;$('#auto').setAttribute('aria-pressed','false');go('intro')}
-  else if(m==='vol'){S.mute=!S.mute;AUD.setMute();b.classList.toggle('off',S.mute);b.querySelector('.ml').textContent=S.mute?'Âm thanh tắt':'Âm thanh'}
+  else if(m==='vol'){toggleMute()}
   else if(m==='pay'){ov('#menu',false);showPay()}
   else if(m==='rule'){ov('#menu',false);showRules()}
   else if(m==='hist'){ov('#menu',false);showHist()}
@@ -1203,8 +1220,9 @@ function jackpotPopup(total){return new Promise(function(res){
   function tap(){if(!finished)fin();else close()}
   ov.addEventListener('click',tap);requestAnimationFrame(step);
 })}
-async function jackpotSeq(){
-  if(S.spinning)return;if(!$('#play').classList.contains('on')){go('play');await sleep(800)}
+async function jackpotSeq(fromSpin){
+  fromSpin=fromSpin===true;   /* true: gọi từ trong lượt quay khi thu thập đủ 12/12 (nút demo truyền sự kiện nên là false) */
+  if(S.spinning&&!fromSpin)return;if(!$('#play').classList.contains('on')){go('play');await sleep(800)}
   S.spinning=true;S.auto=false;$('#auto').setAttribute('aria-pressed','false');glintStop();
   ov('#menu',false);
   var me=$('#me'),bt=$('#battle'),br=bt.getBoundingClientRect();
@@ -1227,10 +1245,10 @@ async function jackpotSeq(){
   var amount=Math.round(S.jp);
   await jackpotPopup(amount);
   resetFoes();
-  HIST.unshift({t:Date.now(),bet:S.bet,win:amount});
-  await runWin(amount,false);
+  if(fromSpin){S.paying=true;S.bal+=amount;S.win+=amount;await payout(amount)}
+  else{HIST.unshift({t:Date.now(),bet:S.bet,win:amount});await runWin(amount,false)}
   S.jp=1000000;updHud();
-  S.spinning=false;glintStart();bannerTips();
+  if(!fromSpin){S.spinning=false;glintStart();bannerTips()}
 }
 $('#demoJP').addEventListener('click',jackpotSeq);
 var bwStep=0;
