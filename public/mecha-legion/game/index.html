@@ -333,6 +333,10 @@ canvas.fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 svg.lu{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;color:var(--cyan);filter:drop-shadow(0 0 .7cqw var(--cyan)) drop-shadow(0 0 1.6cqw #35e9ff99)}
 .cb:active svg{filter:drop-shadow(0 0 1.6cqw #fff)}
 .cb[aria-pressed="true"] svg.lu{color:#fff}
+.t.free small{letter-spacing:.08em;font-size:2cqw;color:#ffd37a;text-shadow:0 0 1.2cqw #ffb83c88}
+.t.free b{color:#ffe9c4;text-shadow:0 .3cqw 0 #3a0a06,0 0 2.4cqw #ff784a}
+.t.tick b{animation:ftick .5s cubic-bezier(.2,1.5,.4,1)}
+@keyframes ftick{0%{scale:1}35%{scale:1.5;filter:brightness(1.8)}100%{scale:1}}
 .coll div.bump{animation:cbump .7s cubic-bezier(.2,1.5,.4,1)}
 @keyframes cbump{0%{scale:1}30%{scale:1.28;filter:drop-shadow(0 0 2cqw var(--c)) brightness(1.5)}100%{scale:1}}
 .coll .plus1{position:absolute;left:50%;top:50%;translate:-50% 0;z-index:6;font:700 3.6cqw var(--display);color:#fff;text-shadow:0 0 1.4cqw var(--c),0 0 .4cqw #000;pointer-events:none;animation:plus1 .9s ease-out forwards}
@@ -839,7 +843,7 @@ ORDER.forEach(function(k){
   coll.appendChild(d);
 });
 function updHud(){
-  if(!S.paying){$('#bal').textContent=fmt(S.bal);$('#win').textContent=fmt(S.win)}$('#bet').textContent=fmt(S.bet);$('#jp').textContent=fmt(S.jp);$('#spin').classList.toggle('off',S.bal<S.bet);
+  if(!S.paying){$('#bal').textContent=fmt(S.bal);$('#win').textContent=fmt(S.win)}$('#bet').textContent=S.freeLeft!=null?S.freeLeft:fmt(S.bet);$('#jp').textContent=fmt(S.jp);$('#spin').classList.toggle('off',S.bal<S.bet);
   ORDER.forEach(function(k){$('#c_'+k).textContent=S.collect[k];var tl=$('#c_'+k).parentNode;if(!tl.classList.contains('full'))tl.classList.toggle('near',S.collect[k]>=10&&S.collect[k]<12)});
   $('#kills').textContent=S.kills+'/150';$('#prog').style.setProperty('--p',Math.max(3,S.kills/150*100)+'%');
 }
@@ -1010,10 +1014,11 @@ function payout(amount){return new Promise(function(res){
   },i*55)})(i);
   setTimeout(end,4500);
 })}
-function bigWin(total,links){return new Promise(function(res){
+function bigWin(total,links,title){return new Promise(function(res){
   /* cấp Big Win theo độ dài chuỗi liên hoàn: 3 = BIG, 5 = MEGA, 7 = EPIC (không có links thì tính theo tiền thắng) */
   var lv=links?(links>=7?3:links>=5?2:1):(total>=S.bet*30?3:total>=S.bet*15?2:1);
-  var tier=lv===3?['EPIC WIN',4200]:lv===2?['MEGA WIN',3600]:['BIG WIN',3000];
+  var tier=title?[title,5200]:lv===3?['EPIC WIN',4200]:lv===2?['MEGA WIN',3600]:['BIG WIN',3000];
+  if(title)lv=3;
   var bw=$('#bw'),rain=$('#bwrain');$('#bwtt').textContent=tier[0];$('#bwn').textContent='0';$('#bwhero').src=A+'battle_'+S.hero+'.webp';
   bw.classList.remove('done');bw.classList.add('on');AUD.duck(true);AUD.sfx(lv>=2?'sfx_win_mega':'sfx_win_big');AUD.loopStart('sfx_coin_loop',.3);
   var finished=false,closed=false,t0=performance.now(),dur=tier[1];
@@ -1080,14 +1085,40 @@ async function runCascade(script){
   await Promise.all(pays);
   return {links:links,total:total};
 }
-async function spin(forced,script){
-  if(S.spinning)return;
-  if(S.bal<S.bet){banner('Hết xu · đặt cược thấp hơn');return}
+/* ---- FREE GAME: 10 lượt quay miễn phí tự chạy, tiền thắng cộng dồn, kết thúc bằng hiệu ứng tổng kết ---- */
+function freeHud(on){
+  var tl=$('#bet').parentNode;tl.classList.toggle('free',on);tl.querySelector('small').textContent=on?'QUAY MIỄN PHÍ':'CƯỢC';
+  $('#bet').textContent=on?S.freeLeft:fmt(S.bet);
+}
+async function runFreeGame(){
+  var total0=S.win,turbo0=S.turbo,tl=$('#bet').parentNode;
+  S.freeLeft=10;freeHud(true);S.turbo=true;
+  AUD.loopStop('sfx_zap_loop');
+  for(var i=0;i<10;i++){
+    await sleep(400);
+    await spin(null,null,true);
+    S.freeLeft--;freeHud(true);tl.classList.remove('tick');void tl.offsetWidth;tl.classList.add('tick');AUD.sfx('sfx_click',.5,1.3);
+    var got=S.win-total0;
+    banner(S.freeLeft>0?'FREE GAME · đã thắng '+fmt(got)+' · còn '+S.freeLeft+' lượt':'FREE GAME KẾT THÚC · '+fmt(got),true);
+    await sleep(S.freeLeft>0?500:900);
+  }
+  S.turbo=turbo0;
+  var total=S.win-total0;
+  if(total>0){
+    chain(8,1.6);AUD.sfx('sfx_firework',.6);
+    await bigWin(total,0,'FREE GAME');
+  }else{banner('FREE GAME kết thúc · chúc may mắn lần sau!',true);await sleep(1500)}
+  S.freeLeft=null;freeHud(false);updHud();
+}
+async function spin(forced,script,free){
+  /* free = true: lượt quay miễn phí nằm trong FREE GAME (không trừ cược, không tính thu thập, không kích hoạt lại) */
+  if(S.spinning&&!free)return;
+  if(!free&&S.bal<S.bet){banner('Hết xu · đặt cược thấp hơn');return}
   AUD.loopStop('sfx_zap_loop');AUD.sfx('sfx_spin');
   S.spinning=true;glintStop();$('#spin').classList.add('busy');$('#cl').classList.add('busy-glow');
-  var betNow=S.bet;S.bal-=S.bet;S.win=0;S.jp+=Math.floor(Math.random()*40+8);
+  var betNow=S.bet;if(!free){S.bal-=S.bet;S.win=0}S.jp+=Math.floor(Math.random()*40+8);
   cells.forEach(function(c){c.classList.remove('win','land','scat3');c.classList.add('spinning')});
-  banner('Đang quét mục tiêu…');updHud();
+  banner(free?'QUAY MIỄN PHÍ · còn '+S.freeLeft+' lượt':'Đang quét mục tiêu…');updHud();
   var final=Array.isArray(forced)?forced:randGrid();
   var iv=setInterval(function(){cells.forEach(function(c,i){if(c.classList.contains('spinning'))setCell(i,rnd(POOL))})},75);
   for(var r=0;r<5;r++){
@@ -1097,28 +1128,30 @@ async function spin(forced,script){
   clearInterval(iv);S.grid=final;await sleep(320);
   var jpK=null;   /* chiến binh nào thu thập đủ 12/12 thì trúng JACKPOT (không tính ở lượt demo có kịch bản) */
   var before=Object.assign({},S.collect);
-  if(!script)final.forEach(function(k){if(S.collect[k]!==undefined&&S.collect[k]<12&&Math.random()<.5){S.collect[k]++;if(S.collect[k]>=12&&!jpK)jpK=k}});
+  if(!script&&!free)final.forEach(function(k){if(S.collect[k]!==undefined&&S.collect[k]<12&&Math.random()<.5){S.collect[k]++;if(S.collect[k]>=12&&!jpK)jpK=k}});
   updHud();ORDER.forEach(function(k){if(S.collect[k]>before[k])bumpColl(k,S.collect[k]-before[k])});
   var ev=evaluate(final),cr={links:0,total:0};
   if(ev.total>0){
     cr=await runCascade(script);
     await sleep(250);
-    if(cr.links>=3){chain(6,1.3);await bigWin(cr.total,cr.links)}
-  }else if(ev.scatter<3){banner('Chưa trúng · địch phản công!');await enemyAttack().catch(function(){})}
+    if(cr.links>=3){chain(6,1.3);if(!free)await bigWin(cr.total,cr.links)}
+  }else if(free){banner('QUAY MIỄN PHÍ · chưa trúng, quay tiếp!');await sleep(500)}
+  else if(ev.scatter<3){banner('Chưa trúng · địch phản công!');await enemyAttack().catch(function(){})}
   var scN=S.grid.filter(function(k){return k==='scatter'}).length;
-  if(scN>=3){
+  if(scN>=3&&!free){
     var scIdx=[];S.grid.forEach(function(k,i){if(k==='scatter'){cells[i].classList.add('scat3');scIdx.push(i)}});
     banner('SCATTER! Mở FREE GAME',true);AUD.sfx('sfx_scatter');AUD.loopStart('sfx_zap_loop',.25);await sleep(500);
     await scatterStrike(scIdx);
     $('#boss').classList.add('on');
     await popup('FREE GAME','×10 vòng quay');
-    var bonus=S.bet*Math.round(15+Math.random()*30);S.paying=true;S.win+=bonus;S.bal+=bonus;banner('Free game thắng '+fmt(bonus),true);await payout(bonus);
-    setTimeout(function(){$('#boss').classList.remove('on')},3500);
+    await runFreeGame();
+    $('#boss').classList.remove('on');
   }
   if(jpK){
     await qualifyJackpot(jpK,false);
     await jackpotSeq(true);S.collect[jpK]=0;endQualify(jpK);
   }
+  if(free){updHud();return}
   HIST.unshift({t:Date.now(),bet:betNow,win:Math.round(S.win)});
   updHud();
   setTimeout(function(){if(!S.spinning&&!S.auto)bannerTips()},3500);
