@@ -113,16 +113,19 @@ Each asset type got its own small workflow. The prompt decides how much cleanup 
   <p class="ml-prompt__text">I used prompts to create and edit the sprite sheets.</p>
   <div class="ml-prompt__card">
     <p class="ml-prompt__title">Prompt example</p>
-<pre><code>Game VFX sprite sheet, 17 frames, ONE blue-cyan plasma
-fireball projectile travelling left to right.
-Layout: 5 rows, frames in reading order, equal size, same
-anchor point, no text, no labels, no grid lines.
- Frames 1-3   spawn: spark, small orb, orb with short tail
- Frames 4-11  flight loop: 8 variations, flickering tail
- Frames 12-17 impact: burst, shockwave ring, fading sparks
-Style: stylised sci-fi game art, glossy painted look,
-hard glowing shapes, dark steel and cyan palette.
-Background: flat solid #00FF00, no gradient, no shadow.</code></pre>
+<pre tabindex="0" aria-label="Prompt example, scrollable"><code>Create a 2D game VFX sprite sheet for a sci-fi mecha slot game (digital painted, hand-drawn cartoon-realistic style, bold clean shapes, saturated glowing colors, comic-style cell shading, matches armored sci-fi character art).
+STRICT RULES:
+- Solid flat pure green background (#00FF00) everywhere, no gradient, no floor, no shadow, no vignette.
+- Evenly spaced grid, every cell exactly the same square size, effect centered in each cell with generous empty margin so nothing touches the cell edge.
+- Cells separated only by the green background, NO borders, NO lines, NO numbers, NO text, NO labels, NO watermark, NO characters, NO hands, NO weapons in the image — only the energy effect itself.
+- The projectile always travels to the RIGHT: bright white-hot core at the exact center of the cell, the tail/trail extends to the LEFT.
+- Consecutive frames must look like ONE animation of the same object: same colors, same core position, only the shape evolves smoothly frame to frame. Do not change the art style between frames.
+- Avoid using green or yellow-green in the effect itself (it would vanish into the background).
+[Khối quy tắc chung]
+SUBJECT: a plasma palm-strike fireball. White-hot core, surrounded by swirling cyan and electric-blue flames shaped like a comet, flame tongues curling backward, small cyan sparks and ember particles in the trail.
+[SHEET A – 3 frames, grid 3x1: SPAWN] 1) tiny bright white spark with a soft cyan glow, 2) charging orb, core growing, short flame wisps appear, 3) almost full-size fireball with a short trail, still compact.
+[SHEET B – 8 frames, grid 4x2: FLIGHT LOOP] full-size comet fireball, the flame tongues and swirling trail undulate differently each frame so frame 8 flows seamlessly back into frame 1 (looping), core size stays constant.
+[SHEET C – 6 frames, grid 3x2: IMPACT &amp; DISSIPATE] 1) fireball compressing with a bright flash, 2) white-blue explosion burst with a thin shockwave ring, 3) ring expands, flame petals radiate outward, spark lines fly out, 4) ring wider and thinner, fireball fading to translucent, 5) only faint wisps and a few sparks left, 6) a few last tiny sparks almost invisible.</code></pre>
   </div>
 </div>
 

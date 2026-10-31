@@ -325,7 +325,11 @@ html[data-theme='dark'] .case-body .ml-prompt__title {
 
 .ml-prompt pre {
   margin: 0;
-  overflow-x: auto;
+  max-height: 17rem;   /* prompt dài: thu gọn chiều cao, cuộn bên trong */
+  overflow: auto;
+  padding-right: var(--space-1);
+  scrollbar-width: thin;
+  scrollbar-color: #3a4a5e transparent;
   font-family: var(--font-mono);
   font-size: 0.75rem;
   line-height: 1.6;
