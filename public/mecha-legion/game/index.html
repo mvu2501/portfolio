@@ -266,6 +266,16 @@ canvas.fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 @keyframes sfxflash{0%{opacity:.95}100%{opacity:0}}
 #grid.sshake{animation:sshake .4s linear}
 @keyframes sshake{0%,100%{translate:0 0}15%{translate:-1.1cqw .5cqw}35%{translate:1cqw -.6cqw}55%{translate:-.8cqw -.4cqw}75%{translate:.7cqw .5cqw}}
+.cell.pop{animation:cpop .3s ease-in forwards;z-index:3}
+@keyframes cpop{0%{transform:scale(1);filter:brightness(2)}40%{transform:scale(1.18);filter:brightness(3.2)}100%{transform:scale(.2);opacity:0}}
+.cell.fall img{animation:cfall .46s cubic-bezier(.3,1.25,.5,1) both;animation-delay:var(--d,0s)}
+@keyframes cfall{0%{transform:translateY(-120%);opacity:0}25%{opacity:1}100%{transform:none;opacity:1}}
+.chainb{position:absolute;left:50%;top:50%;translate:-50% -50%;z-index:9;pointer-events:none;font:700 7cqw 'Chakra Petch',sans-serif;letter-spacing:.06em;color:#ffe9a8;text-shadow:0 0 1.4cqw #ffb52e,0 0 3.6cqw #ff7a1a,0 .5cqw 0 #5a2c00;white-space:nowrap;opacity:0}
+.chainb.on{animation:chainpop .95s ease-out forwards}
+@keyframes chainpop{0%{transform:scale(.4);opacity:0}25%{transform:scale(1.3);opacity:1}42%{transform:scale(1);opacity:1}75%{transform:scale(1);opacity:1}100%{transform:scale(1.08);opacity:0}}
+#grid.cglow{box-shadow:inset 0 0 calc(var(--cg,1)*1.1cqw) calc(var(--cg,1)*.25cqw) rgba(255,190,70,.75);transition:box-shadow .25s}
+.cflash{position:absolute;inset:-2%;z-index:7;pointer-events:none;mix-blend-mode:screen;background:radial-gradient(circle at 50% 50%,#fff6c9,#ffc552 45%,transparent 75%);animation:cflash .55s ease-out forwards}
+@keyframes cflash{0%{opacity:var(--fo,.4)}100%{opacity:0}}
 .cell.scat3{box-shadow:inset 0 0 0 .5cqw #7fe9ff,inset 0 0 5cqw #2fc7ff;animation:winpulse .5s ease-in-out infinite alternate;z-index:2}
 .cell.win{box-shadow:inset 0 0 0 .5cqw #ffd37a,inset 0 0 4cqw #ffb83c;animation:winpulse .7s ease-in-out infinite alternate;z-index:2}
 .cell.win img{animation:winpop .7s ease-in-out infinite alternate}
@@ -604,7 +614,7 @@ var AUD=(function(){
   var BV={bgm_intro:.5,bgm_battle:.38,bgm_jackpot:.5},duck=1,bgmEl={},fadeIv=null;
   function url(k){return base+k+'.mp3'}
   function muted(){return !!S.mute}
-  function sfx(k,v){if(!unlocked||muted())return;try{var a=new Audio(url(k));a.volume=Math.min(1,(v||VOL[k]||.6));var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
+  function sfx(k,v,rate){if(!unlocked||muted())return;try{var a=new Audio(url(k));a.volume=Math.min(1,(v||VOL[k]||.6));if(rate){a.preservesPitch=false;a.playbackRate=rate}var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
   function loopStart(k,v){if(!unlocked||muted()||loops[k])return;try{var a=new Audio(url(k));a.loop=true;a.volume=v||.4;loops[k]=a;var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
   function loopStop(k){var a=loops[k];if(!a)return;delete loops[k];var v=a.volume,t=setInterval(function(){v-=.08;if(v<=0){clearInterval(t);a.pause()}else a.volume=v},40)}
   function bgmVol(k){return (BV[k]||.4)*duck*(muted()?0:1)}
@@ -823,7 +833,7 @@ function xsprite(type,xp,yp,k,delay){
   var l=$('#fxl');if(!l)return;var c=XS[type];
   setTimeout(function(){
     var d=document.createElement('div');d.className='xs';d.style.left=xp+'%';d.style.top=yp+'%';d.style.width=(c.w*k)+'cqw';
-    d.style.backgroundImage='url('+A+'fx_'+type+'.webp)';d.style.backgroundSize=(c.n*100)+'% 100%';l.appendChild(d);
+    d.style.backgroundImage='url('+A+'fx_'+(type==='deb'?'debris':type)+'.webp)';d.style.backgroundSize=(c.n*100)+'% 100%';l.appendChild(d);
     var i=0;(function step(){if(i>=c.n){d.remove();return}d.style.backgroundPosition=(i/(c.n-1)*100)+'% 0';i++;setTimeout(step,c.ms)})();
   },delay||0);
 }
@@ -985,10 +995,12 @@ function payout(amount){return new Promise(function(res){
   },i*55)})(i);
   setTimeout(end,4500);
 })}
-function bigWin(total){return new Promise(function(res){
-  var tier=total>=S.bet*30?['EPIC WIN',4200]:total>=S.bet*15?['MEGA WIN',3600]:['BIG WIN',3000];
+function bigWin(total,links){return new Promise(function(res){
+  /* cấp Big Win theo độ dài chuỗi liên hoàn: 3 = BIG, 5 = MEGA, 7 = EPIC (không có links thì tính theo tiền thắng) */
+  var lv=links?(links>=7?3:links>=5?2:1):(total>=S.bet*30?3:total>=S.bet*15?2:1);
+  var tier=lv===3?['EPIC WIN',4200]:lv===2?['MEGA WIN',3600]:['BIG WIN',3000];
   var bw=$('#bw'),rain=$('#bwrain');$('#bwtt').textContent=tier[0];$('#bwn').textContent='0';$('#bwhero').src=A+'battle_'+S.hero+'.webp';
-  bw.classList.remove('done');bw.classList.add('on');AUD.duck(true);AUD.sfx(total>=S.bet*15?'sfx_win_mega':'sfx_win_big');AUD.loopStart('sfx_coin_loop',.3);
+  bw.classList.remove('done');bw.classList.add('on');AUD.duck(true);AUD.sfx(lv>=2?'sfx_win_mega':'sfx_win_big');AUD.loopStart('sfx_coin_loop',.3);
   var finished=false,closed=false,t0=performance.now(),dur=tier[1];
   var iv=setInterval(function(){var c=document.createElement('i');c.className='coin';c.style.setProperty('--s',(3+Math.random()*3)+'cqw');c.style.left=(Math.random()*96)+'%';c.style.setProperty('--t',(1.6+Math.random()*1.4)+'s');rain.appendChild(c);setTimeout(function(){c.remove()},3200)},85);
   function step(n){if(finished||closed)return;var p=Math.min(1,(n-t0)/dur),e=1-Math.pow(1-p,3);$('#bwn').textContent=fmt(total*e);if(p<1)requestAnimationFrame(step);else fin()}
@@ -1008,7 +1020,52 @@ function popup(title,val){return new Promise(function(res){
   p.addEventListener('click',close);setTimeout(close,2800);
 })}
 
-async function spin(forced){
+/* ---- chuỗi liên hoàn: ô trúng nổ tung, ô phía trên rơi xuống, ô mới lấp đầy rồi tính thắng lại ---- */
+function chainFx(n){
+  AUD.sfx('sfx_win_small',.7,.92+.07*n);
+  if(n>1)AUD.sfx('sfx_chain',.55,.88+.06*n);
+  if(n>=4)AUD.sfx('sfx_explode',.4,.9+.05*n);
+  gridEl.style.setProperty('--cg',Math.min(9,1+n*1.4));gridEl.classList.add('cglow');
+  if(reduce)return;
+  var f=document.createElement('div');f.className='cflash';f.style.setProperty('--fo',Math.min(.75,.18+n*.09));gridEl.appendChild(f);setTimeout(function(){f.remove()},560);
+  if(n>=3){gridEl.classList.remove('sshake');void gridEl.offsetWidth;gridEl.classList.add('sshake')}
+}
+async function runCascade(script){
+  var g=S.grid.slice(),links=0,total=0,pays=[],spd=S.turbo?.6:1;
+  var badge=gridEl.querySelector('.chainb');if(!badge){badge=document.createElement('div');badge.className='chainb';gridEl.appendChild(badge)}
+  var gen=function(c){return script&&script.queue&&script.queue[c]&&script.queue[c].length?script.queue[c].shift():rnd(POOL)};
+  for(;;){
+    var ev=evaluate(g);if(ev.total<=0)break;
+    links++;var amt=ev.total*links;total+=amt;
+    ev.hit.forEach(function(i){cells[i].classList.remove('land','fall');cells[i].classList.add('win')});
+    banner('Thắng '+fmt(amt)+(links>1?' · liên hoàn ×'+links:''),true);
+    if(links>1){badge.textContent='LIÊN HOÀN ×'+links;badge.classList.remove('on');void badge.offsetWidth;badge.classList.add('on')}
+    chainFx(links);
+    S.paying=true;S.bal+=amt;S.win+=amt;pays.push(payout(amt));
+    await shoot('-'+fmt(amt/S.bet*100)).catch(function(){});
+    await sleep(160*spd);
+    ev.hit.forEach(function(i){cells[i].classList.remove('win');cells[i].classList.add('pop')});
+    await sleep(300*spd);
+    var ng=g.slice(),fresh=[];
+    for(var c=0;c<5;c++){
+      var keep=[],maxRow=-1;
+      for(var r=0;r<3;r++){var i=r*5+c;if(ev.hit.has(i))maxRow=r;else keep.push(g[i])}
+      if(maxRow<0)continue;
+      var add=[];for(var n=3-keep.length;n>0;n--)add.push(gen(c));
+      var col=add.concat(keep);
+      for(r=0;r<=maxRow;r++){ng[r*5+c]=col[r];fresh.push([r*5+c,c,r])}
+    }
+    ev.hit.forEach(function(i){cells[i].classList.remove('pop')});
+    fresh.forEach(function(f){setCell(f[0],ng[f[0]]);var cl=cells[f[0]];cl.style.setProperty('--d',(f[1]*.04+(2-f[2])*.03)+'s');cl.classList.remove('fall');void cl.offsetWidth;cl.classList.add('fall')});
+    AUD.sfx('sfx_stop',.4,1.1+.05*links);
+    g=ng;S.grid=g;
+    await sleep(520*spd);
+  }
+  badge.classList.remove('on');gridEl.classList.remove('cglow');
+  await Promise.all(pays);
+  return {links:links,total:total};
+}
+async function spin(forced,script){
   if(S.spinning)return;
   if(S.bal<S.bet){banner('Hết xu · đặt cược thấp hơn');return}
   AUD.loopStop('sfx_zap_loop');AUD.sfx('sfx_spin');
@@ -1024,17 +1081,15 @@ async function spin(forced){
   }
   clearInterval(iv);S.grid=final;await sleep(320);
   final.forEach(function(k){if(S.collect[k]!==undefined&&S.collect[k]<12&&Math.random()<.5)S.collect[k]++});
-  var ev=evaluate(final);
+  var ev=evaluate(final),cr={links:0,total:0};
   if(ev.total>0){
-    ev.hit.forEach(function(i){cells[i].classList.add('win')});
-    banner('Thắng '+fmt(ev.total),true);
-    await shoot('-'+fmt(ev.total/S.bet*100));
-    await sleep(350);
-    if(ev.total<S.bet*6)AUD.sfx('sfx_win_small');
-    await runWin(ev.total,ev.total>=S.bet*6);
+    cr=await runCascade(script);
+    await sleep(250);
+    if(cr.links>=3){chain(6,1.3);await bigWin(cr.total,cr.links)}
   }else if(ev.scatter<3){banner('Chưa trúng · địch phản công!');await enemyAttack().catch(function(){})}
-  if(ev.scatter>=3){
-    var scIdx=[];final.forEach(function(k,i){if(k==='scatter'){cells[i].classList.add('scat3');scIdx.push(i)}});
+  var scN=S.grid.filter(function(k){return k==='scatter'}).length;
+  if(scN>=3){
+    var scIdx=[];S.grid.forEach(function(k,i){if(k==='scatter'){cells[i].classList.add('scat3');scIdx.push(i)}});
     banner('SCATTER! Mở FREE GAME',true);AUD.sfx('sfx_scatter');AUD.loopStart('sfx_zap_loop',.25);await sleep(500);
     await scatterStrike(scIdx);
     $('#boss').classList.add('on');
@@ -1178,9 +1233,16 @@ async function jackpotSeq(){
   S.spinning=false;glintStart();bannerTips();
 }
 $('#demoJP').addEventListener('click',jackpotSeq);
+var bwStep=0;
 async function demoBW(){
   if(S.spinning)return;if(!$('#play').classList.contains('on')){go('play');await sleep(800)}
-  S.spinning=true;glintStop();await runWin(S.bet*20,true);S.spinning=false;glintStart();
+  /* mỗi lần bấm chạy một chuỗi liên hoàn đã sắp sẵn: 3 -> BIG, 5 -> MEGA, 7 -> EPIC, rồi quay lại 3 */
+  var K=[3,5,7][bwStep++%3],sq=['long','lan','quy','phung','long','lan','quy'];
+  var A=sq[0],g=['pin','banh','mu','chip','ten',A,A,A,'pin','chip',A,A,A,'mu','banh'];
+  var q=[[],[],[]];
+  for(var c=0;c<3;c++)for(var j=1;j<K;j++)q[c].push(sq[j],sq[j]);
+  q[0].push('ten','ten');q[1].push('ten','chip');q[2].push('chip','chip');
+  spin(g,{queue:q});
 }
 $('#demoBW').addEventListener('click',demoBW);
 async function demoSC(){
