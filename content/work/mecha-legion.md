@@ -25,7 +25,7 @@ facts:
 # Trong các khối HTML bên dưới không được có dòng trống (Markdown sẽ cắt khối).
 ---
 
-<div class="ml-hero wide"><img src="/images/work/mecha-legion/cover.webp" alt="Mecha Legion logo over a neon city street, with the four warrior portraits Long, Lân, Quy and Phụng" width="1948" height="1256" decoding="async"></div>
+<div class="ml-hero wide"><img src="/images/work/mecha-legion/hero.webp" alt="Mecha Legion intro screen: the logo over a neon city street and the four warriors Long, Lân, Quy and Phụng in a framed roster" width="1948" height="1256" decoding="async"></div>
 
 ## 01 · Overview
 
@@ -227,13 +227,13 @@ AI supported the environment and the game elements: the city background loop, sy
   <figure><img src="/images/work/mecha-legion/shot_jackpot.webp" alt="Jackpot screen" loading="lazy" decoding="async"><figcaption>Jackpot</figcaption></figure>
 </div>
 
-#### Play the build
+## 05 · Play the build
 
 Click to experience the prototype.
 
 <!-- demo:mecha-play -->
 
-## 05 · Reflection
+## 06 · Reflection
 
 This project taught me to run a design from the first idea to a playable build: art direction, a repeatable asset workflow, a prototype, audio and video.
 

@@ -40,4 +40,20 @@ const buttons = [
       } catch (e) {}
     })
   );
+
+  // Mục "05 · Play the build" trong mục lục (và link #05--play-the-build): ảnh tải trễ phía trên làm trang dịch xuống
+  // sau khi nhảy, nên nhắc trình duyệt cuộn lại vài lần cho tới khi người xem tự cuộn.
+  function settle() {
+    let moved = false;
+    ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach((ev) =>
+      addEventListener(ev, () => (moved = true), { once: true, passive: true })
+    );
+    [0, 400, 1000, 2000].forEach((t) =>
+      setTimeout(() => {
+        if (!moved) document.getElementById('05--play-the-build')?.scrollIntoView({ behavior: 'instant' });
+      }, t)
+    );
+  }
+  if (location.hash === '#05--play-the-build') settle();
+  document.querySelectorAll('a[href="#05--play-the-build"]').forEach((a) => a.addEventListener('click', () => setTimeout(settle, 50)));
 </script>
