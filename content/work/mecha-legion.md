@@ -5,6 +5,7 @@ tags: [Game Design, Art Direction, AI Tools, Prototype]
 description: An original sci-fi slot game, designed and prototyped by me from start to finish, using AI tools for production.
 order: 1
 group: game
+tocExtra: [Play the build]
 cover: /images/work/mecha-legion/cover.webp
 coverAlt: Mecha Legion logo over a neon city street, with the four mecha warriors Long, Lân, Quy and Phụng in front
 facts:

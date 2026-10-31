@@ -41,9 +41,9 @@ const buttons = [
     })
   );
 
-  // Link "Play the build" ở menu (#play-the-build): ảnh tải trễ phía trên làm trang dịch xuống sau khi nhảy,
-  // nên nhắc trình duyệt cuộn lại vài lần cho tới khi người xem tự cuộn.
-  if (location.hash === '#play-the-build') {
+  // Mục "Play the build" trong mục lục (và link #play-the-build): ảnh tải trễ phía trên làm trang dịch xuống
+  // sau khi nhảy, nên nhắc trình duyệt cuộn lại vài lần cho tới khi người xem tự cuộn.
+  function settle() {
     let moved = false;
     ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach((ev) =>
       addEventListener(ev, () => (moved = true), { once: true, passive: true })
@@ -54,4 +54,6 @@ const buttons = [
       }, t)
     );
   }
+  if (location.hash === '#play-the-build') settle();
+  document.querySelectorAll('a[href="#play-the-build"]').forEach((a) => a.addEventListener('click', () => setTimeout(settle, 50)));
 </script>

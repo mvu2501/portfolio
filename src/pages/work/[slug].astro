@@ -37,7 +37,10 @@ const { Content, headings } = await render(entry);
 const backHref = entry.data.group === 'game' ? '/#game' : '/#work';
 const backLabel = entry.data.group === 'game' ? '← Game visual' : '← Work';
 // Mục lục = các tiêu đề ## của bài (ví dụ Spot Trading kết thúc bằng Reflections, Onchain Trading kết thúc bằng Credit)
-const tocSections = headings.filter((h) => h.depth === 2).map((h) => ({ id: h.slug, label: h.text }));
+const extra = entry.data.tocExtra ?? [];
+const tocSections = headings
+  .filter((h) => h.depth === 2 || extra.includes(h.text))
+  .map((h) => ({ id: h.slug, label: h.text }));
 // Chèn component tương tác vào giữa bài: trong .md ghi <!-- demo:tên --> trên một dòng riêng,
 // ở đây tách HTML tại dấu đó và đặt component tương ứng vào. Thêm demo mới: import ở trên rồi thêm vào DEMOS.
 const DEMOS: Record<string, any> = {
