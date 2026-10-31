@@ -113,7 +113,7 @@ Each asset type got its own small workflow. The prompt decides how much cleanup 
   <p class="ml-prompt__text">I used prompts to create and edit the sprite sheets.</p>
   <div class="ml-prompt__card">
     <p class="ml-prompt__title">Prompt example</p>
-<pre><code>Create a 2D game VFX sprite sheet for a sci-fi mecha slot game (digital painted, hand-drawn cartoon-realistic style, bold clean shapes, saturated glowing colors, comic-style cell shading, matches armored sci-fi character art).
+<pre tabindex="0" aria-label="Prompt example, scrollable"><code>Create a 2D game VFX sprite sheet for a sci-fi mecha slot game (digital painted, hand-drawn cartoon-realistic style, bold clean shapes, saturated glowing colors, comic-style cell shading, matches armored sci-fi character art).
 STRICT RULES:
 - Solid flat pure green background (#00FF00) everywhere, no gradient, no floor, no shadow, no vignette.
 - Evenly spaced grid, every cell exactly the same square size, effect centered in each cell with generous empty margin so nothing touches the cell edge.
