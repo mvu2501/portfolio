@@ -346,8 +346,6 @@ svg.lu{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-
 .coll div.full{z-index:5;animation:cfull .45s ease-in-out infinite alternate}
 .coll div.full b{color:#ffe9a8}
 @keyframes cfull{from{scale:1.1;filter:drop-shadow(0 0 2cqw #ffd37a) brightness(1.4)}to{scale:1.32;filter:drop-shadow(0 0 4.4cqw #ffb52e) brightness(2)}}
-.coll div.full::after{content:"";position:absolute;inset:-24%;border-radius:50%;border:.5cqw solid #ffd37a;pointer-events:none;animation:cring .9s ease-out infinite}
-@keyframes cring{from{scale:.5;opacity:1}to{scale:1.7;opacity:0}}
 .sndbtn{position:absolute;translate:-50% -50%;width:8cqw;aspect-ratio:1;padding:0;border-radius:50%;border:.35cqw solid #1d4a63;background:#06121dcc;display:grid;place-items:center;cursor:pointer;z-index:20;transition:scale .1s,border-color .2s}
 .sndbtn svg{width:56%}.sndbtn:active{scale:.92}.sndbtn:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
 .sndbtn .v0{display:none}.sndbtn.off .v0{display:block}.sndbtn.off .v1{display:none}.sndbtn.off{border-color:#6b3a2e}.sndbtn.off svg.lu{color:#ff8a6a;filter:none}
@@ -1098,16 +1096,14 @@ async function runFreeGame(){
     await sleep(400);
     await spin(null,null,true);
     S.freeLeft--;freeHud(true);tl.classList.remove('tick');void tl.offsetWidth;tl.classList.add('tick');AUD.sfx('sfx_click',.5,1.3);
-    var got=S.win-total0;
-    banner(S.freeLeft>0?'FREE GAME · đã thắng '+fmt(got)+' · còn '+S.freeLeft+' lượt':'FREE GAME KẾT THÚC · '+fmt(got),true);
-    await sleep(S.freeLeft>0?500:900);
+    await sleep(S.freeLeft>0?400:700);
   }
   S.turbo=turbo0;
   var total=S.win-total0;
   if(total>0){
-    chain(8,1.6);AUD.sfx('sfx_firework',.6);
+    banner('Free Game · tổng '+fmt(total),true);chain(8,1.6);AUD.sfx('sfx_firework',.6);
     await bigWin(total,0,'FREE GAME');
-  }else{banner('FREE GAME kết thúc · chúc may mắn lần sau!',true);await sleep(1500)}
+  }else{banner('Free Game kết thúc',true);await sleep(1500)}
   S.freeLeft=null;freeHud(false);updHud();
 }
 async function spin(forced,script,free){
@@ -1118,7 +1114,7 @@ async function spin(forced,script,free){
   S.spinning=true;glintStop();$('#spin').classList.add('busy');$('#cl').classList.add('busy-glow');
   var betNow=S.bet;if(!free){S.bal-=S.bet;S.win=0}S.jp+=Math.floor(Math.random()*40+8);
   cells.forEach(function(c){c.classList.remove('win','land','scat3');c.classList.add('spinning')});
-  banner(free?'QUAY MIỄN PHÍ · còn '+S.freeLeft+' lượt':'Đang quét mục tiêu…');updHud();
+  banner(free?'Đang quét · còn '+S.freeLeft+' lượt':'Đang quét mục tiêu…');updHud();
   var final=Array.isArray(forced)?forced:randGrid();
   var iv=setInterval(function(){cells.forEach(function(c,i){if(c.classList.contains('spinning'))setCell(i,rnd(POOL))})},75);
   for(var r=0;r<5;r++){
@@ -1135,8 +1131,7 @@ async function spin(forced,script,free){
     cr=await runCascade(script);
     await sleep(250);
     if(cr.links>=3){chain(6,1.3);if(!free)await bigWin(cr.total,cr.links)}
-  }else if(free){banner('QUAY MIỄN PHÍ · chưa trúng, quay tiếp!');await sleep(500)}
-  else if(ev.scatter<3){banner('Chưa trúng · địch phản công!');await enemyAttack().catch(function(){})}
+  }else if(ev.scatter<3){banner('Chưa trúng · địch phản công!');await enemyAttack().catch(function(){})}
   var scN=S.grid.filter(function(k){return k==='scatter'}).length;
   if(scN>=3&&!free){
     var scIdx=[];S.grid.forEach(function(k,i){if(k==='scatter'){cells[i].classList.add('scat3');scIdx.push(i)}});
