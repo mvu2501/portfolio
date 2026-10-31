@@ -40,4 +40,18 @@ const buttons = [
       } catch (e) {}
     })
   );
+
+  // Link "Play the build" ở menu (#play-the-build): ảnh tải trễ phía trên làm trang dịch xuống sau khi nhảy,
+  // nên nhắc trình duyệt cuộn lại vài lần cho tới khi người xem tự cuộn.
+  if (location.hash === '#play-the-build') {
+    let moved = false;
+    ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach((ev) =>
+      addEventListener(ev, () => (moved = true), { once: true, passive: true })
+    );
+    [0, 400, 1000, 2000].forEach((t) =>
+      setTimeout(() => {
+        if (!moved) document.getElementById('play-the-build')?.scrollIntoView({ behavior: 'instant' });
+      }, t)
+    );
+  }
 </script>

@@ -126,8 +126,8 @@ canvas.fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .doors{position:absolute;inset:0;z-index:60;pointer-events:none;visibility:hidden;container-type:size}
 .doors.on{visibility:visible;pointer-events:auto}
 .door{position:absolute;top:0;bottom:0;width:50.3%;transition:transform .85s cubic-bezier(.75,0,.25,1);background:#141a24 url(assets/door_closed.webp) no-repeat;background-size:auto 100%;box-shadow:0 0 6cqw #000}
-.door.l{left:0;transform:translateX(-101%);background-position:-68.8cqw 0}
-.door.r{right:0;transform:translateX(101%);background-position:-119cqw 0}
+.door.l{left:0;transform:translateX(-101%);background-position:calc(50cqw - 66.964cqh) 0}   /* tâm ảnh cửa (đường nối) nằm đúng giữa khung, mọi tỉ lệ khung */
+.door.r{right:0;transform:translateX(101%);background-position:calc(.3cqw - 66.964cqh) 0}
 .doors.closed .door{transform:none}
 .seal{position:absolute;left:50%;top:50%;width:36cqw;translate:-50% -50%;scale:.4;opacity:0;transition:scale .5s .65s cubic-bezier(.2,1.5,.4,1),opacity .3s .65s;filter:drop-shadow(0 0 4cqw #000)}
 .doors.closed .seal{scale:1;opacity:1;animation:sealturn 1.35s .75s cubic-bezier(.35,.05,.2,1) both}
@@ -1079,7 +1079,8 @@ async function runCascade(script){
   await Promise.all(pays);
   return {links:links,total:total};
 }
-/* ---- FREE GAME: 10 lượt quay miễn phí tự chạy, tiền thắng cộng dồn, kết thúc bằng hiệu ứng tổng kết ---- */
+/* ---- FREE GAME: 5 lượt quay miễn phí tự chạy, tiền thắng cộng dồn, kết thúc bằng hiệu ứng tổng kết ---- */
+var FREE_SPINS=5;   /* số lượt quay miễn phí (demo nên ngắn) */
 var FREE_MULT=3;   /* hệ số nhân tiền thắng trong Free Game */
 function freeHud(on){
   var tl=$('#bet').parentNode;tl.classList.toggle('free',on);tl.querySelector('small').textContent=on?'QUAY MIỄN PHÍ':'CƯỢC';
@@ -1087,9 +1088,9 @@ function freeHud(on){
 }
 async function runFreeGame(){
   var total0=S.win,turbo0=S.turbo,tl=$('#bet').parentNode;
-  S.freeLeft=10;S.freeMult=FREE_MULT;freeHud(true);S.turbo=true;
+  S.freeLeft=FREE_SPINS;S.freeMult=FREE_MULT;freeHud(true);S.turbo=true;
   AUD.loopStop('sfx_zap_loop');
-  for(var i=0;i<10;i++){
+  for(var i=0;i<FREE_SPINS;i++){
     await sleep(400);
     await spin(null,null,true);
     S.freeLeft--;freeHud(true);tl.classList.remove('tick');void tl.offsetWidth;tl.classList.add('tick');AUD.sfx('sfx_click',.5,1.3);
@@ -1135,7 +1136,7 @@ async function spin(forced,script,free){
     var scIdx=[];S.grid.forEach(function(k,i){if(k==='scatter'){cells[i].classList.add('scat3');scIdx.push(i)}});
     banner('SCATTER! Mở FREE GAME',true);AUD.sfx('sfx_scatter');AUD.loopStart('sfx_zap_loop',.25);await sleep(500);
     await scatterStrike(scIdx);
-    await popup('FREE GAME','×10 vòng quay · thắng ×'+FREE_MULT);
+    await popup('FREE GAME','×'+FREE_SPINS+' vòng quay · thắng ×'+FREE_MULT);
     await runFreeGame();
   }
   if(jpK){
@@ -1204,7 +1205,7 @@ function showRules(){
   '<h6>3 · CÁC BIỂU TƯỢNG</h6><ul><li><b>4 Linh Thạch</b> (Long Hạch đỏ, Lân Tinh tím, Quy Ấn xanh lá, Phụng Vũ cam): biểu tượng <b>giá trị cao</b>, mỗi viên thuộc về một chiến binh. Long Hạch trả nhiều nhất, Phụng Vũ trả ít nhất trong nhóm.</li><li><b>5 vật phẩm thường</b> (Pin năng lượng, Súng laser, Mũ giáp, Tên lửa, Bom): xuất hiện nhiều, trả thấp hơn.</li><li><b>WILD</b>: thay thế cho mọi biểu tượng để tạo chuỗi thắng, <b>trừ SCATTER</b>.</li><li><b>SCATTER</b>: không cần nằm liên tiếp. Chỉ cần <b>3 ô trở lên</b> ở bất kỳ vị trí nào để mở <b>FREE GAME</b>. Biểu tượng này luôn có tia sét xanh để dễ nhận ra.</li></ul>'+
   '<h6>4 · CHIẾN ĐẤU</h6><ul><li><b>Quay thắng</b>: chiến binh của bạn khai hỏa và tiêu diệt một kẻ địch. Mỗi chiến binh có loại đạn và hiệu ứng riêng.</li><li><b>Quay hụt</b> (không có chuỗi thắng): kẻ địch <b>phản công</b>. Drone bắn pháo vòng cung, xe tăng bắn laser, dropship bắn tia hồng, nhện phun lửa, pháo bay bắn tên lửa. Phản công chỉ là hiệu ứng, <b>không làm bạn mất thêm xu</b>.</li><li>Thanh <b>x/150</b> dưới khu chiến đấu đếm số kẻ địch bạn đã hạ.</li><li>Các ô <b>0/12</b> ở trên cùng là bộ đếm linh thạch của từng chiến binh, tăng khi linh thạch của họ xuất hiện trên bảng.</li></ul>'+
   '<h6>5 · THẮNG LỚN</h6><p>Khi tổng tiền thắng một lượt đủ lớn, bạn sẽ thấy màn hình ăn mừng:</p><ul><li><b>BIG WIN</b>: từ <b>6 lần</b> mức cược trở lên.</li><li><b>MEGA WIN</b>: từ <b>15 lần</b> mức cược trở lên.</li><li><b>EPIC WIN</b>: từ <b>30 lần</b> mức cược trở lên.</li></ul>'+
-  '<h6>6 · FREE GAME</h6><p>Khi có <b>3 SCATTER trở lên</b>, bạn nhận thưởng <b>FREE GAME (10 vòng quay miễn phí)</b>. Game tự quay đủ 10 vòng, không trừ cược. <b>Mọi khoản thắng trong Free Game được nhân ×3</b>, cộng dồn và tổng kết ở cuối.</p>'+
+  '<h6>6 · FREE GAME</h6><p>Khi có <b>3 SCATTER trở lên</b>, bạn nhận thưởng <b>FREE GAME (5 vòng quay miễn phí)</b>. Game tự quay đủ 5 vòng, không trừ cược. <b>Mọi khoản thắng trong Free Game được nhân ×3</b>, cộng dồn và tổng kết ở cuối.</p>'+
   '<h6>7 · JACKPOT</h6><p><b>Điều kiện trúng:</b> dãy 4 ô chân dung ở đầu màn hình là thanh thu thập. Mỗi linh thạch của một chiến binh xuất hiện trong lưới có 50% cơ hội làm số của chiến binh đó tăng thêm 1. Thanh của mỗi chiến binh dừng ở 12/12. Khi <b>cả bốn chiến binh</b> đều đạt 12/12, bạn trúng JACKPOT và cả bốn thanh trở về 0.</p><p>Hũ <b>JACKPOT</b> hiển thị ở góc trên cùng và <b>tăng dần sau mỗi lượt quay</b>. Khi trúng, chiến binh bộc phát sức mạnh, bắn liên hoàn quét sạch quân địch, rồi bạn nhận <b>toàn bộ số tiền trong hũ</b> cùng màn pháo hoa và mưa xu.</p>'+
   '<h6>8 · NÚT ĐIỀU KHIỂN</h6><ul><li><b>QUAY</b>: bắt đầu một lượt. Nút xoay khi đang quay, tối đi khi không đủ xu.</li><li><b>AUTO</b>: tự quay liên tục, bấm lần nữa để dừng.</li><li><b>− / +</b>: giảm hoặc tăng cược, mỗi lần đúng một mức cược gốc đã chọn.</li><li><b>⇄</b>: đổi chiến binh.</li><li><b>MENU</b>: thoát, bật tắt âm thanh, bảng trả thưởng, luật chơi, lịch sử cược.</li></ul>'+
   '<p style="color:#7fa3b3;font-size:3cqw;margin-top:3cqw">Đây là bản trình diễn thiết kế, không dùng tiền thật. Kết quả quay là ngẫu nhiên.</p>';
