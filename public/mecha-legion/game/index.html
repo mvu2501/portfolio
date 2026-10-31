@@ -333,6 +333,17 @@ canvas.fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 svg.lu{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;color:var(--cyan);filter:drop-shadow(0 0 .7cqw var(--cyan)) drop-shadow(0 0 1.6cqw #35e9ff99)}
 .cb:active svg{filter:drop-shadow(0 0 1.6cqw #fff)}
 .cb[aria-pressed="true"] svg.lu{color:#fff}
+.coll div.bump{animation:cbump .7s cubic-bezier(.2,1.5,.4,1)}
+@keyframes cbump{0%{scale:1}30%{scale:1.28;filter:drop-shadow(0 0 2cqw var(--c)) brightness(1.5)}100%{scale:1}}
+.coll .plus1{position:absolute;left:50%;top:50%;translate:-50% 0;z-index:6;font:700 3.6cqw var(--display);color:#fff;text-shadow:0 0 1.4cqw var(--c),0 0 .4cqw #000;pointer-events:none;animation:plus1 .9s ease-out forwards}
+@keyframes plus1{0%{opacity:0;translate:-50% 0}20%{opacity:1}100%{opacity:0;translate:-50% 6cqw}}
+.coll div.near{animation:cnear .9s ease-in-out infinite alternate}
+@keyframes cnear{to{filter:drop-shadow(0 0 1.6cqw var(--c)) brightness(1.3)}}
+.coll div.full{z-index:5;animation:cfull .45s ease-in-out infinite alternate}
+.coll div.full b{color:#ffe9a8}
+@keyframes cfull{from{scale:1.1;filter:drop-shadow(0 0 2cqw #ffd37a) brightness(1.4)}to{scale:1.32;filter:drop-shadow(0 0 4.4cqw #ffb52e) brightness(2)}}
+.coll div.full::after{content:"";position:absolute;inset:-24%;border-radius:50%;border:.5cqw solid #ffd37a;pointer-events:none;animation:cring .9s ease-out infinite}
+@keyframes cring{from{scale:.5;opacity:1}to{scale:1.7;opacity:0}}
 .sndbtn{position:absolute;translate:-50% -50%;width:8cqw;aspect-ratio:1;padding:0;border-radius:50%;border:.35cqw solid #1d4a63;background:#06121dcc;display:grid;place-items:center;cursor:pointer;z-index:20;transition:scale .1s,border-color .2s}
 .sndbtn svg{width:56%}.sndbtn:active{scale:.92}.sndbtn:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
 .sndbtn .v0{display:none}.sndbtn.off .v0{display:block}.sndbtn.off .v1{display:none}.sndbtn.off{border-color:#6b3a2e}.sndbtn.off svg.lu{color:#ff8a6a;filter:none}
@@ -526,7 +537,7 @@ svg.lu{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-
   <!-- 3. PLAY -->
   <section class="screen" id="play" aria-label="Màn chơi">
     <header class="hud">
-      <div class="coll" id="coll"></div>
+      <div class="coll" id="coll" title="Thu thập đủ 12/12 linh thạch của một chiến binh để trúng JACKPOT"></div>
       <div class="jp"><b id="jp">1.059.229</b><i>JACKPOT</i></div>
     </header>
     <div class="battle" id="battle">
@@ -829,7 +840,7 @@ ORDER.forEach(function(k){
 });
 function updHud(){
   if(!S.paying){$('#bal').textContent=fmt(S.bal);$('#win').textContent=fmt(S.win)}$('#bet').textContent=fmt(S.bet);$('#jp').textContent=fmt(S.jp);$('#spin').classList.toggle('off',S.bal<S.bet);
-  ORDER.forEach(function(k){$('#c_'+k).textContent=S.collect[k]});
+  ORDER.forEach(function(k){$('#c_'+k).textContent=S.collect[k];var tl=$('#c_'+k).parentNode;if(!tl.classList.contains('full'))tl.classList.toggle('near',S.collect[k]>=10&&S.collect[k]<12)});
   $('#kills').textContent=S.kills+'/150';$('#prog').style.setProperty('--p',Math.max(3,S.kills/150*100)+'%');
 }
 var XS={hit:{n:8,ms:48,w:20},die:{n:10,ms:52,w:30},deb:{n:6,ms:70,w:30}};
@@ -850,7 +861,7 @@ function boom(xp,yp,k,type){
 }
 function chain(n,k){AUD.sfx('sfx_chain');for(var i=0;i<n;i++)(function(i){setTimeout(function(){boom(30+Math.random()*62,28+Math.random()*42,k*(.8+Math.random()*.6))},i*170)})(i)}
 function banner(t,win){var b=$('#banner');b.textContent=t;b.classList.remove('tips');b.classList.toggle('win',!!win)}
-var TIPS=['Bấm <b>QUAY</b> để bắt đầu chiến đấu','Ghép <b>3 biểu tượng giống nhau</b> liên tiếp từ cột trái sang phải để thắng (ALL WAYS)','<b>WILD</b> thay thế mọi biểu tượng, trừ SCATTER','<b>3 SCATTER</b> mở FREE GAME và triệu hồi boss','Mỗi lần thắng, chiến binh của bạn khai hỏa vào kẻ địch','Dùng <b>+ / −</b> để đổi mức cược, <b>AUTO</b> để quay liên tục'];
+var TIPS=['Bấm <b>QUAY</b> để bắt đầu chiến đấu','Ghép <b>3 biểu tượng giống nhau</b> liên tiếp từ cột trái sang phải để thắng (ALL WAYS)','<b>WILD</b> thay thế mọi biểu tượng, trừ SCATTER','<b>3 SCATTER</b> mở FREE GAME và triệu hồi boss','Thu thập đủ <b>12/12 linh thạch</b> của một chiến binh để trúng <b>JACKPOT</b>','Mỗi lần thắng, chiến binh của bạn khai hỏa vào kẻ địch','Dùng <b>+ / −</b> để đổi mức cược, <b>AUTO</b> để quay liên tục'];
 function bannerTips(){var b=$('#banner');b.classList.remove('win');b.classList.add('tips');b.innerHTML='<span class="mq">'+TIPS.join('<i></i>')+'<i></i></span>'}
 
 var foesEl=$('#foes'),foeQueue=[];
@@ -1085,8 +1096,9 @@ async function spin(forced,script){
   }
   clearInterval(iv);S.grid=final;await sleep(320);
   var jpK=null;   /* chiến binh nào thu thập đủ 12/12 thì trúng JACKPOT (không tính ở lượt demo có kịch bản) */
+  var before=Object.assign({},S.collect);
   if(!script)final.forEach(function(k){if(S.collect[k]!==undefined&&S.collect[k]<12&&Math.random()<.5){S.collect[k]++;if(S.collect[k]>=12&&!jpK)jpK=k}});
-  updHud();
+  updHud();ORDER.forEach(function(k){if(S.collect[k]>before[k])bumpColl(k,S.collect[k]-before[k])});
   var ev=evaluate(final),cr={links:0,total:0};
   if(ev.total>0){
     cr=await runCascade(script);
@@ -1104,8 +1116,8 @@ async function spin(forced,script){
     setTimeout(function(){$('#boss').classList.remove('on')},3500);
   }
   if(jpK){
-    banner('Đủ 12/12 '+CHARS[jpK].name+' · TRÚNG JACKPOT!',true);AUD.sfx('sfx_scatter');await sleep(900);
-    await jackpotSeq(true);S.collect[jpK]=0;
+    await qualifyJackpot(jpK,false);
+    await jackpotSeq(true);S.collect[jpK]=0;endQualify(jpK);
   }
   HIST.unshift({t:Date.now(),bet:betNow,win:Math.round(S.win)});
   updHud();
@@ -1169,7 +1181,7 @@ function showRules(){
   '<h6>4 · CHIẾN ĐẤU</h6><ul><li><b>Quay thắng</b>: chiến binh của bạn khai hỏa và tiêu diệt một kẻ địch. Mỗi chiến binh có loại đạn và hiệu ứng riêng.</li><li><b>Quay hụt</b> (không có chuỗi thắng): kẻ địch <b>phản công</b>. Drone bắn pháo vòng cung, xe tăng bắn laser, dropship bắn tia hồng, nhện phun lửa, pháo bay bắn tên lửa. Phản công chỉ là hiệu ứng, <b>không làm bạn mất thêm xu</b>.</li><li>Thanh <b>x/150</b> dưới khu chiến đấu đếm số kẻ địch bạn đã hạ.</li><li>Các ô <b>0/12</b> ở trên cùng là bộ đếm linh thạch của từng chiến binh, tăng khi linh thạch của họ xuất hiện trên bảng.</li></ul>'+
   '<h6>5 · THẮNG LỚN</h6><p>Khi tổng tiền thắng một lượt đủ lớn, bạn sẽ thấy màn hình ăn mừng:</p><ul><li><b>BIG WIN</b>: từ <b>6 lần</b> mức cược trở lên.</li><li><b>MEGA WIN</b>: từ <b>15 lần</b> mức cược trở lên.</li><li><b>EPIC WIN</b>: từ <b>30 lần</b> mức cược trở lên.</li></ul>'+
   '<h6>6 · FREE GAME</h6><p>Khi có <b>3 SCATTER trở lên</b>, boss xuất hiện và bạn nhận thưởng <b>FREE GAME (10 vòng quay miễn phí)</b>. Trong bản demo, phần thưởng của 10 vòng được trả gộp thành một khoản lớn, khoảng 15 đến 45 lần mức cược.</p>'+
-  '<h6>7 · JACKPOT</h6><p>Hũ <b>JACKPOT</b> hiển thị ở góc trên cùng và <b>tăng dần sau mỗi lượt quay</b>. Khi trúng, chiến binh bộc phát sức mạnh, bắn liên hoàn quét sạch quân địch, rồi bạn nhận <b>toàn bộ số tiền trong hũ</b> cùng màn pháo hoa và mưa xu.</p>'+
+  '<h6>7 · JACKPOT</h6><p><b>Điều kiện trúng:</b> dãy 4 ô chân dung ở đầu màn hình là thanh thu thập. Mỗi linh thạch của một chiến binh xuất hiện trong lưới có 50% cơ hội làm số của chiến binh đó tăng thêm 1. Khi một chiến binh đạt <b>12/12</b>, bạn trúng JACKPOT và thanh của chiến binh đó trở về 0.</p><p>Hũ <b>JACKPOT</b> hiển thị ở góc trên cùng và <b>tăng dần sau mỗi lượt quay</b>. Khi trúng, chiến binh bộc phát sức mạnh, bắn liên hoàn quét sạch quân địch, rồi bạn nhận <b>toàn bộ số tiền trong hũ</b> cùng màn pháo hoa và mưa xu.</p>'+
   '<h6>8 · NÚT ĐIỀU KHIỂN</h6><ul><li><b>QUAY</b>: bắt đầu một lượt. Nút xoay khi đang quay, tối đi khi không đủ xu.</li><li><b>AUTO</b>: tự quay liên tục, bấm lần nữa để dừng.</li><li><b>− / +</b>: giảm hoặc tăng cược, mỗi lần đúng một mức cược gốc đã chọn.</li><li><b>⇄</b>: đổi chiến binh.</li><li><b>MENU</b>: thoát, bật tắt âm thanh, bảng trả thưởng, luật chơi, lịch sử cược.</li></ul>'+
   '<p style="color:#7fa3b3;font-size:3cqw;margin-top:3cqw">Đây là bản trình diễn thiết kế, không dùng tiền thật. Kết quả quay là ngẫu nhiên.</p>';
 }
@@ -1220,6 +1232,24 @@ function jackpotPopup(total){return new Promise(function(res){
   function tap(){if(!finished)fin();else close()}
   ov.addEventListener('click',tap);requestAnimationFrame(step);
 })}
+/* ---- thanh thu thập 12/12: hiệu ứng mỗi lần tăng, sáng dần khi gần đủ, và hiệu ứng "đủ điều kiện JACKPOT" ---- */
+function bumpColl(k,n){
+  var t=$('#c_'+k).parentNode;
+  t.classList.remove('bump');void t.offsetWidth;t.classList.add('bump');setTimeout(function(){t.classList.remove('bump')},750);
+  var pl=document.createElement('span');pl.className='plus1';pl.textContent='+'+(n||1);t.appendChild(pl);setTimeout(function(){pl.remove()},950);
+  AUD.sfx('sfx_bet',.45,1+.05*S.collect[k]);
+}
+async function qualifyJackpot(k,fill){
+  var t=$('#c_'+k).parentNode;
+  if(fill)while(S.collect[k]<12){S.collect[k]++;updHud();bumpColl(k,1);await sleep(S.turbo?90:170)}
+  updHud();
+  t.classList.remove('near');t.classList.add('full');
+  banner('ĐỦ 12/12 · KÍCH HOẠT JACKPOT!',true);
+  AUD.sfx('sfx_scatter');AUD.sfx('sfx_fire_rise',.6);
+  if(!reduce){var f=document.createElement('div');f.className='cflash';f.style.setProperty('--fo','.55');$('#stage').appendChild(f);setTimeout(function(){f.remove()},600)}
+  await sleep(1700);
+}
+function endQualify(k){var t=$('#c_'+k).parentNode;t.classList.remove('full','near')}
 async function jackpotSeq(fromSpin){
   fromSpin=fromSpin===true;   /* true: gọi từ trong lượt quay khi thu thập đủ 12/12 (nút demo truyền sự kiện nên là false) */
   if(S.spinning&&!fromSpin)return;if(!$('#play').classList.contains('on')){go('play');await sleep(800)}
@@ -1250,7 +1280,18 @@ async function jackpotSeq(fromSpin){
   S.jp=1000000;updHud();
   if(!fromSpin){S.spinning=false;glintStart();bannerTips()}
 }
-$('#demoJP').addEventListener('click',jackpotSeq);
+/* nút xem nhanh JACKPOT: chiến binh đang chọn thu thập đủ 12/12 -> hiệu ứng đủ điều kiện -> chiến binh tấn công ultra -> popup */
+async function demoJackpot(){
+  if(S.spinning)return;if(!$('#play').classList.contains('on')){go('play');await sleep(800)}
+  S.spinning=true;S.auto=false;$('#auto').setAttribute('aria-pressed','false');glintStop();ov('#menu',false);S.win=0;
+  var k=S.hero;
+  await qualifyJackpot(k,true);
+  await jackpotSeq(true);
+  S.collect[k]=0;endQualify(k);
+  HIST.unshift({t:Date.now(),bet:S.bet,win:Math.round(S.win)});
+  updHud();S.spinning=false;glintStart();bannerTips();
+}
+$('#demoJP').addEventListener('click',demoJackpot);
 var bwStep=0;
 async function demoBW(){
   if(S.spinning)return;if(!$('#play').classList.contains('on')){go('play');await sleep(800)}
@@ -1276,7 +1317,7 @@ document.addEventListener('keydown',function(e){
   if(e.key==='b'||e.key==='B')demoBW();
   if(e.key==='4')demoSC();
   if(e.key==='5')demoBW();
-  if(e.key==='6')jackpotSeq();
+  if(e.key==='6')demoJackpot();
   if(e.code==='Space'&&$('#play').classList.contains('on')){e.preventDefault();spin()}
   if((e.key==='Enter')&&$('#intro').classList.contains('on'))go('select');
   if($('#select').classList.contains('on')){var i=ORDER.indexOf(S.hero);
