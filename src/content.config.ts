@@ -21,7 +21,6 @@ const projectSchema = z.object({
   demo: z.string().optional(),        // (chỉ dành cho fun) file demo tĩnh trong public/; có thì thẻ mở trang /fun-projects/<tên file>
   component: z.enum(['boarding-pass']).optional(), // (chỉ dành cho fun) thẻ mở popup chứa component này thay vì iframe
   group: z.enum(['game']).optional(),  // 'game': hiện ở tab Game visual (không hiện ở Selected works) và có Previous/Next riêng
-  tocExtra: z.array(z.string()).optional(), // thêm các tiêu đề ### / #### (theo đúng chữ) vào mục lục bên cạnh các tiêu đề ##, ví dụ "Play the build"
   facts: z.array(z.object({ label: z.string(), value: z.string() })).optional(), // thay khối Role/Year/Platform bằng danh sách riêng (ví dụ Mecha Legion có thêm Output, Timeline, Tools)
   layout: z.enum(['visual']).optional(), // 'visual': trang thiên về hình ảnh (xem src/plugins/rehype-outcome.mjs)
   stack: z.string().optional(),       // (chỉ dành cho fun) một dòng công nghệ, hiện dưới mô tả ở trang chi tiết

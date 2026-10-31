@@ -5,7 +5,6 @@ tags: [Game Design, Art Direction, AI Tools, Prototype]
 description: An original sci-fi slot game, designed and prototyped by me from start to finish, using AI tools for production.
 order: 1
 group: game
-tocExtra: [Play the build]
 cover: /images/work/mecha-legion/cover.webp
 coverAlt: Mecha Legion logo over a neon city street, with the four mecha warriors Long, Lân, Quy and Phụng in front
 facts:
@@ -228,13 +227,13 @@ AI supported the environment and the game elements: the city background loop, sy
   <figure><img src="/images/work/mecha-legion/shot_jackpot.webp" alt="Jackpot screen" loading="lazy" decoding="async"><figcaption>Jackpot</figcaption></figure>
 </div>
 
-#### Play the build
+## 05 · Play the build
 
 Click to experience the prototype.
 
 <!-- demo:mecha-play -->
 
-## 05 · Reflection
+## 06 · Reflection
 
 This project taught me to run a design from the first idea to a playable build: art direction, a repeatable asset workflow, a prototype, audio and video.
 
