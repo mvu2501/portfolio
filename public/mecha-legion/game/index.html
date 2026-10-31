@@ -985,7 +985,7 @@ function enemyAttack(){
   return job.then(function(){return sleep(650)});
 }
 window.__enemyAttack=enemyAttack;
-function tween(el,a,b,dur,cb){var t0=performance.now();(function f(n){var p=Math.min(1,(n-t0)/dur),e=1-Math.pow(1-p,3);el.textContent=fmt(a+(b-a)*e);if(p<1)requestAnimationFrame(f);else if(cb)cb()})(t0)}
+function tween(el,a,b,dur,cb){var t0=performance.now();(function f(n){var p=Math.max(0,Math.min(1,(n-t0)/dur)),e=1-Math.pow(1-p,3);el.textContent=fmt(Math.max(0,a+(b-a)*e));if(p<1)requestAnimationFrame(f);else if(cb)cb()})(t0)}
 function pulse(el){var t=el.closest('.t');t.classList.remove('pulse');void t.offsetWidth;t.classList.add('pulse')}
 function payout(amount){return new Promise(function(res){
   S.paying=true;
@@ -1017,7 +1017,7 @@ function bigWin(total,links,title){return new Promise(function(res){
   bw.classList.remove('done');bw.classList.add('on');AUD.duck(true);AUD.sfx(lv>=2?'sfx_win_mega':'sfx_win_big');AUD.loopStart('sfx_coin_loop',.3);
   var finished=false,closed=false,t0=performance.now(),dur=tier[1];
   var iv=setInterval(function(){var c=document.createElement('i');c.className='coin';c.style.setProperty('--s',(3+Math.random()*3)+'cqw');c.style.left=(Math.random()*96)+'%';c.style.setProperty('--t',(1.6+Math.random()*1.4)+'s');rain.appendChild(c);setTimeout(function(){c.remove()},3200)},85);
-  function step(n){if(finished||closed)return;var p=Math.min(1,(n-t0)/dur),e=1-Math.pow(1-p,3);$('#bwn').textContent=fmt(total*e);if(p<1)requestAnimationFrame(step);else fin()}
+  function step(n){if(finished||closed)return;var p=Math.max(0,Math.min(1,(n-t0)/dur)),e=1-Math.pow(1-p,3);$('#bwn').textContent=fmt(Math.max(0,total*e));if(p<1)requestAnimationFrame(step);else fin()}
   function fin(){if(finished)return;finished=true;$('#bwn').textContent=fmt(total);bw.classList.add('done');setTimeout(close,3000)}
   function close(){if(closed)return;closed=true;clearInterval(iv);AUD.loopStop('sfx_coin_loop');AUD.duck(false);bw.classList.remove('on');bw.removeEventListener('click',tap);setTimeout(function(){rain.innerHTML='';res()},400)}
   function tap(){if(!finished)fin();else close()}
@@ -1250,7 +1250,7 @@ function jackpotPopup(total){return new Promise(function(res){
   var ov=$('#jpov'),rain=$('#jprain'),n=$('#jpn');n.textContent='0';ov.classList.remove('done');ov.classList.add('on');
   AUD.sfx('sfx_jackpot');AUD.music('bgm_jackpot');AUD.duck(false);AUD.loopStart('sfx_coin_loop',.3);var stopFW=fireworks($('#fwc')),finished=false,closed=false,t0=performance.now(),dur=4800;
   var iv=setInterval(function(){for(var j=0;j<2;j++){var c=document.createElement('i');c.className='coin';c.style.setProperty('--s',(3+Math.random()*3.5)+'cqw');c.style.left=(Math.random()*96)+'%';c.style.setProperty('--t',(1.4+Math.random()*1.5)+'s');rain.appendChild(c);setTimeout(function(c){c.remove()}.bind(null,c),3200)}},60);
-  function step(t){if(finished||closed)return;var p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);n.textContent=fmt(total*e);if(p<1)requestAnimationFrame(step);else fin()}
+  function step(t){if(finished||closed)return;var p=Math.max(0,Math.min(1,(t-t0)/dur)),e=1-Math.pow(1-p,3);n.textContent=fmt(Math.max(0,total*e));if(p<1)requestAnimationFrame(step);else fin()}
   function fin(){if(finished)return;finished=true;n.textContent=fmt(total);ov.classList.add('done');setTimeout(close,6000)}
   function close(){if(closed)return;closed=true;clearInterval(iv);stopFW();AUD.loopStop('sfx_coin_loop');AUD.music('bgm_battle');ov.classList.remove('on');ov.removeEventListener('click',tap);setTimeout(function(){rain.innerHTML='';res()},450)}
   function tap(){if(!finished)fin();else close()}
